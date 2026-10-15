@@ -3,81 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VARZID — Торговая площадка</title>
+    <title>VARZID — Универсальный маркетплейс</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
-        body { background-color: #f4f5f7; color: #333; pb: 70px; }
+        body { background-color: #f4f5f7; color: #333; padding-bottom: 70px; }
         
-        /* Шапка в стиле М.Видео */
-        header { background: #e31837; color: #fff; padding: 12px 16px; sticky; top: 0; z-index: 100; }
+        /* Шапкаи кабуди муосир барои маркетплейси универсалӣ */
+        header { background: #0d47a1; color: #fff; padding: 12px 16px; position: sticky; top: 0; z-index: 100; }
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .logo { font-size: 22px; font-weight: 800; letter-spacing: 1px; color: #fff; text-decoration: none; }
-        .lang-select { background: rgba(255,255,255,0.2); border: none; color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 13px; }
         
-        /* Поисковая строка */
+        /* Логотип ва номи бренд дар шапка */
+        .logo-container { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+        .logo-img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; }
+        .logo { font-size: 20px; font-weight: 800; color: #ffffff; letter-spacing: 1px; }
+        
+        .lang-select { background: rgba(255,255,255,0.2); border: none; color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 13px; outline: none; }
+        .lang-select option { color: #333; }
+        
         .search-box { display: flex; background: #fff; border-radius: 10px; padding: 8px 12px; align-items: center; }
         .search-box i { color: #888; margin-right: 8px; }
         .search-box input { border: none; outline: none; width: 100%; font-size: 14px; }
-
-        /* Баннер */
-        .promo-banner { margin: 16px; background: linear-gradient(135deg, #2e7d32, #1b5e20); color: #fff; padding: 20px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        
+        .promo-banner { margin: 16px; background: linear-gradient(135deg, #1565c0, #1976d2); color: #fff; padding: 20px; border-radius: 16px; }
         .promo-banner h2 { font-size: 18px; margin-bottom: 6px; }
         .promo-banner p { font-size: 13px; opacity: 0.9; }
-
-        /* Категории */
+        
         .section-title { font-size: 16px; font-weight: 700; margin: 16px 16px 10px; }
         .categories { display: flex; gap: 10px; overflow-x: auto; padding: 0 16px; scrollbar-width: none; }
         .cat-chip { background: #fff; padding: 8px 16px; border-radius: 20px; font-size: 13px; white-space: nowrap; font-weight: 500; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
-
-        /* Нижняя навигация */
+        
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #eee; z-index: 100; }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: #666; text-decoration: none; font-size: 11px; }
         .nav-item i { font-size: 18px; margin-bottom: 3px; }
-        .nav-item.active { color: #e31837; font-weight: 600; }
+        .nav-item.active { color: #1565c0; font-weight: 600; }
     </style>
 </head>
 <body>
 
-    <!-- Шапка -->
     <header>
         <div class="top-bar">
-            <a href="#" class="logo">VARZID</a>
-            <select class="lang-select" onchange="location = this.value;">
-                <option value="/ru/" selected>🇷🇺 RU</option>
-                <option value="/tj/">🇹🇯 TJ</option>
-                <option value="/en/">🇬🇧 EN</option>
+            <!-- Истифодаи логотипи шахсии шумо дар шапка -->
+            <a href="#" class="logo-container">
+                <img src="1000009801.png" alt="Logo" class="logo-img">
+                <span class="logo">VARZID</span>
+            </a>
+            <select id="langSelect" class="lang-select" onchange="changeLang(this.value)">
+                <option value="ru" selected>🇷🇺 RU</option>
+                <option value="tj">🇹🇯 TJ</option>
+                <option value="en">🇬🇧 EN</option>
+                <option value="uz">🇺🇿 UZ</option>
             </select>
         </div>
         <div class="search-box">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" placeholder="Поиск товаров в VARZID...">
+            <input type="text" id="searchInput" placeholder="Поиск товаров в VARZID...">
         </div>
     </header>
 
-    <!-- Главный баннер -->
     <div class="promo-banner">
-        <h2>Агромаркетплейс VARZID</h2>
-        <p>Качественная продукция и товары прямо от производителей.</p>
+        <h2 id="bannerTitle">Маркетплейс VARZID</h2>
+        <p id="bannerDesc">Широкий ассортимент товаров от надежных продавцов.</p>
     </div>
 
-    <!-- Быстрые категории -->
-    <div class="section-title">Категории</div>
+    <div class="section-title" id="catTitle">Категории</div>
     <div class="categories">
-        <div class="cat-chip">🌾 Зерновые</div>
-        <div class="cat-chip">🌱 Семена</div>
-        <div class="cat-chip">🧪 Удобрения</div>
-        <div class="cat-chip">🚜 Техника</div>
-        <div class="cat-chip">📦 Корма</div>
+        <div class="cat-chip" id="cat1">📱 Электроника</div>
+        <div class="cat-chip" id="cat2">👕 Одежда</div>
+        <div class="cat-chip" id="cat3">🏠 Дом и сад</div>
+        <div class="cat-chip" id="cat4">🛠️ Инструменты</div>
+        <div class="cat-chip" id="cat5">⚽ Спорт</div>
     </div>
 
-    <!-- Нижняя панель (как в приложении М.Видео) -->
     <nav class="bottom-nav">
-        <a href="#" class="nav-item active"><i class="fa-solid fa-house"></i>Главная</a>
-        <a href="#" class="nav-item"><i class="fa-solid fa-list-ul"></i>Каталог</a>
-        <a href="#" class="nav-item"><i class="fa-solid fa-cart-shopping"></i>Корзина</a>
-        <a href="#" class="nav-item"><i class="fa-solid fa-user"></i>Кабинет</a>
+        <a href="#" class="nav-item active"><i class="fa-solid fa-house"></i><span id="navHome">Главная</span></a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-list-ul"></i><span id="navCatalog">Каталог</span></a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-cart-shopping"></i><span id="navCart">Корзина</span></a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-user"></i><span id="navCabinet">Кабинет</span></a>
     </nav>
 
+    <script>
+        const langData = {
+            ru: {
+                search: "Поиск товаров в VARZID...",
+                title: "Маркетплейс VARZID",
+                desc: "Широкий ассортимент товаров от надежных продавцов.",
+                categories: "Категории",
+                c1: "📱 Электроника", c2: "👕 Одежда", c3: "🏠 Дом и сад", c4: "🛠️ Инструменты", c5: "⚽ Спорт",
+                home: "Главная", catalog: "Каталог", cart: "Корзина", cabinet: "Кабинет"
+            },
+            tj: {
+                search: "Ҷустуҷӯи маҳсулот дар VARZID...",
+                title: "Маркетплейси VARZID",
+                desc: "Маҷмӯи васеи молҳо аз фурӯшандагони боэътимод.",
+                categories: "Категорияҳо",
+                c1: "📱 Электроника", c2: "👕 Садо", c3: "🏠 Хона ва боғ", c4: "🛠️ Абзорҳо", c5: "⚽ Варзиш",
+                home: "Асосӣ", catalog: "Каталог", cart: "Сабад", cabinet: "Кабинет"
+            },
+            en: {
+                search: "Search products in VARZID...",
+                title: "VARZID Marketplace",
+                desc: "Wide range of products from reliable sellers.",
+                categories: "Categories",
+                c1: "📱 Electronics", c2: "👕 Clothing", c3: "🏠 Home & Garden", c4: "🛠️ Tools", c5: "⚽ Sports",
+                home: "Home", catalog: "Catalog", cart: "Cart", cabinet: "Cabinet"
+            },
+            uz: {
+                search: "VARZID dan mahsulotlarni qidirish...",
+                title: "VARZID marketpleysi",
+                desc: "Ishonchli sotuvchilardan keng turdagi mahsulotlar.",
+                categories: "Kategoriyalar",
+                c1: "📱 Elektronika", c2: "👕 Kiyim-kechak", c3: "🏠 Uy va bog'", c4: "🛠️ Asboblar", c5: "⚽ Sport",
+                home: "Bosh sahifa", catalog: "Katalog", cart: "Savat", cabinet: "Kabinet"
+            }
+        };
+
+        function changeLang(lang) {
+            localStorage.setItem('selected_lang', lang);
+            let d = langData[lang];
+            if (!d) return;
+            
+            document.getElementById('searchInput').placeholder = d.search;
+            document.getElementById('bannerTitle').innerText = d.title;
+            document.getElementById('bannerDesc').innerText = d.desc;
+            document.getElementById('catTitle').innerText = d.categories;
+            document.getElementById('cat1').innerText = d.c1;
+            document.getElementById('cat2').innerText = d.c2;
+            document.getElementById('cat3').innerText = d.c3;
+            document.getElementById('cat4').innerText = d.c4;
+            document.getElementById('cat5').innerText = d.c5;
+            document.getElementById('navHome').innerText = d.home;
+            document.getElementById('navCatalog').innerText = d.catalog;
+            document.getElementById('navCart').innerText = d.cart;
+            document.getElementById('navCabinet').innerText = d.cabinet;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            let saved = localStorage.getItem('selected_lang') || 'ru';
+            document.getElementById('langSelect').value = saved;
+            changeLang(saved);
+        });
+    </script>
 </body>
-</html> хамин коди файли кадом аст
+</html>
