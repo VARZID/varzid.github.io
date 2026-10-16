@@ -3,124 +3,134 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VARZID Marketplace</title>
+  <title>VARZID — Маркетплейс</title>
+  <!-- Истифодаи Tailwind CSS барои дизайни замонавӣ ва зебо -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    * { box-sizing: border-box; font-family: Arial, sans-serif; margin: 0; padding: 0; }
-    body { background-color: #f4f6f8; color: #333; padding-bottom: 70px; }
-    header { background: #1b4332; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
-    .logo { font-size: 22px; font-weight: bold; }
-    .lang-select { padding: 6px 10px; border-radius: 6px; border: none; font-weight: bold; background: #fff; color: #333; cursor: pointer; }
-    .container { max-width: 800px; margin: 15px auto; padding: 0 10px; }
-
-    .admin-card {
-      background: #ffffff;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-      border-left: 5px solid #2d6a4f;
-      display: none;
-    }
-    .admin-card h3 { margin-bottom: 12px; color: #1b4332; }
-    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 10px; }
-    .form-grid input, .form-grid select { padding: 8px 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; background: #fff; }
-    .btn-add { background: #2d6a4f; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; }
-
-    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
-    .product-card { background: white; border-radius: 8px; padding: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); position: relative; }
-    .cat-badge { background: #e9ecef; color: #495057; font-size: 11px; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 6px; }
-    .product-title { font-size: 15px; font-weight: bold; color: #222; margin-bottom: 5px; }
-    .product-price { font-size: 16px; font-weight: bold; color: #2d6a4f; margin-bottom: 4px; }
-    .product-details { font-size: 12px; color: #666; }
-    
-    .btn-delete {
-      background: #e63946; color: white; border: none; padding: 6px; border-radius: 4px;
-      cursor: pointer; font-size: 12px; margin-top: 8px; width: 100%; display: none;
-    }
-
-    nav.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #ddd; }
-    nav.bottom-nav button { background: none; border: none; font-size: 12px; color: #555; cursor: pointer; }
-
-    body { top: 0 !important; }
+    body { background-color: #f3f4f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     .goog-te-banner-frame { display: none !important; }
-    .skiptranslate { display: none !important; }
+    body { top: 0 !important; }
   </style>
 </head>
-<body>
+<body class="pb-24">
 
-  <header>
-    <div class="logo">VARZID</div>
-    <div>
-      <select class="lang-select" id="languageSelect" onchange="changeLanguage(this.value)">
-        <option value="ru" selected>🇷🇺 RU</option>
-        <option value="tj">🇹🇯 TJ</option>
-        <option value="en">🇬🇧 EN</option>
-        <option value="uz">🇺🇿 UZ</option>
-      </select>
+  <!-- Header -->
+  <header class="bg-emerald-900 text-white sticky top-0 z-50 shadow-md">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="text-xl font-black tracking-wider flex items-center gap-2">
+        <i class="fa-solid fa-store text-emerald-400"></i> VARZID
+      </div>
+      <div class="flex items-center gap-3">
+        <select class="bg-emerald-800 text-white text-sm font-semibold px-2 py-1.5 rounded-lg border border-emerald-700 outline-none cursor-pointer" id="languageSelect" onchange="changeLanguage(this.value)">
+          <option value="ru" selected>🇷🇺 RU</option>
+          <option value="tj">🇹🇯 TJ</option>
+          <option value="en">🇬🇧 EN</option>
+          <option value="uz">🇺🇿 UZ</option>
+        </select>
+      </div>
     </div>
   </header>
 
-  <div id="google_translate_element" style="display:none;"></div>
+  <div id="google_translate_element" class="hidden"></div>
 
-  <div class="container">
+  <main class="max-w-4xl mx-auto px-4 pt-4">
     
-    <!-- Панели админ бо рӯйхати тайёри категорияҳо -->
-    <div class="admin-card" id="adminPanel">
-      <h3>⚙️ Иловаи сареъи мол</h3>
-      <div class="form-grid">
-        <!-- Рӯйхати тайёри категорияҳо -->
-        <select id="catSelect">
-          <option value="🌾 Ғалла ва хӯроки чорво">🌾 Ғалла ва хӯроки чорво</option>
-          <option value="🥚 Тухм ва парранда">🥚 Тухм ва парранда</option>
-          <option value="🛢️ Равған ва маҳсулот">🛢️ Равған ва маҳсулот</option>
-          <option value="🛠️ Масолеҳи сохтмон">🛠️ Масолеҳи сохтмон</option>
-          <option value="📦 Дигар маҳсулот">📦 Дигар маҳсулот</option>
-        </select>
-        
-        <input type="text" id="nameInput" placeholder="Номи мол (мас: Гандум)">
-        <input type="number" id="priceInput" placeholder="Нарх (сомонӣ)">
-        <input type="text" id="weightInput" placeholder="Воҳид (мас: 50 кг / 1 л / дона)">
-        <input type="number" id="qtyInput" placeholder="Миқдор / Бақия">
+    <!-- Панели Админ (Пинҳон) -->
+    <div id="adminPanel" class="hidden bg-white rounded-2xl shadow-xl p-5 mb-6 border-2 border-emerald-500">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-bold text-emerald-900 flex items-center gap-2">
+          <i class="fa-solid fa-gear"></i> Панель управления (Админ)
+        </h2>
+        <button onclick="closeAdmin()" class="text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button>
       </div>
-      <button class="btn-add" onclick="addProduct()">➕ Илова кардан</button>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+        <select id="catSelect" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:border-emerald-500">
+          <option value="🌾 Зерно и корма">🌾 Зерно и корма</option>
+          <option value="🥚 Яйца и птица">🥚 Яйца и птица</option>
+          <option value="🛢️ Масло и продукты">🛢️ Масло и продукты</option>
+          <option value="🛠️ Инструменты и сад">🛠️ Инструменты и сад</option>
+          <option value="📦 Прочее">📦 Прочее</option>
+        </select>
+        <input type="text" id="nameInput" placeholder="Название товара (напр. Тухми ломан)" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:border-emerald-500">
+        <input type="number" id="priceInput" placeholder="Цена (сомони)" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:border-emerald-500">
+        <input type="text" id="weightInput" placeholder="Ед. измерения (напр. 1 л, 50 кг, 1 шт)" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:border-emerald-500">
+        <input type="number" id="qtyInput" placeholder="Количество / Остаток" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:border-emerald-500 sm:col-span-2">
+      </div>
+      <button onclick="addProduct()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-600/20">
+        <i class="fa-solid fa-plus mr-1"></i> Добавить товар
+      </button>
     </div>
 
-    <h3 style="margin-bottom: 12px;">📦 Каталог товаров</h3>
-    <div class="product-grid" id="productDisplay"></div>
+    <!-- Заголовок каталога -->
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-xl font-black text-gray-800 flex items-center gap-2">
+        <i class="fa-solid fa-boxes-stacked text-emerald-600"></i> Каталог товаров
+      </h1>
+      <span id="productCount" class="text-xs font-bold bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full">0 товаров</span>
+    </div>
 
-  </div>
+    <!-- Сетка товаров (Модерн) -->
+    <div id="productDisplay" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      <!-- Товары динамически выводятся здесь -->
+    </div>
 
-  <nav class="bottom-nav">
-    <button onclick="closeAdmin()">🏠 Главная</button>
-    <button onclick="closeAdmin()">📋 Каталог</button>
-    <button>🛒 Корзина</button>
-    <button onclick="openAdmin()">👤 Кабинет</button>
+  </main>
+
+  <!-- Bottom Navigation Bar (Модерн) -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-gray-200 shadow-lg z-40">
+    <div class="max-w-4xl mx-auto flex justify-around py-3">
+      <button onclick="closeAdmin()" class="flex flex-col items-center text-emerald-600 font-semibold text-xs gap-1">
+        <i class="fa-solid fa-house text-lg"></i> Главная
+      </button>
+      <button onclick="closeAdmin()" class="flex flex-col items-center text-gray-500 hover:text-emerald-600 font-semibold text-xs gap-1">
+        <i class="fa-solid fa-layer-group text-lg"></i> Каталог
+      </button>
+      <button onclick="alert('Корзина пока пуста')" class="flex flex-col items-center text-gray-500 hover:text-emerald-600 font-semibold text-xs gap-1">
+        <i class="fa-solid fa-cart-shopping text-lg"></i> Корзина
+      </button>
+      <button onclick="openAdmin()" class="flex flex-col items-center text-gray-500 hover:text-emerald-600 font-semibold text-xs gap-1">
+        <i class="fa-solid fa-user-gear text-lg"></i> Кабинет
+      </button>
+    </div>
   </nav>
 
+  <!-- Scripts -->
   <script type="text/javascript">
     let items = JSON.parse(localStorage.getItem('varzid_items')) || [];
     let isAdmin = false;
 
     function renderItems() {
       const container = document.getElementById('productDisplay');
+      const countBadge = document.getElementById('productCount');
       container.innerHTML = '';
+      countBadge.innerText = `${items.length} товаров`;
 
       if (items.length === 0) {
-        container.innerHTML = '<p style="color:#777;">Товаров пока нет.</p>';
+        container.innerHTML = `
+          <div class="col-span-full text-center py-12 text-gray-400">
+            <i class="fa-solid fa-box-open text-4xl mb-2"></i>
+            <p class="text-sm">Товаров пока нет в каталоге.</p>
+          </div>`;
         return;
       }
 
       items.forEach((item, index) => {
         container.innerHTML += `
-          <div class="product-card">
-            <span class="cat-badge">${item.category}</span>
-            <div class="product-title">${item.name}</div>
-            <div class="product-price">${item.price} сомони</div>
-            <div class="product-details">
-              <strong>Воҳид:</strong> ${item.weight}<br>
-              <strong>Бақия:</strong> ${item.qty}
+          <div class="bg-white rounded-2xl p-3 shadow-sm hover:shadow-md transition border border-gray-100 flex flex-col justify-between relative group">
+            <div>
+              <span class="text-[10px] font-bold bg-gray-100 text-gray-600 px-2 py-0.5 rounded-md inline-block mb-2">${item.category}</span>
+              <h3 class="font-bold text-gray-800 text-sm mb-1 line-clamp-2">${item.name}</h3>
+              <div class="text-emerald-600 font-black text-base mb-1">${item.price} <span class="text-xs font-normal">сомони</span></div>
+              <div class="text-[11px] text-gray-400 space-y-0.5">
+                <div>Фасовка: <span class="text-gray-600 font-medium">${item.weight}</span></div>
+                <div>Остаток: <span class="text-gray-600 font-medium">${item.qty}</span></div>
+              </div>
             </div>
-            <button class="btn-delete" style="display: ${isAdmin ? 'block' : 'none'};" onclick="deleteItem(${index})">❌ Нест кардан</button>
+            
+            <button onclick="deleteItem(${index})" class="mt-3 w-full bg-red-50 hover:bg-red-500 text-red-500 hover:text-white text-xs font-bold py-2 rounded-xl transition flex items-center justify-center gap-1 ${isAdmin ? 'flex' : 'hidden'}">
+              <i class="fa-solid fa-trash-can"></i> Удалить
+            </button>
           </div>
         `;
       });
@@ -128,23 +138,24 @@
 
     function openAdmin() {
       if (isAdmin) {
-        document.getElementById('adminPanel').style.display = 'block';
+        document.getElementById('adminPanel').classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         return;
       }
       
-      let pass = prompt("Пароли кабинети админро ворид кунед:");
+      let pass = prompt("Введите пароль администратора (по умолчанию: 1234):");
       if (pass === "1234") {
         isAdmin = true;
-        document.getElementById('adminPanel').style.display = 'block';
+        document.getElementById('adminPanel').classList.remove('hidden');
         renderItems();
-        alert("Панели админ фаъол шуд!");
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (pass !== null) {
-        alert("Пароли хато!");
+        alert("Неверный пароль!");
       }
     }
 
     function closeAdmin() {
-      document.getElementById('adminPanel').style.display = 'none';
+      document.getElementById('adminPanel').classList.add('hidden');
     }
 
     function addProduct() {
@@ -155,7 +166,7 @@
       const qty = document.getElementById('qtyInput').value.trim();
 
       if (!name || !price) {
-        alert('Лутфан номи мол ва нархро ворид кунед!');
+        alert('Пожалуйста, укажите название и цену товара!');
         return;
       }
 
@@ -163,7 +174,7 @@
         category: category,
         name: name,
         price: price,
-        weight: weight || '1 дона/л/кг',
+        weight: weight || '1 шт',
         qty: qty || '0'
       });
 
@@ -174,13 +185,12 @@
       document.getElementById('priceInput').value = '';
       document.getElementById('weightInput').value = '';
       document.getElementById('qtyInput').value = '';
+      closeAdmin();
     }
 
     function deleteItem(index) {
       const item = items[index];
-      const confirmDelete = confirm(`Шумо боварӣ доред, ки "${item.name}"-ро нест кардан мехоҳед?`);
-
-      if (confirmDelete) {
+      if (confirm(`Вы уверены, что хотите удалить "${item.name}"?`)) {
         items.splice(index, 1);
         localStorage.setItem('varzid_items', JSON.stringify(items));
         renderItems();
