@@ -5,148 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VARZID Marketplace</title>
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      background-color: #f4f6f8;
-      color: #333;
-      padding-bottom: 70px;
-    }
-    header {
-      background: #1b4332;
-      color: white;
-      padding: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .logo {
-      font-size: 22px;
-      font-weight: bold;
-      letter-spacing: 1px;
-    }
-    .lang-select {
-      padding: 6px 10px;
-      border-radius: 6px;
-      border: none;
-      font-weight: bold;
-      background: #fff;
-      color: #333;
-      cursor: pointer;
-    }
-    .container {
-      max-width: 800px;
-      margin: 15px auto;
-      padding: 0 10px;
-    }
-    
-    /* Панели админ */
+    * { box-sizing: border-box; font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    body { background-color: #f4f6f8; color: #333; padding-bottom: 70px; }
+    header { background: #1b4332; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 22px; font-weight: bold; }
+    .lang-select { padding: 6px 10px; border-radius: 6px; border: none; font-weight: bold; background: #fff; color: #333; cursor: pointer; }
+    .container { max-width: 800px; margin: 15px auto; padding: 0 10px; }
+
+    /* Панели админ (Аввал пинҳон аст) */
     .admin-card {
       background: #ffffff;
       padding: 15px;
       border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       margin-bottom: 20px;
       border-left: 5px solid #2d6a4f;
+      display: none; /* Пинҳон барои муштариён */
     }
-    .admin-card h3 {
-      margin-bottom: 12px;
-      color: #1b4332;
-    }
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-    .form-grid input {
-      padding: 8px 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-    .btn-add {
-      background: #2d6a4f;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-      width: 100%;
-    }
-    .btn-add:hover {
-      background: #1b4332;
-    }
+    .admin-card h3 { margin-bottom: 12px; color: #1b4332; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 10px; }
+    .form-grid input { padding: 8px 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+    .btn-add { background: #2d6a4f; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; }
 
-    /* Рӯйхати маҳсулот */
-    .product-card {
-      background: white;
-      border-radius: 8px;
-      padding: 12px 15px;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-    }
-    .cat-badge {
-      background: #e9ecef;
-      color: #495057;
-      font-size: 11px;
-      padding: 2px 6px;
-      border-radius: 4px;
-      display: inline-block;
-      margin-bottom: 4px;
-    }
-    .product-title {
-      font-size: 16px;
-      font-weight: bold;
-      color: #222;
-    }
-    .product-details {
-      font-size: 13px;
-      color: #666;
-      margin-top: 4px;
-    }
+    /* Витринаи маҳсулот барои харидорон */
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+    .product-card { background: white; border-radius: 8px; padding: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); position: relative; }
+    .cat-badge { background: #e9ecef; color: #495057; font-size: 11px; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 6px; }
+    .product-title { font-size: 15px; font-weight: bold; color: #222; margin-bottom: 5px; }
+    .product-price { font-size: 16px; font-weight: bold; color: #2d6a4f; margin-bottom: 4px; }
+    .product-details { font-size: 12px; color: #666; }
+    
     .btn-delete {
-      background: #e63946;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .btn-delete:hover {
-      background: #c1121f;
+      background: #e63946; color: white; border: none; padding: 4px 8px; border-radius: 4px;
+      cursor: pointer; font-size: 12px; margin-top: 8px; width: 100%; display: none;
     }
 
     /* Навигатсияи поён */
-    nav.bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: white;
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 0;
-      border-top: 1px solid #ddd;
-    }
-    nav.bottom-nav button {
-      background: none;
-      border: none;
-      font-size: 12px;
-      color: #555;
-      cursor: pointer;
-    }
+    nav.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #ddd; }
+    nav.bottom-nav button { background: none; border: none; font-size: 12px; color: #555; cursor: pointer; }
 
-    /* Пинҳон кардани виҷети Google */
     body { top: 0 !important; }
     .goog-te-banner-frame { display: none !important; }
     .skiptranslate { display: none !important; }
@@ -154,7 +51,6 @@
 </head>
 <body>
 
-  <!-- Болои сомона бо интихоби забон -->
   <header>
     <div class="logo">VARZID</div>
     <div>
@@ -171,9 +67,9 @@
 
   <div class="container">
     
-    <!-- Панели админ (Идоракунӣ) -->
-    <div class="admin-card">
-      <h3>⚙️ Управление товарами</h3>
+    <!-- Панели админ (Танҳо бо парол кушода мешавад) -->
+    <div class="admin-card" id="adminPanel">
+      <h3>⚙️ Панель управления (Админ)</h3>
       <div class="form-grid">
         <input type="text" id="catInput" placeholder="Категория (напр. Зерно)">
         <input type="text" id="nameInput" placeholder="Название товара">
@@ -184,24 +80,23 @@
       <button class="btn-add" onclick="addProduct()">➕ Добавить товар</button>
     </div>
 
-    <!-- Рӯйхати маҳсулот -->
-    <h3 style="margin-bottom: 10px;">📦 Список товаров</h3>
-    <div id="productDisplay"></div>
+    <!-- Витринаи маҳсулот барои муштариён -->
+    <h3 style="margin-bottom: 12px;">📦 Каталог товаров</h3>
+    <div class="product-grid" id="productDisplay"></div>
 
   </div>
 
   <!-- Навигатсияи поёнӣ -->
   <nav class="bottom-nav">
-    <button>🏠 Главная</button>
-    <button>📋 Каталог</button>
+    <button onclick="closeAdmin()">🏠 Главная</button>
+    <button onclick="closeAdmin()">📋 Каталог</button>
     <button>🛒 Корзина</button>
-    <button onclick="alert('Кабинет клиента: здесь покупатели видят свои заказы.')">👤 Кабинет</button>
+    <button onclick="openAdmin()">👤 Кабинет</button>
   </nav>
 
-  <!-- Скриптҳо -->
   <script type="text/javascript">
-    // Хотираи маҳсулот
     let items = JSON.parse(localStorage.getItem('varzid_items')) || [];
+    let isAdmin = false;
 
     function renderItems() {
       const container = document.getElementById('productDisplay');
@@ -215,19 +110,39 @@
       items.forEach((item, index) => {
         container.innerHTML += `
           <div class="product-card">
-            <div>
-              <span class="cat-badge">${item.category}</span>
-              <div class="product-title">${item.name}</div>
-              <div class="product-details">
-                <strong>Цена:</strong> ${item.price} сомони | 
-                <strong>Вес:</strong> ${item.weight} | 
-                <strong>Остаток:</strong> ${item.qty} шт.
-              </div>
+            <span class="cat-badge">${item.category}</span>
+            <div class="product-title">${item.name}</div>
+            <div class="product-price">${item.price} сомони</div>
+            <div class="product-details">
+              <strong>Фасовка:</strong> ${item.weight}<br>
+              <strong>В наличии:</strong> ${item.qty} шт.
             </div>
-            <button class="btn-delete" onclick="deleteItem(${index})">❌ Удалить</button>
+            <button class="btn-delete" style="display: ${isAdmin ? 'block' : 'none'};" onclick="deleteItem(${index})">❌ Удалить</button>
           </div>
         `;
       });
+    }
+
+    // Кушодани панели админ бо парол
+    function openAdmin() {
+      if (isAdmin) {
+        document.getElementById('adminPanel').style.display = 'block';
+        return;
+      }
+      
+      let pass = prompt("Введите пароль для входа в кабинет администратора:");
+      if (pass === "1234") { // Пароли шумо: 1234 (метавонед иваз кунед)
+        isAdmin = true;
+        document.getElementById('adminPanel').style.display = 'block';
+        renderItems(); // Намоиш додани тугмаҳои Удалить
+        alert("Успешный вход в режим администратора!");
+      } else if (pass !== null) {
+        alert("Неверный пароль!");
+      }
+    }
+
+    function closeAdmin() {
+      document.getElementById('adminPanel').style.display = 'none';
     }
 
     function addProduct() {
@@ -253,7 +168,6 @@
       localStorage.setItem('varzid_items', JSON.stringify(items));
       renderItems();
 
-      // Пок кардани шакл
       document.getElementById('catInput').value = '';
       document.getElementById('nameInput').value = '';
       document.getElementById('priceInput').value = '';
@@ -272,7 +186,6 @@
       }
     }
 
-    // Танзими тарҷумони Google
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
         pageLanguage: 'ru',
@@ -296,3 +209,5 @@
 
 </body>
 </html>
+
+                                 
