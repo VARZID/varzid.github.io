@@ -1,187 +1,80 @@
-
-"use strict";
-
-const translations = {
-  ru: {
-    subscribe: "Подписаться",
-    language: "Язык",
-    delivery: "Стоимость доставки зависит от расстояния.",
-    categories: [
-      "Мука",
-      "Комбикорм",
-      "Пшеница",
-      "Ячмень",
-      "Кукуруза",
-      "Селитра",
-      "Карбамид"
-    ],
-    settings: "Настройки"
-  },
-
-  tg: {
-    subscribe: "Обуна шудан",
-    language: "Забон",
-    delivery: "Арзиши расонидан вобаста ба масофа аст.",
-    categories: [
-      "Орд",
-      "Комбикорм",
-      "Гандум",
-      "Ҷав",
-      "Ҷуворимакка",
-      "Селитра",
-      "Карбамид"
-    ],
-    settings: "Танзимот"
-  },
-
-  uz: {
-    subscribe: "Obuna bo‘lish",
-    language: "Til",
-    delivery: "Yetkazib berish narxi masofaga bog‘liq.",
-    categories: [
-      "Un",
-      "Kombikorm",
-      "Bug‘doy",
-      "Arpa",
-      "Makkajo‘xori",
-      "Selitra",
-      "Karbamid"
-    ],
-    settings: "Sozlamalar"
-  }
+const langData = {
+    ru: {
+        addr: "Фархор, Центр", search: "Поиск товаров...",
+        cat1: "Зерно", cat2: "Удобрения", cat3: "Корма",
+        badge: "Скидка 0%", bTitle: "Спецпредложение недели", bDesc: "Лучшие цены с доставкой.",
+        tab1: "Для вас", tab2: "Цены дня", cartBtn: "В корзину",
+        p1: "Пшеница отборная", p2: "Кукуруза сухая",
+        h: "Главная", w: "Кошелек", c: "Корзина", f: "Избранное", s: "Настройки",
+        setTitle: "Настройки", lblLang: "Язык приложения", lblTheme: "Темная тема"
+    },
+    tj: {
+        addr: "Фархор, Марказ", search: "Ҷустуҷӯи маҳсулот...",
+        cat1: "Ғалла", cat2: "Нуриҳо", cat3: "Хӯрокворӣ",
+        badge: "Тахфиф 0%", bTitle: "Пешниҳоди махсус", bDesc: "Нархҳои беҳтарин бо расонидан.",
+        tab1: "Барои шумо", tab2: "Нархҳои рӯз", cartBtn: "Ба сабад",
+        p1: "Гандуми аълосифат", p2: "Маккаҷухории хушк",
+        h: "Хона", w: "Қуттича", c: "Сабад", f: "Дӯстдошта", s: "Танзимот",
+        setTitle: "Танзимот", lblLang: "Забони барнома", lblTheme: "Режими шабона"
+    },
+    uz: {
+        addr: "Farxor, Markaz", search: "Mahsulotlarni qidirish...",
+        cat1: "Don", cat2: "O'g'it", cat3: "Yem",
+        badge: "Chegirma 0%", bTitle: "Maxsus taklif", bDesc: "Yetkazib berish bilan eng yaxshi narxlar.",
+        tab1: "Siz uchun", tab2: "Kun narxlari", cartBtn: "Savatga",
+        p1: "Saralangan bug'doy", p2: "Quruq makkajo'xori",
+        h: "Bosh sahifa", w: "Hamyon", c: "Savat", f: "Saralangan", s: "Sozlamalar",
+        setTitle: "Sozlamalar", lblLang: "Ilova tili", lblTheme: "Tungi rejim"
+    }
 };
 
-const categoryKeys = [
-  "flour",
-  "feed",
-  "wheat",
-  "barley",
-  "corn",
-  "saltpeter",
-  "urea"
-];
+function switchLanguage(lang) {
+    const l = langData[lang];
+    if (!l) return;
 
-const elements = {
-  categories: document.getElementById("categories"),
-  languageSelect: document.getElementById("languageSelect"),
-  languageLabel: document.getElementById("languageLabel"),
-  deliveryNote: document.getElementById("deliveryNote"),
-  subscribeLabel: document.getElementById("subscribeLabel"),
-  subscribeToggle: document.getElementById("subscribeToggle"),
-  subscribeMenu: document.getElementById("subscribeMenu"),
-  subscribeAction: document.getElementById("subscribeAction"),
-  settingsToggle: document.getElementById("settingsToggle"),
-  settingsPanel: document.getElementById("settingsPanel")
-};
+    document.getElementById('txt-addr').innerText = l.addr;
+    document.getElementById('search-input').placeholder = l.search;
+    document.getElementById('cat1').innerText = l.cat1;
+    document.getElementById('cat2').innerText = l.cat2;
+    document.getElementById('cat3').innerText = l.cat3;
+    document.getElementById('banner-badge').innerText = l.badge;
+    document.getElementById('banner-title').innerText = l.bTitle;
+    document.getElementById('banner-desc').innerText = l.bDesc;
+    document.getElementById('tab1').innerText = l.tab1;
+    document.getElementById('tab2').innerText = l.tab2;
+    document.getElementById('p1-title').innerText = l.p1;
+    document.getElementById('p2-title').innerText = l.p2;
+    document.getElementById('nav-home').innerText = l.h;
+    document.getElementById('nav-wallet').innerText = l.w;
+    document.getElementById('nav-cart').innerText = l.c;
+    document.getElementById('nav-fav').innerText = l.f;
+    document.getElementById('nav-set').innerText = l.s;
+    document.getElementById('set-title').innerText = l.setTitle;
+    document.getElementById('lbl-lang').innerText = l.lblLang;
+    document.getElementById('lbl-theme').innerText = l.lblTheme;
 
-function readSavedLanguage() {
-  try {
-    const saved = localStorage.getItem("lang");
-    return saved && translations[saved] ? saved : "ru";
-  } catch (error) {
-    return "ru";
-  }
+    document.querySelectorAll('.btn-cart').forEach(b => b.innerText = l.cartBtn);
 }
 
-let currentLanguage = readSavedLanguage();
-
-function renderCategories() {
-  const words = translations[currentLanguage];
-
-  elements.categories.replaceChildren();
-
-  words.categories.forEach((name, index) => {
-    const card = document.createElement("article");
-    card.className = "category-card";
-    card.dataset.category = categoryKeys[index];
-
-    const title = document.createElement("span");
-    title.className = "category-name";
-    title.textContent = name;
-
-    const plus = document.createElement("span");
-    plus.className = "category-plus";
-    plus.textContent = "+";
-    plus.setAttribute("aria-hidden", "true");
-
-    card.append(title, plus);
-    elements.categories.appendChild(card);
-  });
+function toggleDarkMode() {
+    document.documentElement.classList.toggle('dark');
 }
 
-function applyLanguage(language) {
-  currentLanguage = translations[language] ? language : "ru";
-  const words = translations[currentLanguage];
+function showTab(tab) {
+    const home = document.getElementById('view-home');
+    const settings = document.getElementById('view-settings');
+    const btnHome = document.getElementById('nav-home-btn');
+    const btnSet = document.getElementById('nav-set-btn');
 
-  document.documentElement.lang =
-    currentLanguage === "tg" ? "tg" :
-    currentLanguage === "uz" ? "uz" : "ru";
-
-  elements.languageSelect.value = currentLanguage;
-  elements.languageLabel.textContent = words.language;
-  elements.deliveryNote.textContent = words.delivery;
-  elements.subscribeLabel.textContent = words.subscribe;
-  elements.subscribeAction.textContent = words.subscribe;
-  elements.settingsToggle.setAttribute("aria-label", words.settings);
-  elements.settingsPanel.setAttribute(
-    "aria-label",
-    words.settings
-  );
-
-  renderCategories();
-
-  try {
-    localStorage.setItem("lang", currentLanguage);
-  } catch (error) {
-    // Сайт продолжает работать, даже если сохранение недоступно.
-  }
+    if (tab === 'home') {
+        home.classList.remove('hidden');
+        settings.classList.add('hidden');
+        btnHome.classList.replace('text-gray-400', 'text-emerald-600');
+        btnSet.classList.replace('text-emerald-600', 'text-gray-400');
+    } else if (tab === 'settings') {
+        home.classList.add('hidden');
+        settings.classList.remove('hidden');
+        btnSet.classList.replace('text-gray-400', 'text-emerald-600');
+        btnHome.classList.replace('text-emerald-600', 'text-gray-400');
+    }
 }
-
-elements.languageSelect.addEventListener("change", function () {
-  applyLanguage(this.value);
-});
-
-elements.settingsToggle.addEventListener("click", function () {
-  const isHidden = elements.settingsPanel.hidden;
-
-  elements.settingsPanel.hidden = !isHidden;
-  this.setAttribute("aria-expanded", String(isHidden));
-
-  elements.subscribeMenu.hidden = true;
-  elements.subscribeToggle.setAttribute("aria-expanded", "false");
-});
-
-elements.subscribeToggle.addEventListener("click", function () {
-  const isHidden = elements.subscribeMenu.hidden;
-
-  elements.subscribeMenu.hidden = !isHidden;
-  this.setAttribute("aria-expanded", String(isHidden));
-
-  elements.settingsPanel.hidden = true;
-  elements.settingsToggle.setAttribute("aria-expanded", "false");
-});
-
-elements.subscribeAction.addEventListener("click", function () {
-  elements.subscribeMenu.hidden = true;
-  elements.subscribeToggle.setAttribute("aria-expanded", "false");
-});
-
-document.addEventListener("click", function (event) {
-  if (
-    !elements.settingsPanel.contains(event.target) &&
-    !elements.settingsToggle.contains(event.target)
-  ) {
-    elements.settingsPanel.hidden = true;
-    elements.settingsToggle.setAttribute("aria-expanded", "false");
-  }
-
-  if (
-    !elements.subscribeMenu.contains(event.target) &&
-    !elements.subscribeToggle.contains(event.target)
-  ) {
-    elements.subscribeMenu.hidden = true;
-    elements.subscribeToggle.setAttribute("aria-expanded", "false");
-  }
-});
-
-applyLanguage(currentLanguage);
