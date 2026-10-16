@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VARZID - Интернет-магазин</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -15,256 +14,128 @@
 </head>
 <body class="bg-gray-50 text-gray-800 pb-24">
 
-    <!-- Mobile Header -->
+    <!-- Header -->
     <header class="sticky top-0 z-50 bg-white px-4 py-3 shadow-sm flex items-center justify-between">
-        <!-- Location / Address -->
         <div class="flex items-center space-x-2">
             <div class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
                 <i class="fa-solid fa-location-dot"></i>
             </div>
             <div>
-                <p class="text-[10px] text-gray-400" id="txt-addr-title">Адрес доставки</p>
+                <p class="text-[10px] text-gray-400">Адрес доставки</p>
                 <div class="flex items-center space-x-1 cursor-pointer">
-                    <span class="text-xs font-semibold text-gray-800" id="txt-addr-val">Фархор, Центр</span>
+                    <span class="text-xs font-semibold text-gray-800">Фархор, Центр</span>
                     <i class="fa-solid fa-chevron-down text-[9px] text-gray-500"></i>
                 </div>
             </div>
         </div>
-
-        <!-- Right Header (Notification Bell & Language Switcher) -->
         <div class="flex items-center space-x-3">
-            <div class="relative cursor-pointer w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
+            <div class="relative cursor-pointer w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center">
                 <i class="fa-regular fa-bell text-gray-700"></i>
                 <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
             </div>
-            
-            <!-- Language Selector -->
-            <div class="relative">
-                <select id="lang-select" onchange="changeLanguage(this.value)" class="bg-gray-100 text-xs font-semibold text-gray-700 py-1.5 px-2.5 rounded-full border-none focus:ring-2 focus:ring-emerald-500 outline-none cursor-pointer">
-                    <option value="ru" selected>RU (Русский)</option>
-                    <option value="tj">TJ (Тоҷикӣ)</option>
-                    <option value="uz">UZ (O'zbekcha)</option>
-                </select>
-            </div>
+            <select id="lang-select" onchange="changeLanguage(this.value)" class="bg-gray-100 text-xs font-semibold text-gray-700 py-1.5 px-2.5 rounded-full border-none outline-none cursor-pointer">
+                <option value="ru" selected>RU</option>
+                <option value="tj">TJ</option>
+                <option value="uz">UZ</option>
+            </select>
         </div>
     </header>
 
-    <!-- Search Bar Section -->
+    <!-- Search Bar -->
     <div class="px-4 py-2 bg-white">
         <div class="relative flex items-center">
             <i class="fa-solid fa-magnifying-glass absolute left-4 text-gray-400"></i>
-            <input type="text" id="search-placeholder" placeholder="Поиск товаров (пшеница, удобрения...)" class="w-full bg-gray-100 text-sm py-2.5 pl-11 pr-12 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500 transition">
-            <button class="absolute right-3 w-7 h-7 rounded-xl bg-white shadow-sm flex items-center justify-center text-emerald-600 hover:bg-emerald-50 transition">
+            <input type="text" id="search-placeholder" placeholder="Поиск товаров..." class="w-full bg-gray-100 text-sm py-2.5 pl-11 pr-12 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            <button class="absolute right-3 w-7 h-7 rounded-xl bg-white shadow-sm flex items-center justify-center text-emerald-600">
                 <i class="fa-solid fa-qrcode text-xs"></i>
             </button>
         </div>
     </div>
 
-    <!-- Main Banner -->
+    <!-- 3 Categories Grid (Дар боло) -->
+    <div class="px-4 mt-3 grid grid-cols-3 gap-2">
+        <div class="bg-white p-2 rounded-2xl shadow-sm border border-gray-100 text-center cursor-pointer">
+            <div class="bg-gray-100 h-16 rounded-xl flex items-center justify-center text-xl mb-1">🌾</div>
+            <span class="text-[11px] font-medium text-gray-700" id="cat1">Зерно</span>
+        </div>
+        <div class="bg-white p-2 rounded-2xl shadow-sm border border-gray-100 text-center cursor-pointer">
+            <div class="bg-gray-100 h-16 rounded-xl flex items-center justify-center text-xl mb-1">🌱</div>
+            <span class="text-[11px] font-medium text-gray-700" id="cat2">Удобрения</span>
+        </div>
+        <div class="bg-white p-2 rounded-2xl shadow-sm border border-gray-100 text-center cursor-pointer">
+            <div class="bg-gray-100 h-16 rounded-xl flex items-center justify-center text-xl mb-1">🐓</div>
+            <span class="text-[11px] font-medium text-gray-700" id="cat3">Корма</span>
+        </div>
+    </div>
+
+    <!-- Black/Dark Banner -->
     <main class="px-4 mt-3">
-        <div class="bg-gradient-to-r from-emerald-600 to-teal-500 rounded-3xl p-5 text-white shadow-lg relative overflow-hidden">
+        <div class="bg-gray-900 rounded-3xl p-4 text-white shadow-lg relative overflow-hidden">
             <div class="relative z-10">
-                <span class="bg-white/20 text-xs px-2.5 py-1 rounded-full font-medium" id="banner-badge">Скидки до 30%!</span>
-                <h2 class="text-xl font-bold mt-2" id="banner-title">Специальные предложения недели</h2>
-                <p class="text-xs text-emerald-100 mt-1" id="banner-desc">Лучшие цены на зерно, удобрения и корма с доставкой.</p>
-                <button class="mt-4 bg-white text-emerald-700 text-xs font-bold px-4 py-2 rounded-xl shadow hover:bg-emerald-50 transition" id="banner-btn">
-                    Подробнее
-                </button>
+                <span class="bg-emerald-500 text-white text-[10px] px-2.5 py-0.5 rounded-full font-medium">Скидка 0%</span>
+                <h2 class="text-sm font-bold mt-2">Спецпредложение недели</h2>
+                <p class="text-[11px] text-gray-400 mt-0.5">Лучшие цены с доставкой.</p>
             </div>
         </div>
 
-        <!-- Categories Filter Tabs -->
-        <div class="flex space-x-2 overflow-x-auto no-scrollbar mt-4 py-1">
-            <button class="bg-gray-900 text-white text-xs px-4 py-2 rounded-full font-medium whitespace-nowrap shadow-sm" id="cat-all">Все товары</button>
-            <button class="bg-white text-gray-600 border border-gray-200 text-xs px-4 py-2 rounded-full font-medium whitespace-nowrap" id="cat-grain">Зерновые</button>
-            <button class="bg-white text-gray-600 border border-gray-200 text-xs px-4 py-2 rounded-full font-medium whitespace-nowrap" id="cat-fertilizer">Удобрения</button>
-            <button class="bg-white text-gray-600 border border-gray-200 text-xs px-4 py-2 rounded-full font-medium whitespace-nowrap" id="cat-feed">Комбикорм</button>
+        <!-- Filter Buttons (For you / Prices of the day) -->
+        <div class="flex space-x-2 mt-4">
+            <button class="bg-gray-900 text-white text-xs px-4 py-1.5 rounded-full font-medium" id="tab1">Для вас</button>
+            <button class="bg-white text-gray-600 border border-gray-200 text-xs px-4 py-1.5 rounded-full font-medium" id="tab2">Цены дня</button>
         </div>
 
-        <!-- Products Grid -->
-        <div class="grid grid-cols-2 gap-3 mt-4">
-            <!-- Product 1 -->
-            <div class="bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
+        <!-- Products Grid (Карточкаҳои борик ва дилчадор) -->
+        <div class="grid grid-cols-2 gap-3 mt-3">
+            <div class="bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between relative">
+                <button class="absolute top-4 right-4 text-gray-300 hover:text-red-500"><i class="fa-regular fa-heart"></i></button>
                 <div>
-                    <div class="bg-gray-100 h-28 rounded-xl flex items-center justify-center text-4xl mb-2">🌾</div>
+                    <div class="bg-gray-100 h-24 rounded-xl flex items-center justify-center text-3xl mb-2">🌾</div>
                     <h3 class="text-xs font-medium text-gray-800" id="p1-title">Пшеница отборная</h3>
-                    <p class="text-sm font-bold text-emerald-600 mt-1">3.20 TJS <span class="text-[10px] text-gray-400 font-normal" id="p1-unit">/ кг</span></p>
+                    <p class="text-sm font-bold text-emerald-600 mt-1">3.20 TJS <span class="text-[10px] text-gray-400 font-normal">/ кг</span></p>
                 </div>
-                <button class="mt-3 w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold py-2 rounded-xl transition btn-cart">
-                    В корзину
-                </button>
+                <button class="mt-3 w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold py-2 rounded-xl btn-cart">В корзину</button>
             </div>
 
-            <!-- Product 2 -->
-            <div class="bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
+            <div class="bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between relative">
+                <button class="absolute top-4 right-4 text-gray-300 hover:text-red-500"><i class="fa-regular fa-heart"></i></button>
                 <div>
-                    <div class="bg-gray-100 h-28 rounded-xl flex items-center justify-center text-4xl mb-2">🌽</div>
+                    <div class="bg-gray-100 h-24 rounded-xl flex items-center justify-center text-3xl mb-2">🌽</div>
                     <h3 class="text-xs font-medium text-gray-800" id="p2-title">Кукуруза сухая</h3>
-                    <p class="text-sm font-bold text-emerald-600 mt-1">2.80 TJS <span class="text-[10px] text-gray-400 font-normal" id="p2-unit">/ кг</span></p>
+                    <p class="text-sm font-bold text-emerald-600 mt-1">2.80 TJS <span class="text-[10px] text-gray-400 font-normal">/ кг</span></p>
                 </div>
-                <button class="mt-3 w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold py-2 rounded-xl transition btn-cart">
-                    В корзину
-                </button>
-            </div>
-
-            <!-- Product 3 -->
-            <div class="bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
-                <div>
-                    <div class="bg-gray-100 h-28 rounded-xl flex items-center justify-center text-4xl mb-2">🌱</div>
-                    <h3 class="text-xs font-medium text-gray-800" id="p3-title">Удобрение Селитра</h3>
-                    <p class="text-sm font-bold text-emerald-600 mt-1">220 TJS <span class="text-[10px] text-gray-400 font-normal" id="p3-unit">/ мешок</span></p>
-                </div>
-                <button class="mt-3 w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold py-2 rounded-xl transition btn-cart">
-                    В корзину
-                </button>
-            </div>
-
-            <!-- Product 4 -->
-            <div class="bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
-                <div>
-                    <div class="bg-gray-100 h-28 rounded-xl flex items-center justify-center text-4xl mb-2">🐓</div>
-                    <h3 class="text-xs font-medium text-gray-800" id="p4-title">Комбикорм для птиц</h3>
-                    <p class="text-sm font-bold text-emerald-600 mt-1">4.50 TJS <span class="text-[10px] text-gray-400 font-normal" id="p4-unit">/ кг</span></p>
-                </div>
-                <button class="mt-3 w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold py-2 rounded-xl transition btn-cart">
-                    В корзину
-                </button>
+                <button class="mt-3 w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold py-2 rounded-xl btn-cart">В корзину</button>
             </div>
         </div>
     </main>
 
-    <!-- Bottom Navigation Bar (Забони омехта бо гузариш) -->
+    <!-- Bottom Navigation -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 px-3 flex justify-around items-center z-50 shadow-lg">
-        <a href="#" class="flex flex-col items-center text-emerald-600">
-            <i class="fa-solid fa-house text-lg"></i>
-            <span class="text-[10px] mt-1 font-medium" id="nav-home">Главная</span>
-        </a>
-        <a href="#" class="flex flex-col items-center text-gray-400 hover:text-emerald-600 transition">
-            <i class="fa-solid fa-wallet text-lg"></i>
-            <span class="text-[10px] mt-1 font-medium" id="nav-wallet">Кошелек</span>
-        </a>
-        <a href="#" class="flex flex-col items-center text-gray-400 hover:text-emerald-600 transition relative">
-            <i class="fa-solid fa-cart-shopping text-lg"></i>
-            <span class="absolute -top-1 -right-2 bg-emerald-500 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">3</span>
-            <span class="text-[10px] mt-1 font-medium" id="nav-cart">Корзина</span>
-        </a>
-        <a href="#" class="flex flex-col items-center text-gray-400 hover:text-emerald-600 transition">
-            <i class="fa-regular fa-heart text-lg"></i>
-            <span class="text-[10px] mt-1 font-medium" id="nav-fav">Избранное</span>
-        </a>
-        <a href="#" class="flex flex-col items-center text-gray-400 hover:text-emerald-600 transition">
-            <i class="fa-solid fa-gear text-lg"></i>
-            <span class="text-[10px] mt-1 font-medium" id="nav-settings">Настройки</span>
-        </a>
+        <a href="#" class="flex flex-col items-center text-emerald-600"><i class="fa-solid fa-house text-lg"></i><span class="text-[10px] mt-1" id="nav-home">Главная</span></a>
+        <a href="#" class="flex flex-col items-center text-gray-400"><i class="fa-solid fa-wallet text-lg"></i><span class="text-[10px] mt-1" id="nav-wallet">Кошелек</span></a>
+        <a href="#" class="flex flex-col items-center text-gray-400 relative"><i class="fa-solid fa-cart-shopping text-lg"></i><span class="absolute -top-1 -right-2 bg-emerald-500 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center">2</span><span class="text-[10px] mt-1" id="nav-cart">Корзина</span></a>
+        <a href="#" class="flex flex-col items-center text-gray-400"><i class="fa-regular fa-heart text-lg"></i><span class="text-[10px] mt-1" id="nav-fav">Избранное</span></a>
+        <a href="#" class="flex flex-col items-center text-gray-400"><i class="fa-solid fa-gear text-lg"></i><span class="text-[10px] mt-1" id="nav-set">Настройки</span></a>
     </nav>
 
-    <!-- JavaScript for Multi-language (RU, TJ, UZ) -->
     <script>
-        const translations = {
-            ru: {
-                addrTitle: "Адрес доставки",
-                addrVal: "Фархор, Центр",
-                searchPlaceholder: "Поиск товаров (пшеница, удобрения...)",
-                bannerBadge: "Скидки до 30%!",
-                bannerTitle: "Специальные предложения недели",
-                bannerDesc: "Лучшие цены на зерно, удобрения и корма с доставкой.",
-                bannerBtn: "Подробнее",
-                catAll: "Все товары",
-                catGrain: "Зерновые",
-                catFertilizer: "Удобрения",
-                catFeed: "Комбикорм",
-                btnCart: "В корзину",
-                navHome: "Главная",
-                navWallet: "Кошелек",
-                navCart: "Корзина",
-                navFav: "Избранное",
-                navSettings: "Настройки",
-                p1Title: "Пшеница отборная", p1Unit: "/ кг",
-                p2Title: "Кукуруза сухая", p2Unit: "/ кг",
-                p3Title: "Удобрение Селитра", p3Unit: "/ мешок",
-                p4Title: "Комбикорм для птиц", p4Unit: "/ кг"
-            },
-            tj: {
-                addrTitle: "Суроғаи расонидан",
-                addrVal: "Фархор, Марказ",
-                searchPlaceholder: "Ҷустуҷӯи маҳсулот (гандум, нурӣ...)",
-                bannerBadge: "Тахфиф то 30%!",
-                bannerTitle: "Пешниҳодҳои махсуси ҳафта",
-                bannerDesc: "Нархҳои беҳтарин барои гандум, нуриҳо ва хӯроки чорво.",
-                bannerBtn: "Муфассал",
-                catAll: "Ҳамаи маҳсулот",
-                catGrain: "Ғалладонагӣ",
-                catFertilizer: "Нуриҳо",
-                catFeed: "Хӯроки чорво",
-                btnCart: "Ба сабад",
-                navHome: "Хона",
-                navWallet: "Қуттича",
-                navCart: "Сабад",
-                navFav: "Дӯстдоштаҳо",
-                navSettings: "Танзимот",
-                p1Title: "Гандуми аълосифат", p1Unit: "/ кг",
-                p2Title: "Маккаҷухории хушк", p2Unit: "/ кг",
-                p3Title: "Нурии Селитра", p3Unit: "/ халта",
-                p4Title: "Хӯроки парандагон", p4Unit: "/ кг"
-            },
-            uz: {
-                addrTitle: "Yetkazб berish manzili",
-                addrVal: "Farxor, Markaz",
-                searchPlaceholder: "Mahsulotlarni qidirish (bug'doy, o'g'it...)",
-                bannerBadge: "30% gacha chegirma!",
-                bannerTitle: "Haftaning maxsus takliflari",
-                bannerDesc: "Don, o'g'it va yem mahsulotlari uchun eng yaxshi narxlar.",
-                bannerBtn: "Batafsil",
-                catAll: "Barcha mahsulotlar",
-                catGrain: "Don mahsulotlari",
-                catFertilizer: "O'g'itlar",
-                catFeed: "Omixta yem",
-                btnCart: "Savatga",
-                navHome: "Bosh sahifa",
-                navWallet: "Hamyon",
-                navCart: "Savat",
-                navFav: "Saralanganlar",
-                navSettings: "Sozlamalar",
-                p1Title: "Saralangan bug'doy", p1Unit: "/ kg",
-                p2Title: "Quruq makkajo'xori", p2Unit: "/ kg",
-                p3Title: "Selitra o'g'iti", p3Unit: "/ qop",
-                p4Title: "Parrandalar uchun yem", p4Unit: "/ kg"
-            }
+        const t = {
+            ru: { cat1: "Зерно", cat2: "Удобрения", cat3: "Корма", tab1: "Для вас", tab2: "Цены дня", cart: "В корзину", home: "Главная", wallet: "Кошелек", cartNav: "Корзина", fav: "Избранное", set: "Настройки" },
+            tj: { cat1: "Ғалла", cat2: "Нуриҳо", cat3: "Хӯрокворӣ", tab1: "Барои шумо", tab2: "Нархҳои рӯз", cart: "Сабад", home: "Хона", wallet: "Қуттича", cartNav: "Сабад", fav: "Дӯстдошта", set: "Танзимот" },
+            uz: { cat1: "Don", cat2: "O'g'it", cat3: "Yem", tab1: "Siz uchun", tab2: "Kun narxlari", cart: "Savatga", home: "Bosh sahifa", wallet: "Hamyon", cartNav: "Savat", fav: "Saralangan", set: "Sozlamalar" }
         };
-
         function changeLanguage(lang) {
-            const t = translations[lang];
-            
-            document.getElementById('txt-addr-title').innerText = t.addrTitle;
-            document.getElementById('txt-addr-val').innerText = t.addrVal;
-            document.getElementById('search-placeholder').placeholder = t.searchPlaceholder;
-            document.getElementById('banner-badge').innerText = t.bannerBadge;
-            document.getElementById('banner-title').innerText = t.bannerTitle;
-            document.getElementById('banner-desc').innerText = t.bannerDesc;
-            document.getElementById('banner-btn').innerText = t.bannerBtn;
-            
-            document.getElementById('cat-all').innerText = t.catAll;
-            document.getElementById('cat-grain').innerText = t.catGrain;
-            document.getElementById('cat-fertilizer').innerText = t.catFertilizer;
-            document.getElementById('cat-feed').innerText = t.catFeed;
-            
-            document.getElementById('nav-home').innerText = t.navHome;
-            document.getElementById('nav-wallet').innerText = t.navWallet;
-            document.getElementById('nav-cart').innerText = t.navCart;
-            document.getElementById('nav-fav').innerText = t.navFav;
-            document.getElementById('nav-settings').innerText = t.navSettings;
-            
-            document.getElementById('p1-title').innerText = t.p1Title;
-            document.getElementById('p1-unit').innerText = t.p1Unit;
-            document.getElementById('p2-title').innerText = t.p2Title;
-            document.getElementById('p2-unit').innerText = t.p2Unit;
-            document.getElementById('p3-title').innerText = t.p3Title;
-            document.getElementById('p3-unit').innerText = t.p3Unit;
-            document.getElementById('p4-title').innerText = t.p4Title;
-            document.getElementById('p4-unit').innerText = t.p4Unit;
-
-            const cartButtons = document.querySelectorAll('.btn-cart');
-            cartButtons.forEach(btn => btn.innerText = t.btnCart);
+            const d = t[lang];
+            document.getElementById('cat1').innerText = d.cat1;
+            document.getElementById('cat2').innerText = d.cat2;
+            document.getElementById('cat3').innerText = d.cat3;
+            document.getElementById('tab1').innerText = d.tab1;
+            document.getElementById('tab2').innerText = d.tab2;
+            document.getElementById('nav-home').innerText = d.home;
+            document.getElementById('nav-wallet').innerText = d.wallet;
+            document.getElementById('nav-cart').innerText = d.cartNav;
+            document.getElementById('nav-fav').innerText = d.fav;
+            document.getElementById('nav-set').innerText = d.set;
+            document.querySelectorAll('.btn-cart.btn-cart').forEach(b => b.innerText = d.cart);
         }
     </script>
 </body>
