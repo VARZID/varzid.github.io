@@ -6,7 +6,9 @@ const langData = {
         tab1: "Для вас", tab2: "Цены дня", cartBtn: "В корзину",
         p1: "Пшеница отборная", p2: "Кукуруза сухая",
         h: "Главная", w: "Кошелек", c: "Корзина", f: "Избранное", s: "Настройки",
-        setTitle: "Настройки", lblLang: "Язык приложения", lblTheme: "Темная тема"
+        setTitle: "Настройки", lblLang: "Язык приложения", lblTheme: "Темная тема",
+        titleNotif: "Уведомления", pWallet: "Кошелек", pCart: "Корзина", pFav: "Избранное",
+        eCart: "Ваша корзина пуста", eFav: "Нет избранных товаров"
     },
     tj: {
         addr: "Фархор, Марказ", search: "Ҷустуҷӯи маҳсулот...",
@@ -15,7 +17,9 @@ const langData = {
         tab1: "Барои шумо", tab2: "Нархҳои рӯз", cartBtn: "Ба сабад",
         p1: "Гандуми аълосифат", p2: "Маккаҷухории хушк",
         h: "Хона", w: "Қуттича", c: "Сабад", f: "Дӯстдошта", s: "Танзимот",
-        setTitle: "Танзимот", lblLang: "Забони барнома", lblTheme: "Режими шабона"
+        setTitle: "Танзимот", lblLang: "Забони барнома", lblTheme: "Режими шабона",
+        titleNotif: "Огоҳиномаҳо", pWallet: "Қуттича", pCart: "Сабад", pFav: "Дӯстдоштаҳо",
+        eCart: "Сабади шумо холӣ аст", eFav: "Ҳеҷ маҳсулоти дӯстдошта нест"
     },
     uz: {
         addr: "Farxor, Markaz", search: "Mahsulotlarni qidirish...",
@@ -24,7 +28,9 @@ const langData = {
         tab1: "Siz uchun", tab2: "Kun narxlari", cartBtn: "Savatga",
         p1: "Saralangan bug'doy", p2: "Quruq makkajo'xori",
         h: "Bosh sahifa", w: "Hamyon", c: "Savat", f: "Saralangan", s: "Sozlamalar",
-        setTitle: "Sozlamalar", lblLang: "Ilova tili", lblTheme: "Tungi rejim"
+        setTitle: "Sozlamalar", lblLang: "Ilova tili", lblTheme: "Tungi rejim",
+        titleNotif: "Bildirishnomalar", pWallet: "Hamyon", pCart: "Savat", pFav: "Saralanganlar",
+        eCart: "Savatingiz bo'sh", eFav: "Saralangan mahsulotlar yo'q"
     }
 };
 
@@ -53,6 +59,13 @@ function switchLanguage(lang) {
     document.getElementById('lbl-lang').innerText = l.lblLang;
     document.getElementById('lbl-theme').innerText = l.lblTheme;
 
+    if(document.getElementById('title-notif')) document.getElementById('title-notif').innerText = l.titleNotif;
+    if(document.getElementById('page-wallet')) document.getElementById('page-wallet').innerText = l.pWallet;
+    if(document.getElementById('page-cart')) document.getElementById('page-cart').innerText = l.pCart;
+    if(document.getElementById('page-fav')) document.getElementById('page-fav').innerText = l.pFav;
+    if(document.getElementById('empty-cart')) document.getElementById('empty-cart').innerText = l.eCart;
+    if(document.getElementById('empty-fav')) document.getElementById('empty-fav').innerText = l.eFav;
+
     document.querySelectorAll('.btn-cart').forEach(b => b.innerText = l.cartBtn);
 }
 
@@ -62,32 +75,38 @@ function toggleDarkMode() {
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
 }
 
-function showTab(tab) {
-    const home = document.getElementById('view-home');
-    const settings = document.getElementById('view-settings');
-    const btnHome = document.getElementById('nav-home-btn');
-    const btnSet = document.getElementById('nav-set-btn');
+function toggleNotifications() {
+    const modal = document.getElementById('modal-notif');
+    modal.classList.toggle('hidden');
+}
 
-    if (tab === 'home') {
-        home.classList.remove('hidden');
-        settings.classList.add('hidden');
-        btnHome.classList.remove('text-gray-400');
-        btnHome.classList.add('text-emerald-600');
-        btnSet.classList.remove('text-emerald-600');
-        btnSet.classList.add('text-gray-400');
-    } else if (tab === 'settings') {
-        home.classList.add('hidden');
-        settings.classList.remove('hidden');
-        btnSet.classList.remove('text-gray-400');
-        btnSet.classList.add('text-emerald-600');
-        btnHome.classList.remove('text-emerald-600');
-        btnHome.classList.add('text-gray-400');
+function toggleFav(btn) {
+    btn.classList.toggle('text-red-500');
+    btn.classList.toggle('text-gray-300');
+}
+
+function showTab(tabName) {
+    document.querySelectorAll('.tab-view').forEach(view => view.classList.add('hidden'));
+    
+    const target = document.getElementById(`view-${tabName}`);
+    if (target) target.classList.remove('hidden');
+
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('text-emerald-600');
+        btn.classList.add('text-gray-400');
+    });
+
+    const activeBtn = document.getElementById(`nav-btn-${tabName}`);
+    if (activeBtn) {
+        activeBtn.classList.remove('text-gray-400');
+        activeBtn.classList.add('text-emerald-600');
     }
 }
 
-// Ҳангоми кушодани сайт
 document.addEventListener('DOMContentLoaded', () => {
     if (localStorage.getItem('theme') === 'dark') {
         document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
     }
 });
