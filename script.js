@@ -58,6 +58,8 @@ function switchLanguage(lang) {
 
 function toggleDarkMode() {
     document.documentElement.classList.toggle('dark');
+    const isDark = document.documentElement.classList.contains('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
 }
 
 function showTab(tab) {
@@ -69,12 +71,23 @@ function showTab(tab) {
     if (tab === 'home') {
         home.classList.remove('hidden');
         settings.classList.add('hidden');
-        btnHome.classList.replace('text-gray-400', 'text-emerald-600');
-        btnSet.classList.replace('text-emerald-600', 'text-gray-400');
+        btnHome.classList.remove('text-gray-400');
+        btnHome.classList.add('text-emerald-600');
+        btnSet.classList.remove('text-emerald-600');
+        btnSet.classList.add('text-gray-400');
     } else if (tab === 'settings') {
         home.classList.add('hidden');
         settings.classList.remove('hidden');
-        btnSet.classList.replace('text-gray-400', 'text-emerald-600');
-        btnHome.classList.replace('text-emerald-600', 'text-gray-400');
+        btnSet.classList.remove('text-gray-400');
+        btnSet.classList.add('text-emerald-600');
+        btnHome.classList.remove('text-emerald-600');
+        btnHome.classList.add('text-gray-400');
     }
 }
+
+// Ҳангоми кушодани сайт
+document.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.classList.add('dark');
+    }
+});
