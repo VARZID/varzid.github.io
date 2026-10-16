@@ -34,7 +34,13 @@ const langData = {
     }
 };
 
+let currentLang = 'ru';
+let cart = [];
+let favorites = [];
+let walletBalance = 0.00;
+
 function switchLanguage(lang) {
+    currentLang = lang;
     const l = langData[lang];
     if (!l) return;
 
@@ -63,10 +69,10 @@ function switchLanguage(lang) {
     if(document.getElementById('page-wallet')) document.getElementById('page-wallet').innerText = l.pWallet;
     if(document.getElementById('page-cart')) document.getElementById('page-cart').innerText = l.pCart;
     if(document.getElementById('page-fav')) document.getElementById('page-fav').innerText = l.pFav;
-    if(document.getElementById('empty-cart')) document.getElementById('empty-cart').innerText = l.eCart;
-    if(document.getElementById('empty-fav')) document.getElementById('empty-fav').innerText = l.eFav;
 
     document.querySelectorAll('.btn-cart').forEach(b => b.innerText = l.cartBtn);
+    renderCart();
+    renderFav();
 }
 
 function toggleDarkMode() {
@@ -80,9 +86,130 @@ function toggleNotifications() {
     modal.classList.toggle('hidden');
 }
 
-function toggleFav(btn) {
-    btn.classList.toggle('text-red-500');
-    btn.classList.toggle('text-gray-300');
+function toggleFav(id, btn) {
+    const card = btn.closest('.product-card');
+    const title = card.getAttribute('data-title');
+    const price = card.getAttribute('data-price');
+    const img = card.getAttribute('data-img');
+
+    const index = favorites.findIndex(item => item.id === id);
+    if (index > -1) {
+        favorites.splice(index, 1);
+        btn.classList.remove('text-red-500');
+        btn.classList.add('text-gray-300', 'dark:text-gray-600');
+    } else {
+        favorites.push({ id, title, price, img });
+        btn.classList.remove('text-gray-300', 'dark:text-gray-600');
+        btn.classList.add('text-red-500');
+    }
+    renderFav();
+}
+
+function addToCart(id, title, price, img) {
+    const existing = cart.find(item => item.id === id);
+    if (existing) {
+        existing.qty += 1;
+    } else {
+        cart.push({ id, title, price, img, qty: 1 });
+    }
+    updateCartBadge();
+    renderCart();
+}
+
+function removeFromCart(id) {
+    cart = cart.filter(item => item.id !== id);
+    updateCartBadge();
+    renderCart();
+}
+
+function updateCartBadge() {
+    const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+    const badge = document.getElementById('cart-badge');
+    badge.innerText = totalQty;
+    if (totalQty > 0) {
+        badge.classList.remove('hidden');
+    } else {
+        badge.classList.add('hidden');
+    }
+}
+
+function renderCart() {
+    const container = document.getElementById('cart-container');
+    const l = langData[currentLang];
+
+    if (cart.length === 0) {
+        container.innerHTML = `
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl text-center shadow-sm border border-gray-100 dark:border-gray-700">
+                <i class="fa-solid fa-cart-flatbed text-3xl text-gray-300 dark:text-gray-600 mb-2"></i>
+                <p class="text-xs text-gray-500 dark:text-gray-400" id="empty-cart">${l.eCart}</p>
+            </div>`;
+        return;
+    }
+
+    let html = '<div class="space-y-3">';
+    let totalSum = 0;
+
+    cart.forEach(item => {
+        let itemTotal = item.price * item.qty;
+        totalSum += itemTotal;
+        html += `
+            <div class="bg-white dark:bg-gray-800 p-3 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gray-100 dark:bg-gray-700 w-12 h-12 rounded-xl flex items-center justify-center text-xl">${item.img}</div>
+                    <div>
+                        <h4 class="text-xs font-bold text-gray-800 dark:text-white">${item.title}</h4>
+                        <p class="text-[10px] text-gray-400">${item.price} TJS × ${item.qty}</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <span class="text-xs font-bold text-emerald-600">${itemTotal.toFixed(2)} TJS</span>
+                    <button onclick="removeFromCart('${item.id}')" class="text-red-400 hover:text-red-600 p-1"><i class="fa-solid fa-trash text-xs"></i></button>
+                </div>
+            </div>`;
+    });
+
+    html += `
+        <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex justify-between items-center mt-3">
+            <span class="text-xs font-bold text-gray-700 dark:text-gray-300">Итого:</span>
+            <span class="text-sm font-black text-emerald-600">${totalSum.toFixed(2)} TJS</span>
+        </div>
+    </div>`;
+
+    container.innerHTML = html;
+}
+
+function renderFav() {
+    const container = document.getElementById('fav-container');
+    const l = langData[currentLang];
+
+    if (favorites.length === 0) {
+        container.innerHTML = `
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl text-center shadow-sm border border-gray-100 dark:border-gray-700">
+                <i class="fa-regular fa-heart text-3xl text-gray-300 dark:text-gray-600 mb-2"></i>
+                <p class="text-xs text-gray-500 dark:text-gray-400" id="empty-fav">${l.eFav}</p>
+            </div>`;
+        return;
+    }
+
+    let html = '<div class="grid grid-cols-2 gap-3">';
+    favorites.forEach(item => {
+        html += `
+            <div class="bg-white dark:bg-gray-800 p-3 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col justify-between">
+                <div>
+                    <div class="bg-gray-100 dark:bg-gray-700 h-24 rounded-xl flex items-center justify-center text-3xl mb-2">${item.img}</div>
+                    <h3 class="text-xs font-medium text-gray-800 dark:text-white">${item.title}</h3>
+                    <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-1">${item.price} TJS</p>
+                </div>
+                <button onclick="addToCart('${item.id}', '${item.title}', ${item.price}, '${item.img}')" class="mt-3 w-full bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-semibold py-2 rounded-xl transition">${l.cartBtn}</button>
+            </div>`;
+    });
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function topUpWallet() {
+    walletBalance += 50.00;
+    document.getElementById('wallet-balance').innerText = walletBalance.toFixed(2) + ' TJS';
 }
 
 function showTab(tabName) {
@@ -109,4 +236,5 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         document.documentElement.classList.remove('dark');
     }
+    updateCartBadge();
 });
