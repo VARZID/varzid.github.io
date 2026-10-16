@@ -4,17 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VARZID - Магазин</title>
-    <!-- Tailwind CSS & FontAwesome -->
+    <!-- Tailwind Config for Dark Mode -->
+    <script>
+        tailwind = {
+            darkMode: 'class'
+        }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-50 text-gray-800 pb-24 transition-colors duration-300" id="app-body">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 pb-24 transition-colors duration-300">
 
     <!-- Header -->
     <header class="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b dark:border-gray-800 px-4 py-3 shadow-sm flex items-center justify-between">
         <div class="flex items-center space-x-2">
-            <div class="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 font-bold text-xs flex items-center justify-center">
+            <div class="w-8 h-8 rounded-full bg-emerald-50 dark:bg-emerald-900 text-emerald-600 dark:text-emerald-400 font-bold text-xs flex items-center justify-center">
                 V
             </div>
             <div>
@@ -98,15 +103,20 @@
         </main>
     </div>
 
-    <!-- Settings Tab (Махфӣ дар аввал) -->
+    <!-- Settings Tab -->
     <div id="view-settings" class="hidden px-4 mt-4">
-        <h2 class="text-base font-bold text-gray-800 dark:text-white mb-4" id="set-title">Настройки</h2>
+        <div class="flex items-center space-x-3 mb-4">
+            <button onclick="showTab('home')" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300">
+                <i class="fa-solid fa-arrow-left text-xs"></i>
+            </button>
+            <h2 class="text-base font-bold text-gray-800 dark:text-white" id="set-title">Настройки</h2>
+        </div>
         
         <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm space-y-4 border border-gray-100 dark:border-gray-700">
             <!-- Language Setting -->
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium text-gray-700 dark:text-gray-200" id="lbl-lang">Язык приложения</span>
-                <select id="lang-select" onchange="switchLanguage(this.value)" class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white text-xs font-semibold py-1.5 px-3 rounded-xl border-none outline-none">
+                <select id="lang-select" onchange="switchLanguage(this.value)" class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white text-xs font-semibold py-1.5 px-3 rounded-xl border-none outline-none cursor-pointer">
                     <option value="ru" selected>Русский</option>
                     <option value="tj">Тоҷикӣ</option>
                     <option value="uz">O'zbekcha</option>
@@ -116,8 +126,8 @@
             <!-- Dark Mode Toggle -->
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium text-gray-700 dark:text-gray-200" id="lbl-theme">Темная тема</span>
-                <button onclick="toggleDarkMode()" class="w-10 h-6 bg-gray-200 dark:bg-emerald-600 rounded-full p-1 transition-colors duration-200 flex items-center">
-                    <div class="w-4 h-4 bg-white rounded-full shadow-md transform dark:translate-x-4 transition-transform duration-200"></div>
+                <button onclick="toggleDarkMode()" class="w-11 h-6 bg-gray-200 dark:bg-emerald-600 rounded-full p-1 transition-colors duration-200 flex items-center">
+                    <div class="w-4 h-4 bg-white rounded-full shadow-md transform dark:translate-x-5 transition-transform duration-200"></div>
                 </button>
             </div>
         </div>
