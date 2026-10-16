@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#16843a">
+  <meta name="description" content="VARZID — торговля, сельское хозяйство и развитие.">
+  <title>VARZID</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <a class="brand" href="./" aria-label="VARZID">
+      <span>VARZID</span>
+      <span class="brand-arrow">›</span>
+    </a>
+
+    <div class="header-actions">
+      <div class="subscribe-wrap">
+        <button
+          class="subscribe-button"
+          id="subscribeToggle"
+          type="button"
+          aria-expanded="false"
+        >
+          <span id="subscribeLabel">Подписаться</span>
+          <span class="small-arrow">⌄</span>
+        </button>
+        <div class="subscribe-menu" id="subscribeMenu" hidden>
+          <button type="button" id="subscribeAction">Подписаться</button>
+        </div>
+      </div>
+
+      <button
+        class="settings-button"
+        id="settingsToggle"
+        type="button"
+        aria-label="Настройки"
+        aria-expanded="false"
+      >
+        <svg viewBox="0 0 40 40" aria-hidden="true">
+          <circle cx="16" cy="13" r="6.5" class="person-shape"/>
+          <path d="M4.5 31c.5-7 5-10.5 11.5-10.5S27 24 27.5 31"
+                class="person-shape"/>
+          <circle cx="29" cy="28" r="8" class="gear-background"/>
+          <path d="M29 23.5v2m0 5v2m-4.5-4.5h2m5 0h2m-7.7-3.2 1.4 1.4m3.6 3.6 1.4 1.4m0-6.4-1.4 1.4m-3.6 3.6-1.4 1.4"
+                class="gear-lines"/>
+          <circle cx="29" cy="28" r="2.2" class="gear-hole"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <section class="settings-panel" id="settingsPanel" hidden>
+    <label class="settings-label" id="languageLabel" for="languageSelect">
+      Язык
+    </label>
+    <select id="languageSelect">
+      <option value="ru">Русский</option>
+      <option value="tg">Тоҷикӣ</option>
+      <option value="uz">O‘zbekcha</option>
+    </select>
+  </section>
+
+  <main class="main-content">
+    <section class="categories" id="categories" aria-label="Категории">
+    </section>
+
+    <p class="delivery-note" id="deliveryNote">
+      Стоимость доставки зависит от расстояния.
+    </p>
+  </main>
+
+  <footer class="footer">
+    <span>VARZID</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
