@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VARZID - Магазин</title>
-    <!-- Tailwind Config for Dark Mode -->
     <script>
-        tailwind = {
-            darkMode: 'class'
-        }
+        tailwind = { darkMode: 'class' }
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -18,22 +15,41 @@
 
     <!-- Header -->
     <header class="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b dark:border-gray-800 px-4 py-3 shadow-sm flex items-center justify-between">
-        <div class="flex items-center space-x-2">
-            <div class="w-8 h-8 rounded-full bg-emerald-50 dark:bg-emerald-900 text-emerald-600 dark:text-emerald-400 font-bold text-xs flex items-center justify-center">
-                V
-            </div>
+        <!-- Навигатор ва Суроға -->
+        <div class="flex items-center space-x-1.5 cursor-pointer">
+            <i class="fa-solid fa-location-dot text-emerald-600 text-base"></i>
             <div>
-                <span class="text-sm font-bold tracking-wider text-gray-900 dark:text-white">VARZID</span>
-                <div class="flex items-center space-x-1 cursor-pointer">
-                    <span class="text-[10px] text-gray-500 dark:text-gray-400" id="txt-addr">Фархор, Центр</span>
+                <span class="text-[9px] text-gray-400 block leading-none">Адрес доставки</span>
+                <span class="text-[11px] font-bold text-gray-700 dark:text-gray-200" id="txt-addr">Фархор, Центр</span>
+            </div>
+        </div>
+
+        <!-- VARZID Бренд -->
+        <div class="flex items-center space-x-1">
+            <span class="text-base font-black tracking-wider text-emerald-600 dark:text-emerald-400">VARZID</span>
+        </div>
+
+        <!-- Зангула -->
+        <button onclick="toggleNotifications()" class="relative cursor-pointer w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+            <i class="fa-regular fa-bell text-gray-700 dark:text-gray-300 text-xs"></i>
+            <span class="absolute top-2 right-2 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+        </button>
+    </header>
+
+    <!-- Modal Notifications -->
+    <div id="modal-notif" class="hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex justify-center items-start pt-16 px-4">
+        <div class="bg-white dark:bg-gray-800 w-full max-w-sm rounded-2xl p-4 shadow-xl border border-gray-100 dark:border-gray-700">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="text-sm font-bold text-gray-800 dark:text-white" id="title-notif">Уведомления</h3>
+                <button onclick="toggleNotifications()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-2 text-xs">
+                <div class="p-2.5 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl text-emerald-800 dark:text-emerald-300">
+                    🔔 Добро пожаловать в VARZID!
                 </div>
             </div>
         </div>
-        <div class="relative cursor-pointer w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-            <i class="fa-regular fa-bell text-gray-700 dark:text-gray-300 text-xs"></i>
-            <span class="absolute top-2 right-2 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
-        </div>
-    </header>
+    </div>
 
     <!-- Search Bar -->
     <div class="px-4 py-2 bg-white dark:bg-gray-900">
@@ -46,9 +62,8 @@
         </div>
     </div>
 
-    <!-- Main Content Tab -->
-    <div id="view-home">
-        <!-- 3 Categories Grid -->
+    <!-- 1. TAB: HOME (Главная) -->
+    <div id="view-home" class="tab-view">
         <div class="px-4 mt-2 grid grid-cols-3 gap-2">
             <div class="bg-white dark:bg-gray-800 p-2 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 text-center cursor-pointer">
                 <div class="bg-gray-100 dark:bg-gray-700 h-14 rounded-xl flex items-center justify-center text-xl mb-1">🌾</div>
@@ -64,24 +79,24 @@
             </div>
         </div>
 
-        <!-- Banner -->
         <main class="px-4 mt-3">
-            <div class="bg-gray-900 dark:bg-emerald-950 rounded-2xl p-4 text-white shadow-md relative overflow-hidden">
+            <!-- Баннери сиёҳи аслии эстетикӣ -->
+            <div class="bg-gray-900 rounded-2xl p-4 text-white shadow-md relative overflow-hidden">
                 <span class="bg-emerald-500 text-white text-[9px] px-2 py-0.5 rounded-full font-medium" id="banner-badge">Скидка 0%</span>
                 <h2 class="text-xs font-bold mt-1.5" id="banner-title">Спецпредложение недели</h2>
-                <p class="text-[10px] text-gray-400 dark:text-gray-300 mt-0.5" id="banner-desc">Лучшие цены с доставкой.</p>
+                <p class="text-[10px] text-gray-400 mt-0.5" id="banner-desc">Лучшие цены с доставкой.</p>
             </div>
 
             <!-- Tabs -->
             <div class="flex space-x-2 mt-3">
-                <button class="bg-gray-900 dark:bg-emerald-600 text-white text-xs px-3.5 py-1.5 rounded-full font-medium" id="tab1">Для вас</button>
+                <button class="bg-gray-900 text-white text-xs px-3.5 py-1.5 rounded-full font-medium" id="tab1">Для вас</button>
                 <button class="bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 text-xs px-3.5 py-1.5 rounded-full font-medium" id="tab2">Цены дня</button>
             </div>
 
             <!-- Products -->
             <div class="grid grid-cols-2 gap-3 mt-3">
                 <div class="bg-white dark:bg-gray-800 p-3 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col justify-between relative">
-                    <button class="absolute top-3 right-3 text-gray-300 dark:text-gray-600 hover:text-red-500"><i class="fa-regular fa-heart text-sm"></i></button>
+                    <button onclick="toggleFav(this)" class="absolute top-3 right-3 text-gray-300 dark:text-gray-600 hover:text-red-500"><i class="fa-solid fa-heart text-sm"></i></button>
                     <div>
                         <div class="bg-gray-100 dark:bg-gray-700 h-24 rounded-xl flex items-center justify-center text-3xl mb-2">🌾</div>
                         <h3 class="text-xs font-medium text-gray-800 dark:text-white" id="p1-title">Пшеница отборная</h3>
@@ -91,7 +106,7 @@
                 </div>
 
                 <div class="bg-white dark:bg-gray-800 p-3 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col justify-between relative">
-                    <button class="absolute top-3 right-3 text-gray-300 dark:text-gray-600 hover:text-red-500"><i class="fa-regular fa-heart text-sm"></i></button>
+                    <button onclick="toggleFav(this)" class="absolute top-3 right-3 text-gray-300 dark:text-gray-600 hover:text-red-500"><i class="fa-solid fa-heart text-sm"></i></button>
                     <div>
                         <div class="bg-gray-100 dark:bg-gray-700 h-24 rounded-xl flex items-center justify-center text-3xl mb-2">🌽</div>
                         <h3 class="text-xs font-medium text-gray-800 dark:text-white" id="p2-title">Кукуруза сухая</h3>
@@ -103,8 +118,35 @@
         </main>
     </div>
 
-    <!-- Settings Tab -->
-    <div id="view-settings" class="hidden px-4 mt-4">
+    <!-- 2. TAB: WALLET -->
+    <div id="view-wallet" class="tab-view hidden px-4 mt-4">
+        <h2 class="text-base font-bold text-gray-800 dark:text-white mb-3" id="page-wallet">Кошелек</h2>
+        <div class="bg-emerald-600 text-white p-5 rounded-2xl shadow-lg">
+            <span class="text-xs text-emerald-100 block">Текущий баланс</span>
+            <span class="text-2xl font-black mt-1 block">0.00 TJS</span>
+        </div>
+    </div>
+
+    <!-- 3. TAB: CART -->
+    <div id="view-cart" class="tab-view hidden px-4 mt-4">
+        <h2 class="text-base font-bold text-gray-800 dark:text-white mb-3" id="page-cart">Корзина</h2>
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl text-center shadow-sm border border-gray-100 dark:border-gray-700">
+            <i class="fa-solid fa-cart-flatbed text-3xl text-gray-300 mb-2"></i>
+            <p class="text-xs text-gray-500 dark:text-gray-400" id="empty-cart">Ваша корзина пуста</p>
+        </div>
+    </div>
+
+    <!-- 4. TAB: FAVORITES -->
+    <div id="view-fav" class="tab-view hidden px-4 mt-4">
+        <h2 class="text-base font-bold text-gray-800 dark:text-white mb-3" id="page-fav">Избранное</h2>
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl text-center shadow-sm border border-gray-100 dark:border-gray-700">
+            <i class="fa-regular fa-heart text-3xl text-gray-300 mb-2"></i>
+            <p class="text-xs text-gray-500 dark:text-gray-400" id="empty-fav">Нет избранных товаров</p>
+        </div>
+    </div>
+
+    <!-- 5. TAB: SETTINGS -->
+    <div id="view-settings" class="tab-view hidden px-4 mt-4">
         <div class="flex items-center space-x-3 mb-4">
             <button onclick="showTab('home')" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300">
                 <i class="fa-solid fa-arrow-left text-xs"></i>
@@ -113,7 +155,6 @@
         </div>
         
         <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm space-y-4 border border-gray-100 dark:border-gray-700">
-            <!-- Language Setting -->
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium text-gray-700 dark:text-gray-200" id="lbl-lang">Язык приложения</span>
                 <select id="lang-select" onchange="switchLanguage(this.value)" class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white text-xs font-semibold py-1.5 px-3 rounded-xl border-none outline-none cursor-pointer">
@@ -123,7 +164,6 @@
                 </select>
             </div>
             <hr class="border-gray-100 dark:border-gray-700">
-            <!-- Dark Mode Toggle -->
             <div class="flex items-center justify-between">
                 <span class="text-xs font-medium text-gray-700 dark:text-gray-200" id="lbl-theme">Темная тема</span>
                 <button onclick="toggleDarkMode()" class="w-11 h-6 bg-gray-200 dark:bg-emerald-600 rounded-full p-1 transition-colors duration-200 flex items-center">
@@ -135,24 +175,24 @@
 
     <!-- Bottom Navigation -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-2 px-3 flex justify-around items-center z-50 shadow-lg">
-        <button onclick="showTab('home')" id="nav-home-btn" class="flex flex-col items-center text-emerald-600">
+        <button onclick="showTab('home')" id="nav-btn-home" class="nav-btn flex flex-col items-center text-emerald-600">
             <i class="fa-solid fa-house text-base"></i>
             <span class="text-[9px] mt-1" id="nav-home">Главная</span>
         </button>
-        <button class="flex flex-col items-center text-gray-400">
+        <button onclick="showTab('wallet')" id="nav-btn-wallet" class="nav-btn flex flex-col items-center text-gray-400">
             <i class="fa-solid fa-wallet text-base"></i>
             <span class="text-[9px] mt-1" id="nav-wallet">Кошелек</span>
         </button>
-        <button class="flex flex-col items-center text-gray-400 relative">
+        <button onclick="showTab('cart')" id="nav-btn-cart" class="nav-btn flex flex-col items-center text-gray-400 relative">
             <i class="fa-solid fa-cart-shopping text-base"></i>
-            <span class="absolute -top-1 -right-2 bg-emerald-500 text-white text-[8px] w-3.5 h-3.5 rounded-full flex items-center justify-center">2</span>
+            <span class="absolute -top-1 -right-2 bg-emerald-500 text-white text-[8px] w-3.5 h-3.5 rounded-full flex items-center justify-center">0</span>
             <span class="text-[9px] mt-1" id="nav-cart">Корзина</span>
         </button>
-        <button class="flex flex-col items-center text-gray-400">
+        <button onclick="showTab('fav')" id="nav-btn-fav" class="nav-btn flex flex-col items-center text-gray-400">
             <i class="fa-regular fa-heart text-base"></i>
             <span class="text-[9px] mt-1" id="nav-fav">Избранное</span>
         </button>
-        <button onclick="showTab('settings')" id="nav-set-btn" class="flex flex-col items-center text-gray-400">
+        <button onclick="showTab('settings')" id="nav-btn-settings" class="nav-btn flex flex-col items-center text-gray-400">
             <i class="fa-solid fa-gear text-base"></i>
             <span class="text-[9px] mt-1" id="nav-set">Настройки</span>
         </button>
