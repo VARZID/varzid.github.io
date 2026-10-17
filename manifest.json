@@ -3,13 +3,18 @@
   "short_name": "VARZID",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0B0F19",
-  "theme_color": "#059669",
+  "background_color": "#ffffff",
+  "theme_color": "#00C853",
   "icons": [
     {
-      "src": "logo.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
+      "src": "/path/to/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/path/to/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ]
 }
