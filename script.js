@@ -1,3 +1,12 @@
+// --- Сабти Service Worker барои насби PWA ---
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+            .then(reg => console.log('Service Worker бо муваффақият сабт шуд!', reg))
+            .catch(err => console.log('Хатогӣ дар сабти Service Worker:', err));
+    });
+}
+
 // --- Идоракунии Ҳолати Торик (Dark Mode) ---
 document.addEventListener("DOMContentLoaded", () => {
     const savedTheme = localStorage.getItem("varzid_theme");
