@@ -1,74 +1,120 @@
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#071b16">
-  <title>VARZID SCORE — Футбол Фархора</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b1713">
+<title>VARZID SCORE</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="#"><span class="brand-mark">V</span><span>VARZID <b>SCORE</b></span></a>
-    <button id="themeBtn" class="icon-btn" aria-label="Тема">☼</button>
-  </header>
+<header>
+<a class="brand" href="#"><b>V</b> VARZID <em>SCORE</em></a>
+<div>
+<button id="searchBtn">⌕</button>
+<button id="settingsBtn">⚙</button>
+<button id="adminBtn">A</button>
+</div>
+</header>
 
-  <main>
-    <section class="intro">
-      <div class="eyebrow">ФУТБОЛ ФАРХОРА</div>
-      <h1>Все матчи.<br><span>Все результаты.</span></h1>
-      <p>Единая платформа местных футбольных лиг.</p>
-    </section>
+<main>
+<section class="hero">
+<small>● ФУТБОЛ ФАРХОРА</small>
+<h1>Футбол ближе.<br><em>Результаты точнее.</em></h1>
+<p>Матчи, соревнования и постоянный рейтинг команд Фархора.</p>
+</section>
 
-    <nav class="date-nav">
-      <button id="prevDay">‹</button>
-      <strong id="dateLabel">Сегодня</strong>
-      <button id="nextDay">›</button>
-    </nav>
+<div class="stats">
+<div><b id="teamsCount">0</b><small>Команд</small></div>
+<div><b id="matchesCount">0</b><small>Матчей</small></div>
+<div><b>6</b><small>Групп</small></div>
+</div>
 
-    <section class="filters">
-      <button class="filter active" data-filter="all">Все</button>
-      <button class="filter" data-filter="live">LIVE</button>
-      <button class="filter" data-filter="upcoming">Предстоящие</button>
-      <button class="filter" data-filter="finished">Завершённые</button>
-    </section>
+<section>
+<small class="kicker">СОРЕВНОВАНИЯ</small>
+<h2>Выберите группу</h2>
+<div id="featured" class="featured"></div>
+<h3>ГУРӮҲҲОИ ДЕҲОТ / ГРУППЫ ДЕҲОТ</h3>
+<div id="rural" class="rural"></div>
+</section>
 
-    <section id="matches" class="matches"></section>
+<section id="matches">
+<small class="kicker">КАЛЕНДАРЬ</small>
+<h2>Матчи и результаты</h2>
+<div class="date">
+<button id="prev">‹</button>
+<b id="dateLabel"></b>
+<button id="next">›</button>
+</div>
+<div class="filters">
+<button data-filter="all" class="active">Все</button>
+<button data-filter="live">LIVE</button>
+<button data-filter="upcoming">Предстоящие</button>
+<button data-filter="finished">Завершённые</button>
+</div>
+<div id="matchList" class="matchlist"></div>
+</section>
 
-    <section class="panel">
-      <div class="section-heading">
-        <div><small>РЕЙТИНГ КОМАНД</small><h2>Лучшие команды</h2></div>
-      </div>
-      <div id="ranking"></div>
-    </section>
+<section id="rating">
+<small class="kicker">ПОСТОЯННЫЙ РЕЙТИНГ</small>
+<h2>Общий рейтинг команд</h2>
+<p class="muted">Рейтинг сохраняется между сезонами и обновляется по подтверждённым результатам.</p>
+<div id="ranking" class="ranking"></div>
+</section>
 
-    <section class="panel">
-      <div class="section-heading">
-        <div><small>СОРЕВНОВАНИЯ</small><h2>Лиги Фархора</h2></div>
-      </div>
-      <div id="leagues" class="league-list"></div>
-    </section>
+<section id="leagueDetails" class="hidden">
+<button id="closeLeague">← Назад</button>
+<h2 id="leagueTitle"></h2>
+<div id="leagueContent"></div>
+</section>
 
-    <section class="panel admin-panel">
-      <small>УПРАВЛЕНИЕ ПЛАТФОРМОЙ</small>
-      <h2>Панель администратора</h2>
-      <p>Вход для главного администратора и администраторов лиг.</p>
-      <button id="adminBtn" class="primary-btn">Войти в панель</button>
-      <div id="adminArea" hidden>
-        <label>Логин<input id="adminLogin" autocomplete="username" placeholder="Логин"></label>
-        <label>Пароль<input id="adminPassword" type="password" autocomplete="current-password" placeholder="Пароль"></label>
-        <button id="loginBtn" class="primary-btn">Войти</button>
-        <p id="loginMessage" class="message"></p>
-      </div>
-    </section>
-  </main>
+<section class="admin">
+<small class="kicker">УПРАВЛЕНИЕ</small>
+<h2>Панель администратора</h2>
+<p>Главный администратор управляет всеми группами. Администраторы групп отвечают только за свою группу.</p>
+<button id="openLogin">Вход администратора</button>
+</section>
+</main>
 
-  <footer>
-    <div class="brand"><span class="brand-mark">V</span> VARZID SCORE</div>
-    <p>Футбол Фархора · Местные лиги</p>
-  </footer>
+<nav>
+<a href="#">⌂<small>Главная</small></a>
+<a href="#matches">▤<small>Матчи</small></a>
+<a href="#rating">♜<small>Рейтинг</small></a>
+<button id="settingsNav">⚙<small>Настройки</small></button>
+</nav>
 
-  <script src="app.js"></script>
+<div id="settings" class="overlay hidden">
+<div class="drawer">
+<button class="x" data-close="settings">×</button>
+<h2>Настройки / Танзимот</h2>
+<label>Язык / Забон
+<select id="lang">
+<option value="ru">Русский</option>
+<option value="tg">Тоҷикӣ</option>
+</select>
+</label>
+<label>Оформление / Намуди экран
+<select id="theme">
+<option value="dark">Тёмная / Торик</option>
+<option value="light">Светлая / Равшан</option>
+</select>
+</label>
+</div>
+</div>
+
+<div id="login" class="overlay hidden">
+<div class="drawer">
+<button class="x" data-close="login">×</button>
+<h2>Главный администратор</h2>
+<p>Вход будет включён после подключения Supabase Auth и безопасного создания аккаунта.</p>
+<label>Email<input type="email" placeholder="admin@example.com"></label>
+<label>Пароль<input type="password"></label>
+<p id="loginMessage" class="muted"></p>
+<button id="loginSubmit">Войти</button>
+</div>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
