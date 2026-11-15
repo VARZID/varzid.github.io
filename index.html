@@ -1,120 +1,140 @@
 
 <!doctype html>
-<html lang="ru">
+<html lang="tg">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0b1713">
-<title>VARZID SCORE</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#10251c">
+  <meta name="description" content="VARZID SCORE — натиҷаҳо, лигаҳо ва рейтинги футболи Фархор">
+  <title>VARZID SCORE — Футболи Фархор</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-<header>
-<a class="brand" href="#"><b>V</b> VARZID <em>SCORE</em></a>
-<div>
-<button id="searchBtn">⌕</button>
-<button id="settingsBtn">⚙</button>
-<button id="adminBtn">A</button>
-</div>
+<header class="topbar">
+  <a class="brand" href="#" aria-label="VARZID SCORE">
+    <span class="brand-mark">V</span>
+    <span><b>VARZID</b><small>SCORE · ФАРХОР</small></span>
+  </a>
+  <div class="top-actions">
+    <button id="searchBtn" class="icon-btn" type="button" aria-label="Ҷустуҷӯ">⌕</button>
+    <button id="settingsBtn" class="icon-btn" type="button" aria-label="Танзимот">⚙</button>
+  </div>
 </header>
 
 <main>
-<section class="hero">
-<small>● ФУТБОЛ ФАРХОРА</small>
-<h1>Футбол ближе.<br><em>Результаты точнее.</em></h1>
-<p>Матчи, соревнования и постоянный рейтинг команд Фархора.</p>
-</section>
+  <section class="date-strip" aria-label="Интихоби сана">
+    <button class="date-arrow" id="prevDay" type="button" aria-label="Рӯзи гузашта">‹</button>
+    <div class="date-current"><small id="dayName">ИМРӮЗ</small><strong id="dateText"></strong></div>
+    <button class="date-arrow" id="nextDay" type="button" aria-label="Рӯзи оянда">›</button>
+  </section>
 
-<div class="stats">
-<div><b id="teamsCount">0</b><small>Команд</small></div>
-<div><b id="matchesCount">0</b><small>Матчей</small></div>
-<div><b>6</b><small>Групп</small></div>
-</div>
+  <section class="hero">
+    <div>
+      <span class="eyebrow" data-i18n="eyebrow">ФУТБОЛИ МАҲАЛЛӢ</span>
+      <h1 data-i18n="heroTitle">Ҳамаи бозиҳо</h1>
+      <p data-i18n="heroText">Натиҷаҳо, ҷадвалҳо ва рейтинги дастаҳои Фархор</p>
+    </div>
+    <div class="hero-ball" aria-hidden="true">⚽</div>
+  </section>
 
-<section>
-<small class="kicker">СОРЕВНОВАНИЯ</small>
-<h2>Выберите группу</h2>
-<div id="featured" class="featured"></div>
-<h3>ГУРӮҲҲОИ ДЕҲОТ / ГРУППЫ ДЕҲОТ</h3>
-<div id="rural" class="rural"></div>
-</section>
+  <nav class="filter-row" aria-label="Филтри бозиҳо">
+    <button class="filter active" type="button" data-filter="all" data-i18n="all">Ҳама</button>
+    <button class="filter" type="button" data-filter="live">● LIVE</button>
+    <button class="filter" type="button" data-filter="upcoming" data-i18n="upcoming">Дар пеш</button>
+    <button class="filter" type="button" data-filter="finished" data-i18n="finished">Анҷомёфта</button>
+  </nav>
 
-<section id="matches">
-<small class="kicker">КАЛЕНДАРЬ</small>
-<h2>Матчи и результаты</h2>
-<div class="date">
-<button id="prev">‹</button>
-<b id="dateLabel"></b>
-<button id="next">›</button>
-</div>
-<div class="filters">
-<button data-filter="all" class="active">Все</button>
-<button data-filter="live">LIVE</button>
-<button data-filter="upcoming">Предстоящие</button>
-<button data-filter="finished">Завершённые</button>
-</div>
-<div id="matchList" class="matchlist"></div>
-</section>
+  <section id="matchesView" class="view-section">
+    <div class="section-heading"><h2 data-i18n="matches">Бозиҳо</h2><span id="matchCount" class="muted">0</span></div>
+    <div id="matches" class="match-list"></div>
+  </section>
 
-<section id="rating">
-<small class="kicker">ПОСТОЯННЫЙ РЕЙТИНГ</small>
-<h2>Общий рейтинг команд</h2>
-<p class="muted">Рейтинг сохраняется между сезонами и обновляется по подтверждённым результатам.</p>
-<div id="ranking" class="ranking"></div>
-</section>
+  <section id="leaguesView" class="view-section hidden">
+    <div class="section-heading"><h2 data-i18n="leagues">Лигаҳо</h2><span class="muted" data-i18n="sixGroups">6 лига</span></div>
+    <div id="leagues" class="league-list"></div>
+  </section>
 
-<section id="leagueDetails" class="hidden">
-<button id="closeLeague">← Назад</button>
-<h2 id="leagueTitle"></h2>
-<div id="leagueContent"></div>
-</section>
+  <section id="rankingView" class="view-section hidden">
+    <div class="section-heading"><h2 data-i18n="ranking">Рейтинги умумии дастаҳо</h2><span class="muted" data-i18n="allTeams">Ҳамаи дастаҳо</span></div>
+    <div class="notice" data-i18n="rankingNote">Рейтинг доимӣ буда, аз рӯйи натиҷаҳои тасдиқшудаи бозиҳо ҳисоб карда мешавад.</div>
+    <div id="ranking" class="ranking-list"><p class="muted" data-i18n="noTeams">Ҳоло дастаҳо илова нашудаанд.</p></div>
+    <div class="section-heading"><h2 data-i18n="teams">Дастаҳо</h2><span class="muted" data-i18n="favoriteHint">Барои дӯстдошта ситораро пахш кунед</span></div>
+    <div id="teamsList" class="ranking-list"><p class="muted" data-i18n="noTeams">Ҳоло дастаҳо илова нашудаанд.</p></div>
+  </section>
 
-<section class="admin">
-<small class="kicker">УПРАВЛЕНИЕ</small>
-<h2>Панель администратора</h2>
-<p>Главный администратор управляет всеми группами. Администраторы групп отвечают только за свою группу.</p>
-<button id="openLogin">Вход администратора</button>
-</section>
+  <section id="profileView" class="view-section hidden">
+    <div class="section-heading"><h2 data-i18n="profile">Ҳисоб ва идоракунӣ</h2></div>
+    <div class="panel">
+      <p id="authStatus" data-i18n="guest">Шумо ҳамчун меҳмон ворид шудаед.</p>
+      <label><span data-i18n="email">Почтаи электронӣ</span><input id="email" type="email" autocomplete="username" placeholder="admin@example.com"></label>
+      <label><span data-i18n="password">Рамз</span><input id="password" type="password" autocomplete="current-password" placeholder="••••••••"></label>
+      <button class="primary wide" id="loginBtn" type="button" data-i18n="login">Ворид шудан</button>
+      <button class="secondary wide hidden" id="logoutBtn" type="button" data-i18n="logout">Баромадан</button>
+      <p class="tiny muted" data-i18n="adminInfo">Ҳисобҳои маъмуриро танҳо роҳбари асосӣ идора мекунад.</p>
+    </div>
+
+    <div id="adminPanel" class="panel hidden">
+      <h3 data-i18n="adminPanel">Панели идоракунӣ</h3>
+      <p class="muted" data-i18n="adminRights">Имкониятҳо мувофиқи ҳуқуқи ҳисоби шумо дастрасанд.</p>
+      <label><span data-i18n="group">Лига</span><select id="adminLeague"></select></label>
+      <label><span data-i18n="teamName">Номи даста</span><input id="teamName" placeholder="Номи даста"></label>
+      <button class="primary wide" id="addTeamBtn" type="button" data-i18n="addTeam">Илова кардани даста</button>
+      <hr>
+      <label><span data-i18n="homeTeam">Дастаи мизбон</span><input id="homeTeam"></label>
+      <label><span data-i18n="awayTeam">Дастаи меҳмон</span><input id="awayTeam"></label>
+      <div class="two">
+        <label><span data-i18n="date">Сана</span><input id="matchDate" type="date"></label>
+        <label><span data-i18n="time">Соат</span><input id="matchTime" type="time" value="16:00"></label>
+      </div>
+      <div class="two">
+        <label><span data-i18n="homeGoals">Голҳои мизбон</span><input id="homeScore" type="number" min="0"></label>
+        <label><span data-i18n="awayGoals">Голҳои меҳмон</span><input id="awayScore" type="number" min="0"></label>
+      </div>
+      <label><span data-i18n="matchStatus">Ҳолати бозӣ</span>
+        <select id="matchStatus">
+          <option value="upcoming" data-i18n="upcoming">Дар пеш</option>
+          <option value="live">LIVE</option>
+          <option value="finished" data-i18n="finished">Анҷомёфта</option>
+        </select>
+      </label>
+      <button class="primary wide" id="addMatchBtn" type="button" data-i18n="saveMatch">Сабти бозӣ</button>
+    </div>
+  </section>
+
+  <section id="settingsView" class="view-section hidden">
+    <div class="section-heading"><h2 data-i18n="settings">Танзимот</h2></div>
+    <div class="panel setting-row">
+      <div><b data-i18n="language">Забон</b><small data-i18n="languageHint">Забони намоиши платформа</small></div>
+      <select id="languageSelect" aria-label="Забон">
+        <option value="tg">Тоҷикӣ</option>
+        <option value="ru">Русский</option>
+      </select>
+    </div>
+    <div class="panel setting-row">
+      <div><b data-i18n="appearance">Намуди зоҳирӣ</b><small data-i18n="appearanceHint">Рӯз ё шаб</small></div>
+      <button id="themeBtn" class="secondary" type="button" aria-pressed="false">Шаб</button>
+    </div>
+    <div class="panel setting-row">
+      <div><b data-i18n="sound">Садои огоҳинома</b><small data-i18n="soundHint">Садои огоҳиномаҳо</small></div>
+      <button id="soundBtn" class="secondary" type="button" aria-pressed="true">Фаъол</button>
+    </div>
+    <div class="panel setting-row">
+      <div><b data-i18n="timezone">Минтақаи вақт</b><small>Фархор · UTC+5</small></div>
+      <span>UTC+5</span>
+    </div>
+    <p class="tiny muted" data-i18n="platformNote">VARZID SCORE — платформаи мустақили футболи маҳаллӣ.</p>
+  </section>
 </main>
 
-<nav>
-<a href="#">⌂<small>Главная</small></a>
-<a href="#matches">▤<small>Матчи</small></a>
-<a href="#rating">♜<small>Рейтинг</small></a>
-<button id="settingsNav">⚙<small>Настройки</small></button>
+<nav class="bottom-nav" aria-label="Навигатсия">
+  <button class="nav-item active" type="button" data-view="matchesView"><span>▦</span><small data-i18n="matches">Бозиҳо</small></button>
+  <button class="nav-item" type="button" data-view="leaguesView"><span>♜</span><small data-i18n="leagues">Лигаҳо</small></button>
+  <button class="nav-item" type="button" data-view="rankingView"><span>▤</span><small data-i18n="rankingShort">Рейтинг</small></button>
+  <button class="nav-item" type="button" data-view="profileView"><span>♙</span><small data-i18n="profileShort">Ҳисоб</small></button>
 </nav>
 
-<div id="settings" class="overlay hidden">
-<div class="drawer">
-<button class="x" data-close="settings">×</button>
-<h2>Настройки / Танзимот</h2>
-<label>Язык / Забон
-<select id="lang">
-<option value="ru">Русский</option>
-<option value="tg">Тоҷикӣ</option>
-</select>
-</label>
-<label>Оформление / Намуди экран
-<select id="theme">
-<option value="dark">Тёмная / Торик</option>
-<option value="light">Светлая / Равшан</option>
-</select>
-</label>
-</div>
-</div>
-
-<div id="login" class="overlay hidden">
-<div class="drawer">
-<button class="x" data-close="login">×</button>
-<h2>Главный администратор</h2>
-<p>Вход будет включён после подключения Supabase Auth и безопасного создания аккаунта.</p>
-<label>Email<input type="email" placeholder="admin@example.com"></label>
-<label>Пароль<input type="password"></label>
-<p id="loginMessage" class="muted"></p>
-<button id="loginSubmit">Войти</button>
-</div>
-</div>
-
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 <script src="app.js"></script>
 </body>
 </html>
