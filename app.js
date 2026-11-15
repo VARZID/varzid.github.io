@@ -1,116 +1,196 @@
 
-const LEAGUES = [
-  "Лигаи дуюми шаҳрак",
-  "Деҳшарқ",
-  "Деҳшимол",
-  "Деҳҷануб",
-  "Деҳғарб",
-  "Лигаи олии шаҳрак"
-];
+(()=>{
+'use strict';
 
-const today = new Date();
-let selectedDate = new Date(today);
-let currentFilter = "all";
+const D={
+leagues:[
+{id:'top',ru:'Группа высшего Фархора',tg:'Гурӯҳи олии Фархор',featured:true},
+{id:'town',ru:'Группа шаҳрак',tg:'Гурӯҳи шаҳрак',featured:true},
+{id:'east',ru:'Группа Деҳ Шарқ',tg:'Гурӯҳи Деҳ Шарқ'},
+{id:'west',ru:'Группа Деҳ Ғарб',tg:'Гурӯҳи Деҳ Ғарб'},
+{id:'north',ru:'Группа Деҳ Шимол',tg:'Гурӯҳи Деҳ Шимол'},
+{id:'south',ru:'Группа Деҳ Ҷануб',tg:'Гурӯҳи Деҳ Ҷануб'}
+],
+teams:[
+{name:'Истиқлол',rating:0,league:'town'},
+{name:'Равшан',rating:0,league:'east'},
+{name:'Сомон',rating:0,league:'west'},
+{name:'Наврӯз',rating:0,league:'north'},
+{name:'Фархор',rating:0,league:'south'}
+],
+matches:[
+{league:'town',home:'Истиқлол',away:'Равшан',hs:2,as:1,status:'live',minute:68,time:'16:00'},
+{league:'east',home:'Сомон',away:'Наврӯз',hs:null,as:null,status:'upcoming',time:'17:00'},
+{league:'south',home:'Фархор',away:'Дӯстӣ',hs:3,as:0,status:'finished',time:'FT'}
+]
+};
 
-const matches = [
-  {league:LEAGUES[0],home:"Истиқлол",away:"Равшан",score:"2 : 1",status:"live",minute:"68′"},
-  {league:LEAGUES[1],home:"Сомон",away:"Наврӯз",score:"— : —",status:"upcoming",minute:"15:00"},
-  {league:LEAGUES[2],home:"Фархор",away:"Вахш",score:"3 : 0",status:"finished",minute:"Завершён"},
-  {league:LEAGUES[3],home:"Пахтакор",away:"Дӯстӣ",score:"— : —",status:"upcoming",minute:"17:00"}
-];
+const $=id=>document.getElementById(id);
+let lang=localStorage.getItem('vs-lang')||'ru';
+let theme=localStorage.getItem('vs-theme')||'dark';
+let filter='all';
+let chosen=null;
+let date=new Date();
 
-const ranking = [
-  {name:"Истиқлол",points:0},
-  {name:"Равшан",points:0},
-  {name:"Сомон",points:0},
-  {name:"Наврӯз",points:0},
-  {name:"Фархор",points:0}
-];
+const L=x=>lang==='tg'?x.tg:x.ru;
 
-const matchesBox = document.getElementById("matches");
-const dateLabel = document.getElementById("dateLabel");
-
-function showDate() {
-  dateLabel.textContent = selectedDate.toLocaleDateString("ru-RU", {
-    day:"numeric",month:"long",year:"numeric"
-  });
+function dateText(){
+$('dateLabel').textContent=date.toLocaleDateString(
+lang==='tg'?'tg-TJ':'ru-RU',
+{day:'numeric',month:'long',year:'numeric'}
+);
 }
 
-function renderMatches() {
-  const visible = matches.filter(m =>
-    currentFilter === "all" || m.status === currentFilter
-  );
+function leagues(){
+const f=D.leagues.filter(x=>x.featured);
+const r=D.leagues.filter(x=>!x.featured);
 
-  matchesBox.innerHTML = visible.length ? visible.map(m => `
-    <article class="match-card">
-      <div class="match-league">${m.league}</div>
-      <div class="match-body">
-        <div class="team">${m.home}</div>
-        <div class="score">${m.score}</div>
-        <div class="team">${m.away}</div>
-      </div>
-      <div class="match-status ${m.status === "live" ? "live" : ""}">
-        ${m.status === "live" ? "● LIVE · " + m.minute :
-          m.status === "finished" ? "FT · " + m.minute : m.minute}
-      </div>
-    </article>
-  `).join("") : `<p>На эту дату матчей нет.</p>`;
+$('featured').innerHTML=f.map(x=>`
+<button class="league" data-league="${x.id}">
+<small>VARZID SCORE</small>
+<b>${L(x)}</b>
+<small>Мусобиқаи футбол / Футбольное соревнование</small>
+</button>
+`).join('');
+
+$('rural').innerHTML=r.map(x=>`
+<button class="league" data-league="${x.id}">
+<small>ДЕҲОТ</small>
+<b>${L(x)}</b>
+</button>
+`).join('');
+
+document.querySelectorAll('[data-league]').forEach(b=>{
+b.onclick=()=>showLeague(b.dataset.league);
+});
 }
 
-function renderRanking() {
-  document.getElementById("ranking").innerHTML = ranking.map((team,i) => `
-    <div class="rank-row">
-      <div class="rank-left">
-        <span class="rank-number">${i+1}</span>
-        <b>${team.name}</b>
-      </div>
-      <span class="points">${team.points}</span>
-    </div>
-  `).join("");
+function matches(){
+const a=D.matches.filter(x=>filter==='all'||x.status===filter);
+
+$('matchList').innerHTML=a.length?a.map(x=>{
+let l=D.leagues.find(z=>z.id===x.league);
+let s=x.hs===null?'— : —':x.hs+' : '+x.as;
+let status=x.status==='live'
+?'● LIVE · '+x.minute+'′'
+:x.status==='finished'
+?'Завершён'
+:'Начало · '+x.time;
+
+return `
+<article class="match">
+<small>${L(l)} · ${status}</small>
+<div class="teams">
+<span>${x.home}</span>
+<b class="score">${s}</b>
+<span>${x.away}</span>
+</div>
+</article>`;
+}).join(''):'<p>Матчей пока нет / Ҳоло бозӣ нест</p>';
+
+$('matchesCount').textContent=D.matches.length;
 }
 
-function renderLeagues() {
-  document.getElementById("leagues").innerHTML = LEAGUES.map((name,i) => `
-    <button class="league-item" type="button" data-league="${i}">
-      ${name} <span style="float:right">›</span>
-    </button>
-  `).join("");
+function ranking(){
+$('ranking').innerHTML=D.teams.slice()
+.sort((a,b)=>b.rating-a.rating)
+.map((x,i)=>`
+<div class="row">
+<b>${i+1}</b>
+<span>${x.name}</span>
+<strong>${x.rating}</strong>
+</div>
+`).join('');
+
+$('teamsCount').textContent=D.teams.length;
 }
 
-document.querySelectorAll(".filter").forEach(button => {
-  button.addEventListener("click", () => {
-    document.querySelectorAll(".filter").forEach(b => b.classList.remove("active"));
-    button.classList.add("active");
-    currentFilter = button.dataset.filter;
-    renderMatches();
-  });
+function showLeague(id){
+chosen=id;
+let l=D.leagues.find(x=>x.id===id);
+$('leagueTitle').textContent=L(l);
+
+let ts=D.teams.filter(x=>x.league===id);
+let ms=D.matches.filter(x=>x.league===id);
+
+$('leagueContent').innerHTML=
+'<h3>КОМАНДЫ / ДАСТАҲО</h3>'+
+(ts.map(x=>`<p>${x.name} · рейтинг ${x.rating}</p>`).join('')||
+'<p>Команды пока не добавлены.</p>')+
+'<h3>МАТЧИ / БОЗИҲО</h3>'+
+(ms.map(x=>`<p>${x.home} — ${x.away}: ${x.hs===null?'—':x.hs+':'+x.as}</p>`).join('')||
+'<p>Матчей пока нет.</p>');
+
+$('leagueDetails').classList.remove('hidden');
+$('leagueDetails').scrollIntoView({behavior:'smooth'});
+}
+
+function render(){
+document.documentElement.dataset.theme=theme;
+$('theme').value=theme;
+$('lang').value=lang;
+leagues();
+matches();
+ranking();
+dateText();
+}
+
+function open(id){$(id).classList.remove('hidden')}
+function close(id){$(id).classList.add('hidden')}
+
+$('settingsBtn').onclick=$('settingsNav').onclick=()=>open('settings');
+$('adminBtn').onclick=$('openLogin').onclick=()=>open('login');
+
+document.querySelectorAll('[data-close]').forEach(b=>{
+b.onclick=()=>close(b.dataset.close);
 });
 
-document.getElementById("prevDay").addEventListener("click", () => {
-  selectedDate.setDate(selectedDate.getDate()-1);
-  showDate();
-});
+$('lang').onchange=e=>{
+lang=e.target.value;
+localStorage.setItem('vs-lang',lang);
+render();
+};
 
-document.getElementById("nextDay").addEventListener("click", () => {
-  selectedDate.setDate(selectedDate.getDate()+1);
-  showDate();
-});
+$('theme').onchange=e=>{
+theme=e.target.value;
+localStorage.setItem('vs-theme',theme);
+render();
+};
 
-document.getElementById("themeBtn").addEventListener("click", () => {
-  document.body.classList.toggle("light");
+document.querySelector('.filters').onclick=e=>{
+if(!e.target.dataset.filter)return;
+filter=e.target.dataset.filter;
+document.querySelectorAll('.filters button').forEach(b=>{
+b.classList.toggle('active',b===e.target);
 });
+matches();
+};
 
-document.getElementById("adminBtn").addEventListener("click", () => {
-  document.getElementById("adminArea").hidden =
-    !document.getElementById("adminArea").hidden;
+$('prev').onclick=()=>{
+date.setDate(date.getDate()-1);
+dateText();
+};
+
+$('next').onclick=()=>{
+date.setDate(date.getDate()+1);
+dateText();
+};
+
+$('closeLeague').onclick=()=>
+$('leagueDetails').classList.add('hidden');
+
+$('loginSubmit').onclick=()=>
+$('loginMessage').textContent=
+'Авторизация ещё не подключена. / Воридшавӣ ҳоло пайваст нест.';
+
+$('searchBtn').onclick=()=>{
+let q=prompt('Поиск команды / Ҷустуҷӯи даста');
+if(!q)return;
+document.querySelectorAll('.league').forEach(x=>{
+x.classList.toggle('hidden',
+!x.textContent.toLowerCase().includes(q.toLowerCase()));
 });
+};
 
-document.getElementById("loginBtn").addEventListener("click", () => {
-  document.getElementById("loginMessage").textContent =
-    "Вход администратора ещё не подключён. Сначала настройте Supabase и аккаунты.";
-});
-
-showDate();
-renderMatches();
-renderRanking();
-renderLeagues();
+render();
+})();
