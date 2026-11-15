@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ВАРЗИД - Рейтинг и Группы</title>
+    <title>ВАРЗИД — Марҳилаи Гурӯҳӣ</title>
     <style>
         :root {
             --bg-color: #121212;
             --card-bg: #1e1e1e;
             --text-color: #ffffff;
-            --text-secondary: #b0b0b0;
+            --text-secondary: #a0a0a0;
             --accent-color: #1db954;
             --border-color: #2c2c2c;
-            --green-zone: rgba(29, 185, 84, 0.15);
+            --green-badge-bg: rgba(29, 185, 84, 0.2);
         }
 
         body {
@@ -20,7 +20,7 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 15px;
+            padding: 10px;
         }
 
         .container {
@@ -30,69 +30,83 @@
 
         h1 {
             text-align: center;
-            font-size: 22px;
-            margin-bottom: 20px;
+            font-size: 20px;
+            margin: 15px 0;
             color: var(--accent-color);
         }
 
         .group-card {
             background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.4);
         }
 
         .group-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             margin-bottom: 10px;
-            border-bottom: 2px solid var(--accent-color);
-            padding-bottom: 5px;
+            color: #ffffff;
+            border-left: 4px solid var(--accent-color);
+            padding-left: 8px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         th, td {
-            padding: 10px 8px;
+            padding: 8px 6px;
             text-align: left;
         }
 
         th {
             color: var(--text-secondary);
-            font-size: 12px;
+            font-size: 11px;
             border-bottom: 1px solid var(--border-color);
+            text-transform: uppercase;
         }
 
         td {
             border-bottom: 1px solid var(--border-color);
         }
 
-        /* 2 дастаи якум бо ранги сабз махсус карда шудаанд */
-        tr.qualified {
-            background-color: var(--green-zone);
+        /* 2 дастаи пешқадам бо нишонаи сабзи тоза */
+        tr.qualified td {
+            background-color: var(--green-badge-bg);
         }
 
         tr.qualified td:first-child {
-            border-left: 4px solid var(--accent-color);
-            font-weight: bold;
-            color: var(--accent-color);
+            border-left: 3px solid var(--accent-color);
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+
+        tr.qualified td:last-child {
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+
+        .team-name {
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .points {
             font-weight: bold;
             text-align: right;
+            color: var(--accent-color);
         }
 
         .footer {
             text-align: center;
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-secondary);
-            margin-top: 30px;
+            margin: 20px 0;
         }
     </style>
 </head>
@@ -107,36 +121,36 @@
         <table>
             <thead>
                 <tr>
-                    <th>№</th>
+                    <th style="width: 30px;">№</th>
                     <th>Клуб</th>
-                    <th>Матч</th>
-                    <th style="text-align: right;">Рейтинг (XP)</th>
+                    <th style="width: 40px; text-align: center;">Матч</th>
+                    <th style="text-align: right;">Рейтинг</th>
                 </tr>
             </thead>
             <tbody>
                 <tr class="qualified">
                     <td>1</td>
-                    <td>Дастаи Шарқ 1 🟢</td>
-                    <td>0</td>
+                    <td><div class="team-name">Дастаи Шарқ 1 🟢</div></td>
+                    <td style="text-align: center;">0</td>
                     <td class="points">0 XP</td>
                 </tr>
                 <tr class="qualified">
                     <td>2</td>
-                    <td>Дастаи Шарқ 2 🟢</td>
-                    <td>0</td>
+                    <td><div class="team-name">Дастаи Шарқ 2 🟢</div></td>
+                    <td style="text-align: center;">0</td>
                     <td class="points">0 XP</td>
                 </tr>
                 <tr>
                     <td>3</td>
                     <td>Дастаи Шарқ 3</td>
-                    <td>0</td>
-                    <td class="points">0 XP</td>
+                    <td style="text-align: center;">0</td>
+                    <td style="text-align: right; color: var(--text-secondary);">0 XP</td>
                 </tr>
                 <tr>
                     <td>4</td>
                     <td>Дастаи Шарқ 4</td>
-                    <td>0</td>
-                    <td class="points">0 XP</td>
+                    <td style="text-align: center;">0</td>
+                    <td style="text-align: right; color: var(--text-secondary);">0 XP</td>
                 </tr>
             </tbody>
         </table>
@@ -148,36 +162,36 @@
         <table>
             <thead>
                 <tr>
-                    <th>№</th>
+                    <th style="width: 30px;">№</th>
                     <th>Клуб</th>
-                    <th>Матч</th>
-                    <th style="text-align: right;">Рейтинг (XP)</th>
+                    <th style="width: 40px; text-align: center;">Матч</th>
+                    <th style="text-align: right;">Рейтинг</th>
                 </tr>
             </thead>
             <tbody>
                 <tr class="qualified">
                     <td>1</td>
-                    <td>Дастаи Ҷануб 1 🟢</td>
-                    <td>0</td>
+                    <td><div class="team-name">Дастаи Ҷануб 1 🟢</div></td>
+                    <td style="text-align: center;">0</td>
                     <td class="points">0 XP</td>
                 </tr>
                 <tr class="qualified">
                     <td>2</td>
-                    <td>Дастаи Ҷануб 2 🟢</td>
-                    <td>0</td>
+                    <td><div class="team-name">Дастаи Ҷануб 2 🟢</div></td>
+                    <td style="text-align: center;">0</td>
                     <td class="points">0 XP</td>
                 </tr>
                 <tr>
                     <td>3</td>
                     <td>Дастаи Ҷануб 3</td>
-                    <td>0</td>
-                    <td class="points">0 XP</td>
+                    <td style="text-align: center;">0</td>
+                    <td style="text-align: right; color: var(--text-secondary);">0 XP</td>
                 </tr>
                 <tr>
                     <td>4</td>
                     <td>Дастаи Ҷануб 4</td>
-                    <td>0</td>
-                    <td class="points">0 XP</td>
+                    <td style="text-align: center;">0</td>
+                    <td style="text-align: right; color: var(--text-secondary);">0 XP</td>
                 </tr>
             </tbody>
         </table>
@@ -189,36 +203,36 @@
         <table>
             <thead>
                 <tr>
-                    <th>№</th>
+                    <th style="width: 30px;">№</th>
                     <th>Клуб</th>
-                    <th>Матч</th>
-                    <th style="text-align: right;">Рейтинг (XP)</th>
+                    <th style="width: 40px; text-align: center;">Матч</th>
+                    <th style="text-align: right;">Рейтинг</th>
                 </tr>
             </thead>
             <tbody>
                 <tr class="qualified">
                     <td>1</td>
-                    <td>Дастаи Гарк 1 🟢</td>
-                    <td>0</td>
+                    <td><div class="team-name">Дастаи Гарк 1 🟢</div></td>
+                    <td style="text-align: center;">0</td>
                     <td class="points">0 XP</td>
                 </tr>
                 <tr class="qualified">
                     <td>2</td>
-                    <td>Дастаи Гарк 2 🟢</td>
-                    <td>0</td>
+                    <td><div class="team-name">Дастаи Гарк 2 🟢</div></td>
+                    <td style="text-align: center;">0</td>
                     <td class="points">0 XP</td>
                 </tr>
                 <tr>
                     <td>3</td>
                     <td>Дастаи Гарк 3</td>
-                    <td>0</td>
-                    <td class="points">0 XP</td>
+                    <td style="text-align: center;">0</td>
+                    <td style="text-align: right; color: var(--text-secondary);">0 XP</td>
                 </tr>
                 <tr>
                     <td>4</td>
                     <td>Дастаи Гарк 4</td>
-                    <td>0</td>
-                    <td class="points">0 XP</td>
+                    <td style="text-align: center;">0</td>
+                    <td style="text-align: right; color: var(--text-secondary);">0 XP</td>
                 </tr>
             </tbody>
         </table>
@@ -230,43 +244,43 @@
         <table>
             <thead>
                 <tr>
-                    <th>№</th>
+                    <th style="width: 30px;">№</th>
                     <th>Клуб</th>
-                    <th>Матч</th>
-                    <th style="text-align: right;">Рейтинг (XP)</th>
+                    <th style="width: 40px; text-align: center;">Матч</th>
+                    <th style="text-align: right;">Рейтинг</th>
                 </tr>
             </thead>
             <tbody>
                 <tr class="qualified">
                     <td>1</td>
-                    <td>Дастаи Шимол 1 🟢</td>
-                    <td>0</td>
+                    <td><div class="team-name">Дастаи Шимол 1 🟢</div></td>
+                    <td style="text-align: center;">0</td>
                     <td class="points">0 XP</td>
                 </tr>
                 <tr class="qualified">
                     <td>2</td>
-                    <td>Дастаи Шимол 2 🟢</td>
-                    <td>0</td>
+                    <td><div class="team-name">Дастаи Шимол 2 🟢</div></td>
+                    <td style="text-align: center;">0</td>
                     <td class="points">0 XP</td>
                 </tr>
                 <tr>
                     <td>3</td>
                     <td>Дастаи Шимол 3</td>
-                    <td>0</td>
-                    <td class="points">0 XP</td>
+                    <td style="text-align: center;">0</td>
+                    <td style="text-align: right; color: var(--text-secondary);">0 XP</td>
                 </tr>
                 <tr>
                     <td>4</td>
                     <td>Дастаи Шимол 4</td>
-                    <td>0</td>
-                    <td class="points">0 XP</td>
+                    <td style="text-align: center;">0</td>
+                    <td style="text-align: right; color: var(--text-secondary);">0 XP</td>
                 </tr>
             </tbody>
         </table>
     </div>
 
     <div class="footer">
-        Системаи рейтинги FIFA • 2 дастаи беҳтарини ҳар гурӯҳ ба Дивизиони 1 мегузаранд
+        ВАРЗИД • Системаи рейтинги FIFA
     </div>
 </div>
 
