@@ -1,0 +1,152 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #f4f6f9;
+    color: #333;
+    padding-bottom: 40px;
+}
+
+header {
+    background: #1b4d3e;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+header h1 {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 0 15px;
+}
+
+h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #1b4d3e;
+}
+
+.league-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.league-btn {
+    background: white;
+    border: 2px solid #1b4d3e;
+    color: #1b4d3e;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: 0.2s;
+}
+
+.league-btn:active {
+    background: #1b4d3e;
+    color: white;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.league-details {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.admin-login-box {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.admin-login-box input, .admin-card input, .admin-card select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.admin-login-box input {
+    flex: 1;
+}
+
+button {
+    background: #1b4d3e;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.admin-panel {
+    background: #eef2f1;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.admin-card {
+    margin-bottom: 12px;
+}
+
+.admin-card h4 {
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: #2c3e50;
+}
+
+.admin-card input, .admin-card select {
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.table-container {
+    overflow-x: auto;
+    margin-bottom: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+th, td {
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background: #1b4d3e;
+    color: white;
+}
+
+td:nth-child(2) {
+    text-align: left;
+}
+
+.back-btn {
+    background: #6c757d;
+    width: 100%;
+    margin-top: 10px;
+}
