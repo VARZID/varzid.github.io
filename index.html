@@ -3,186 +3,387 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ВАРЗИД - Чемпионати Футболи Фархор</title>
+    <title>VARZID - Мусобиқаҳои ноҳияи Фархор</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root {
-            --bg-color: #121824;
-            --card-bg: #1e2530;
-            --accent-color: #00e676;
-            --text-color: #ffffff;
-            --text-muted: #94a3b8;
-            --border-color: #2a3441;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 70px; }
-        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); }
-        .logo { font-size: 20px; font-weight: bold; color: var(--accent-color); letter-spacing: 1px; }
-        .location { font-size: 12px; color: var(--text-muted); }
-        .container { padding: 15px; }
-        .divisions-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; scrollbar-width: none; }
-        .divisions-scroll::-webkit-scrollbar { display: none; }
-        .div-btn { background-color: var(--card-bg); color: var(--text-muted); border: 1px solid var(--border-color); padding: 8px 14px; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer; }
-        .div-btn.active { background-color: var(--accent-color); color: #000; font-weight: bold; border-color: var(--accent-color); }
-        .table-card { background-color: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: center; }
-        th, td { padding: 10px 6px; }
-        th { background-color: #252e3e; color: var(--text-muted); font-weight: 600; }
-        tr:not(:last-child) td { border-bottom: 1px solid var(--border-color); }
-        td.team-name { text-align: left; padding-left: 10px; font-weight: 500; }
-        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background-color: var(--card-bg); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; padding: 10px 0; z-index: 1000; }
-        .nav-item { background: none; border: none; color: var(--text-muted); font-size: 11px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-        .nav-item.active { color: var(--accent-color); }
-        .nav-item span.icon { font-size: 18px; margin-bottom: 2px; }
-        .section { display: none; }
-        .section.active { display: block; }
-        .admin-box { background-color: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); }
-        .admin-box h3 { font-size: 15px; margin-bottom: 10px; color: var(--accent-color); }
-        .form-group { margin-bottom: 10px; }
-        .form-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; }
-        .form-group select, .form-group input { width: 100%; padding: 8px; background: var(--bg-color); border: 1px solid var(--border-color); color: #fff; border-radius: 6px; }
-        .submit-btn { background-color: var(--accent-color); color: #000; border: none; width: 100%; padding: 10px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 5px; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f3f4f6; }
+        .tab-active { background-color: #16a34a; color: white; border-color: #16a34a; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body>
-    <header>
-        <div>
-            <div class="logo">VARZID</div>
-            <div class="location">Фархор, Чемпионати Ноҳиявӣ</div>
-        </div>
-        <div style="font-size: 18px;">⚽</div>
-    </header>
-    <div class="container">
-        <div id="table-section" class="section active">
-            <div class="divisions-scroll">
-                <button class="div-btn active" onclick="switchDiv('div1')">Лигаи Олӣ (Див 1)</button>
-                <button class="div-btn" onclick="switchDiv('div2')">Лигаи Якум (Див 2)</button>
-                <button class="div-btn" onclick="switchDiv('north')">Минтақаи Шимол</button>
-                <button class="div-btn" onclick="switchDiv('south')">Минтақаи Ҷануб</button>
-                <button class="div-btn" onclick="switchDiv('east')">Минтақаи Шарқ</button>
-                <button class="div-btn" onclick="switchDiv('west')">Минтақаи Ғарб</button>
+<body class="text-gray-800 pb-12">
+
+    <!-- Сарлавҳа (Header) -->
+    <header class="bg-gradient-to-r from-green-700 to-green-600 text-white shadow-md sticky top-0 z-20">
+        <div class="max-w-3xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div>
+                <h1 class="text-xl font-bold tracking-wider">VARZID ⚽</h1>
+                <p class="text-xs text-green-100">Чемпионати ноҳияи Фархор</p>
             </div>
-            <div class="table-card">
-                <table>
+            <button id="adminToggleBtn" onclick="toggleAdminAuth()" class="bg-green-800 hover:bg-green-900 px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1 transition">
+                <span id="lockIcon">🔒</span> <span id="adminBtnText">Админ</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Интихоби гурӯҳҳо (6 гурӯҳ) -->
+    <div class="bg-white shadow-sm sticky top-[60px] z-10">
+        <div class="max-w-3xl mx-auto px-2 py-2.5 flex gap-2 overflow-x-auto no-scrollbar" id="groupTabs">
+            <button onclick="selectGroup('markaz1')" id="tab-markaz1" class="tab-btn px-3.5 py-1.5 rounded-full text-sm font-semibold border border-gray-300 whitespace-nowrap transition tab-active">Марказ 1</button>
+            <button onclick="selectGroup('markaz2')" id="tab-markaz2" class="tab-btn px-3.5 py-1.5 rounded-full text-sm font-semibold border border-gray-300 whitespace-nowrap transition bg-gray-50">Марказ 2</button>
+            <button onclick="selectGroup('sharq')" id="tab-sharq" class="tab-btn px-3.5 py-1.5 rounded-full text-sm font-semibold border border-gray-300 whitespace-nowrap transition bg-gray-50">Деҳ Шарқ</button>
+            <button onclick="selectGroup('gharb')" id="tab-gharb" class="tab-btn px-3.5 py-1.5 rounded-full text-sm font-semibold border border-gray-300 whitespace-nowrap transition bg-gray-50">Деҳ Ғарб</button>
+            <button onclick="selectGroup('shimol')" id="tab-shimol" class="tab-btn px-3.5 py-1.5 rounded-full text-sm font-semibold border border-gray-300 whitespace-nowrap transition bg-gray-50">Деҳ Шимол</button>
+            <button onclick="selectGroup('janub')" id="tab-janub" class="tab-btn px-3.5 py-1.5 rounded-full text-sm font-semibold border border-gray-300 whitespace-nowrap transition bg-gray-50">Деҳ Ҷануб</button>
+        </div>
+    </div>
+
+    <main class="max-w-3xl mx-auto px-3 mt-4 space-y-5">
+
+        <!-- Панели идоракунии Админ (Пинҳон то ворид кардани PIN) -->
+        <section id="adminPanel" class="hidden bg-white rounded-xl shadow-md p-4 border-l-4 border-green-600 space-y-4">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h2 class="font-bold text-green-700 text-base">⚙️ Идоракунии гурӯҳ: <span id="adminCurrentGroupName" class="underline">Марказ 1</span></h2>
+                <button onclick="logoutAdmin()" class="text-xs text-red-600 font-semibold hover:underline">Баромад</button>
+            </div>
+
+            <!-- 1. Илова кардани командаи нав -->
+            <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">➕ Иловаи командаи нав</label>
+                <div class="flex gap-2">
+                    <input type="text" id="newTeamName" placeholder="Масалан: ФК Фархор" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-600">
+                    <button onclick="addTeam()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Илова</button>
+                </div>
+            </div>
+
+            <!-- 2. Сабти натиҷаи бозӣ -->
+            <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                <label class="block text-xs font-bold text-gray-600 uppercase mb-2">⚽ Сабти натиҷаи бозӣ</label>
+                <div class="grid grid-cols-11 gap-1.5 items-center">
+                    <select id="teamASelect" class="col-span-4 px-2 py-2 border border-gray-300 rounded-lg text-xs bg-white"></select>
+                    <input type="number" id="scoreA" min="0" placeholder="0" class="col-span-1 px-1 py-2 border border-gray-300 rounded-lg text-center text-sm font-bold">
+                    <span class="col-span-1 text-center font-bold text-gray-500">:</span>
+                    <input type="number" id="scoreB" min="0" placeholder="0" class="col-span-1 px-1 py-2 border border-gray-300 rounded-lg text-center text-sm font-bold">
+                    <select id="teamBSelect" class="col-span-4 px-2 py-2 border border-gray-300 rounded-lg text-xs bg-white"></select>
+                </div>
+                <button onclick="recordMatch()" class="w-full mt-2.5 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-sm font-semibold transition">Сабти ҳисоб ва навсозии ҷадвал</button>
+            </div>
+        </section>
+
+        <!-- Ҷадвали мусобиқа (Standings Table) -->
+        <section class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="bg-gray-800 text-white px-4 py-2.5 flex justify-between items-center">
+                <h2 class="font-bold text-sm tracking-wide" id="tableTitle">Ҷадвал: Марказ 1</h2>
+                <span class="text-xs text-gray-300" id="loadingStatus">Боргирӣ...</span>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr>
-                            <th>#</th>
-                            <th style="text-align: left; padding-left: 10px;">Даста</th>
-                            <th>Б</th>
-                            <th>ГХ</th>
-                            <th>Х</th>
+                        <tr class="bg-gray-100 text-gray-600 text-xs uppercase border-b border-gray-200">
+                            <th class="py-2.5 px-2 text-center w-8">#</th>
+                            <th class="py-2.5 px-2">Команда</th>
+                            <th class="py-2.5 px-1.5 text-center" title="Бозӣ">Б</th>
+                            <th class="py-2.5 px-1.5 text-center" title="Ғалаба">Ғ</th>
+                            <th class="py-2.5 px-1.5 text-center" title="Мусовӣ">М</th>
+                            <th class="py-2.5 px-1.5 text-center" title="Бохт">Бх</th>
+                            <th class="py-2.5 px-2 text-center" title="Голҳо">ГЗ-ГХ</th>
+                            <th class="py-2.5 px-1.5 text-center" title="Фарқият">+/-</th>
+                            <th class="py-2.5 px-2.5 text-center font-bold text-gray-900" title="Хол">О</th>
+                            <th class="py-2.5 px-2 text-center admin-col hidden">Амал</th>
                         </tr>
                     </thead>
-                    <tbody id="standings-body"></tbody>
+                    <tbody id="standingsBody" class="divide-y divide-gray-100 text-sm">
+                        <!-- Сатрҳо ба таври худкор пур мешаванд -->
+                    </tbody>
                 </table>
             </div>
-        </div>
-        <div id="matches-section" class="section">
-            <h3 style="margin-bottom: 10px; font-size: 16px;">Бозиҳои навбатӣ</h3>
-            <div class="table-card" style="padding: 15px; font-size: 13px; color: var(--text-muted);">
-                Тақвими бозиҳо дар ин ҷо намоиш дода мешавад.
+            <div id="emptyState" class="hidden py-8 text-center text-gray-400 text-sm">
+                Дар ин гурӯҳ ҳоло ягон команда илова нашудааст.
             </div>
+        </section>
+
+        <!-- Шарҳи ихтисораҳо -->
+        <div class="text-xs text-gray-500 px-2 flex flex-wrap gap-x-4 gap-y-1 justify-center">
+            <span><b>Б</b> - Бозӣ</span>
+            <span><b>Ғ</b> - Ғалаба (3 хол)</span>
+            <span><b>М</b> - Мусовӣ (1 хол)</span>
+            <span><b>Бх</b> - Бохт (0 хол)</span>
+            <span><b>ГЗ-ГХ</b> - Голи зада ва хӯрда</span>
+            <span><b>О</b> - Холи умумӣ</span>
         </div>
-        <div id="admin-section" class="section">
-            <div class="admin-box">
-                <h3>Ворид кардани натиҷаи бозӣ</h3>
-                <div class="form-group">
-                    <label>Дивизион:</label>
-                    <select id="admin-div">
-                        <option value="div1">Лигаи Олӣ</option>
-                        <option value="div2">Лигаи Якум</option>
-                        <option value="north">Минтақаи Шимол</option>
-                        <option value="south">Минтақаи Ҷануб</option>
-                        <option value="east">Минтақаи Шарқ</option>
-                        <option value="west">Минтақаи Ғарб</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Дастаи мизбон:</label>
-                    <input type="text" id="team-a" placeholder="Масалан: Ҳулбук">
-                </div>
-                <div class="form-group">
-                    <label>Дастаи меҳмон:</label>
-                    <input type="text" id="team-b" placeholder="Масалан: Фархор">
-                </div>
-                <div class="form-group">
-                    <label>Шот (Ҳисоб):</label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="number" id="score-a" placeholder="0">
-                        <span style="align-self: center;">:</span>
-                        <input type="number" id="score-b" placeholder="0">
-                    </div>
-                </div>
-                <button class="submit-btn" onclick="saveMatch()">Сабт кардани Шот</button>
+
+    </main>
+
+    <!-- Модал барои ворид кардани PIN-код -->
+    <div id="pinModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-lg max-w-xs w-full p-5 space-y-4">
+            <h3 class="font-bold text-lg text-center text-gray-800">Воридшавии Админ</h3>
+            <p class="text-xs text-center text-gray-500">Барои тағйир додани ҷадвал PIN-кодро ворид кунед</p>
+            <input type="password" id="pinInput" inputmode="numeric" placeholder="****" class="w-full text-center text-2xl tracking-widest py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-600">
+            <div class="flex gap-2">
+                <button onclick="closePinModal()" class="flex-1 py-2 bg-gray-200 rounded-lg text-sm font-semibold text-gray-700">Бекор</button>
+                <button onclick="verifyPin()" class="flex-1 py-2 bg-green-600 text-white rounded-lg text-sm font-semibold">Тасдиқ</button>
             </div>
         </div>
     </div>
-    <nav class="nav-bar">
-        <button class="nav-item active" onclick="switchTab('table-section', this)"><span class="icon">📊</span><span>Ҷадвал</span></button>
-        <button class="nav-item" onclick="switchTab('matches-section', this)"><span class="icon">📅</span><span>Бозиҳо</span></button>
-        <button class="nav-item" onclick="switchTab('admin-section', this)"><span class="icon">⚙️</span><span>Админ</span></button>
-    </nav>
-    <script>
-        let leaguesData = {
-            div1: [
-                { name: "Ҳулбук", p: 0, gf: 0, ga: 0, pts: 0 },
-                { name: "Фархори Марказ", p: 0, gf: 0, ga: 0, pts: 0 },
-                { name: "Панҷ", p: 0, gf: 0, ga: 0, pts: 0 },
-                { name: "Ваҳдат", p: 0, gf: 0, ga: 0, pts: 0 }
-            ],
-            div2: [{ name: "Гулшан", p: 0, gf: 0, ga: 0, pts: 0 }, { name: "Баҳор", p: 0, gf: 0, ga: 0, pts: 0 }],
-            north: [{ name: "Шимол-1", p: 0, gf: 0, ga: 0, pts: 0 }],
-            south: [{ name: "Ҷануб-1", p: 0, gf: 0, ga: 0, pts: 0 }],
-            east: [{ name: "Шарқ-1", p: 0, gf: 0, ga: 0, pts: 0 }],
-            west: [{ name: "Ғарб-1", p: 0, gf: 0, ga: 0, pts: 0 }]
+
+    <!-- Firebase SDK ва мантиқи барнома -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        // Танзимоти Firebase-и шумо (varzidtj)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBop42YiupbFdNEUqDr4jG",
+            authDomain: "varzidtj.firebaseapp.com",
+            projectId: "varzidtj",
+            storageBucket: "varzidtj.firebasestorage.app",
+            messagingSenderId: "473938527121",
+            appId: "1:473938527121:web:bc0c9a803",
+            measurementId: "G-2WY4656MT8"
         };
-        let currentActiveDiv = 'div1';
-        function renderTable(divKey) {
-            currentActiveDiv = divKey;
-            const tbody = document.getElementById('standings-body');
-            tbody.innerHTML = '';
-            let teams = leaguesData[divKey];
-            teams.sort((a, b) => b.pts - a.pts || (b.gf - b.ga) - (a.gf - a.ga));
-            teams.forEach((t, index) => {
-                tbody.innerHTML += `<tr><td>${index + 1}</td><td class="team-name">${t.name}</td><td>${t.p}</td><td>${t.gf}:${t.ga}</td><td style="font-weight: bold; color: var(--accent-color);">${t.pts}</td></tr>`;
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // PIN-коди админ (Шумо метавонед ин рақамро иваз кунед)
+        const ADMIN_PIN = "1234";
+
+        const groupNames = {
+            markaz1: "Марказ 1",
+            markaz2: "Марказ 2",
+            sharq: "Деҳ Шарқ",
+            gharb: "Деҳ Ғарб",
+            shimol: "Деҳ Шимол",
+            janub: "Деҳ Ҷануб"
+        };
+
+        let currentGroup = "markaz1";
+        let isAdmin = false;
+        let currentTeams = [];
+        let unsubscribe = null;
+
+        // Интихоби гурӯҳ
+        window.selectGroup = (groupId) => {
+            currentGroup = groupId;
+            
+            // Навсозии тугмаҳо
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('tab-active');
+                btn.classList.add('bg-gray-50');
+            });
+            const activeTab = document.getElementById(`tab-${groupId}`);
+            activeTab.classList.add('tab-active');
+            activeTab.classList.remove('bg-gray-50');
+
+            // Навсозии сарлавҳаҳо
+            document.getElementById('tableTitle').innerText = `Ҷадвал: ${groupNames[groupId]}`;
+            document.getElementById('adminCurrentGroupName').innerText = groupNames[groupId];
+
+            listenToGroupData(groupId);
+        };
+
+        // Гӯш кардани тағйироти база дар вақти воқеӣ
+        function listenToGroupData(groupId) {
+            if (unsubscribe) unsubscribe();
+            document.getElementById('loadingStatus').innerText = "Боргирӣ...";
+
+            const teamsCol = collection(db, "groups", groupId, "teams");
+            unsubscribe = onSnapshot(teamsCol, (snapshot) => {
+                currentTeams = [];
+                snapshot.forEach(docSnap => {
+                    currentTeams.push({ id: docSnap.id, ...docSnap.data() });
+                });
+
+                // Мураттабсозӣ: аввал аз рӯи хол, баъд фарқияти голҳо, баъд голҳои задашуда
+                currentTeams.sort((a, b) => {
+                    if (b.points !== a.points) return b.points - a.points;
+                    const gdA = a.gf - a.ga;
+                    const gdB = b.gf - b.ga;
+                    if (gdB !== gdA) return gdB - gdA;
+                    return b.gf - a.gf;
+                });
+
+                renderTable();
+                updateTeamSelects();
+                document.getElementById('loadingStatus').innerText = "Навсозӣ шуд ✓";
+            }, (error) => {
+                console.error("Хатогии Firebase:", error);
+                document.getElementById('loadingStatus').innerText = "Хатогии пайваст!";
             });
         }
-        function switchDiv(divKey) {
-            document.querySelectorAll('.div-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            renderTable(divKey);
+
+        // Кашидани ҷадвал
+        function renderTable() {
+            const tbody = document.getElementById('standingsBody');
+            const emptyState = document.getElementById('emptyState');
+            tbody.innerHTML = "";
+
+            if (currentTeams.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            emptyState.classList.add('hidden');
+
+            currentTeams.forEach((team, index) => {
+                const gd = team.gf - team.ga;
+                const gdText = gd > 0 ? `+${gd}` : gd;
+                const rowClass = index === 0 ? "bg-green-50/70" : index === 1 ? "bg-blue-50/40" : "";
+
+                const tr = document.createElement('tr');
+                tr.className = `hover:bg-gray-50 transition ${rowClass}`;
+                tr.innerHTML = `
+                    <td class="py-2.5 px-2 text-center font-semibold text-gray-500">${index + 1}</td>
+                    <td class="py-2.5 px-2 font-semibold text-gray-900">${team.name}</td>
+                    <td class="py-2.5 px-1.5 text-center text-gray-600">${team.played}</td>
+                    <td class="py-2.5 px-1.5 text-center text-green-600 font-medium">${team.won}</td>
+                    <td class="py-2.5 px-1.5 text-center text-gray-500">${team.drawn}</td>
+                    <td class="py-2.5 px-1.5 text-center text-red-500">${team.lost}</td>
+                    <td class="py-2.5 px-2 text-center text-gray-600 text-xs">${team.gf}-${team.ga}</td>
+                    <td class="py-2.5 px-1.5 text-center font-medium ${gd >= 0 ? 'text-gray-700' : 'text-red-500'}">${gdText}</td>
+                    <td class="py-2.5 px-2.5 text-center font-extrabold text-gray-900 bg-gray-50/80">${team.points}</td>
+                    <td class="py-2.5 px-2 text-center admin-col ${isAdmin ? '' : 'hidden'}">
+                        <button onclick="deleteTeam('${team.id}', '${team.name}')" class="text-red-500 hover:text-red-700 text-xs font-bold px-1.5 py-0.5 rounded border border-red-200">✕</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
-        function switchTab(sectionId, btn) {
-            document.querySelectorAll('.section').choices = document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(sectionId).classList.add('active');
-            btn.classList.add('active');
+
+        // Пур кардани рӯйхати командаҳо барои сабти бозӣ
+        function updateTeamSelects() {
+            const selA = document.getElementById('teamASelect');
+            const selB = document.getElementById('teamBSelect');
+            selA.innerHTML = '<option value="">Командаи 1</option>';
+            selB.innerHTML = '<option value="">Командаи 2</option>';
+
+            currentTeams.forEach(team => {
+                selA.innerHTML += `<option value="${team.id}">${team.name}</option>`;
+                selB.innerHTML += `<option value="${team.id}">${team.name}</option>`;
+            });
         }
-        function saveMatch() {
-            let div = document.getElementById('admin-div').value;
-            let nameA = document.getElementById('team-a').value.trim();
-            let nameB = document.getElementById('team-b').value.trim();
-            let scoreA = parseInt(document.getElementById('score-a').value) || 0;
-            let scoreB = parseInt(document.getElementById('score-b').value) || 0;
-            if(!nameA || !nameB) { alert("Лутфан номи дастаҳоро нависед!"); return; }
-            let teamAObj = leaguesData[div].find(t => t.name.toLowerCase() === nameA.toLowerCase());
-            if(!teamAObj) { teamAObj = { name: nameA, p: 0, gf: 0, ga: 0, pts: 0 }; leaguesData[div].push(teamAObj); }
-            let teamBObj = leaguesData[div].find(t => t.name.toLowerCase() === nameB.toLowerCase());
-            if(!teamBObj) { teamBObj = { name: nameB, p: 0, gf: 0, ga: 0, pts: 0 }; leaguesData[div].push(teamBObj); }
-            teamAObj.p += 1; teamBObj.p += 1;
-            teamAObj.gf += scoreA; teamAObj.ga += scoreB;
-            teamBObj.gf += scoreB; teamBObj.ga += scoreA;
-            if(scoreA > scoreB) { teamAObj.pts += 3; }
-            else if(scoreA < scoreB) { teamBObj.pts += 3; }
-            else { teamAObj.pts += 1; teamBObj.pts += 1; }
-            alert("Натиҷа сабт шуд ва ҷадвал нав гардид!");
-            renderTable(currentActiveDiv);
-            document.getElementById('team-a').value = '';
-            document.getElementById('team-b').value = '';
-            document.getElementById('score-a').value = '';
-            document.getElementById('score-b').value = '';
-        }
-        renderTable('div1');
+
+        // Иловаи командаи нав
+        window.addTeam = async () => {
+            const nameInput = document.getElementById('newTeamName');
+            const name = nameInput.value.trim();
+            if (!name) return alert("Номи командаро нависед!");
+
+            const teamId = "team_" + Date.now();
+            await setDoc(doc(db, "groups", currentGroup, "teams", teamId), {
+                name: name,
+                played: 0,
+                won: 0,
+                drawn: 0,
+                lost: 0,
+                gf: 0,
+                ga: 0,
+                points: 0
+            });
+            nameInput.value = "";
+        };
+
+        // Сабти натиҷаи бозӣ ва ҳисоби худкор
+        window.recordMatch = async () => {
+            const idA = document.getElementById('teamASelect').value;
+            const idB = document.getElementById('teamBSelect').value;
+            const sA = parseInt(document.getElementById('scoreA').value);
+            const sB = parseInt(document.getElementById('scoreB').value);
+
+            if (!idA || !idB) return alert("Ҳарду командаро интихоб кунед!");
+            if (idA === idB) return alert("Як команда бо худаш бозӣ намекунад!");
+            if (isNaN(sA) || isNaN(sB) || sA < 0 || sB < 0) return alert("Ҳисоби голҳоро дуруст нависед!");
+
+            const refA = doc(db, "groups", currentGroup, "teams", idA);
+            const refB = doc(db, "groups", currentGroup, "teams", idB);
+
+            let winA = 0, drawA = 0, lossA = 0, ptsA = 0;
+            let winB = 0, drawB = 0, lossB = 0, ptsB = 0;
+
+            if (sA > sB) {
+                winA = 1; ptsA = 3;
+                lossB = 1; ptsB = 0;
+            } else if (sB > sA) {
+                winB = 1; ptsB = 3;
+                lossA = 1; ptsA = 0;
+            } else {
+                drawA = 1; ptsA = 1;
+                drawB = 1; ptsB = 1;
+            }
+
+            await updateDoc(refA, {
+                played: increment(1),
+                won: increment(winA),
+                drawn: increment(drawA),
+                lost: increment(lossA),
+                gf: increment(sA),
+                ga: increment(sB),
+                points: increment(ptsA)
+            });
+
+            await updateDoc(refB, {
+                played: increment(1),
+                won: increment(winB),
+                drawn: increment(drawB),
+                lost: increment(lossB),
+                gf: increment(sB),
+                ga: increment(sA),
+                points: increment(ptsB)
+            });
+
+            document.getElementById('scoreA').value = "";
+            document.getElementById('scoreB').value = "";
+            alert("Натиҷа сабт шуд ва ҷадвал нав шуд!");
+        };
+
+        // Нест кардани команда
+        window.deleteTeam = async (teamId, teamName) => {
+            if (confirm(`Оё мутмаин ҳастед, ки "${teamName}"-ро нест мекунед?`)) {
+                await deleteDoc(doc(db, "groups", currentGroup, "teams", teamId));
+            }
+        };
+
+        // Идоракунии Админ (PIN)
+        window.toggleAdminAuth = () => {
+            if (isAdmin) {
+                document.getElementById('adminPanel').classList.toggle('hidden');
+            } else {
+                document.getElementById('pinModal').classList.remove('hidden');
+                document.getElementById('pinInput').focus();
+            }
+        };
+
+        window.closePinModal = () => {
+            document.getElementById('pinModal').classList.add('hidden');
+            document.getElementById('pinInput').value = "";
+        };
+
+        window.verifyPin = () => {
+            const entered = document.getElementById('pinInput').value;
+            if (entered === ADMIN_PIN) {
+                isAdmin = true;
+                closePinModal();
+                document.getElementById('adminPanel').classList.remove('hidden');
+                document.getElementById('lockIcon').innerText = "🔓";
+                document.getElementById('adminBtnText').innerText = "Панел";
+                document.querySelectorAll('.admin-col').forEach(el => el.classList.remove('hidden'));
+            } else {
+                alert("PIN-код нодуруст аст!");
+            }
+        };
+
+        window.logoutAdmin = () => {
+            isAdmin = false;
+            document.getElementById('adminPanel').classList.add('hidden');
+            document.getElementById('lockIcon').innerText = "🔒";
+            document.getElementById('adminBtnText').innerText = "Админ";
+            document.querySelectorAll('.admin-col').forEach(el => el.classList.add('hidden'));
+        };
+
+        // Оғози кор бо гурӯҳи аввал
+        listenToGroupData("markaz1");
     </script>
 </body>
 </html>
