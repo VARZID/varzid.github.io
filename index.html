@@ -1,389 +1,274 @@
 <!DOCTYPE html>
-<html lang="tg">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VARZID - Мусобиқаҳои ноҳияи Фархор</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>ВАРЗИД - Рейтинг и Группы</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f3f4f6; }
-        .tab-active { background-color: #16a34a; color: white; border-color: #16a34a; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #ffffff;
+            --text-secondary: #b0b0b0;
+            --accent-color: #1db954;
+            --border-color: #2c2c2c;
+            --green-zone: rgba(29, 185, 84, 0.15);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+
+        .group-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .group-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 10px 8px;
+            text-align: left;
+        }
+
+        th {
+            color: var(--text-secondary);
+            font-size: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* 2 дастаи якум бо ранги сабз махсус карда шудаанд */
+        tr.qualified {
+            background-color: var(--green-zone);
+        }
+
+        tr.qualified td:first-child {
+            border-left: 4px solid var(--accent-color);
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .points {
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 30px;
+        }
     </style>
 </head>
-<body class="text-gray-800 pb-12">
+<body>
 
-    <!-- Сарлавҳа (Header) -->
-    <header class="bg-gradient-to-r from-green-700 to-green-600 text-white shadow-md sticky top-0 z-20">
-        <div class="max-w-3xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div>
-                <h1 class="text-xl font-bold tracking-wider">VARZID ⚽</h1>
-                <p class="text-xs text-green-100">Чемпионати ноҳияи Фархор</p>
-            </div>
-            <button id="adminToggleBtn" onclick="toggleAdminAuth()" class="bg-green-800 hover:bg-green-900 px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1 transition">
-                <span id="lockIcon">🔒</span> <span id="adminBtnText">Админ</span>
-            </button>
-        </div>
-    </header>
+<div class="container">
+    <h1>ВАРЗИД — Марҳилаи Гурӯҳӣ</h1>
 
-    <!-- Интихоби гурӯҳҳо (6 гурӯҳ) -->
-    <div class="bg-white shadow-sm sticky top-[60px] z-10">
-        <div class="max-w-3xl mx-auto px-2 py-2.5 flex gap-2 overflow-x-auto no-scrollbar" id="groupTabs">
-            <button onclick="selectGroup('markaz1')" id="tab-markaz1" class="tab-btn px-3.5 py-1.5 rounded-full text-sm font-semibold border border-gray-300 whitespace-nowrap transition tab-active">Марказ 1</button>
-            <button onclick="selectGroup('markaz2')" id="tab-markaz2" class="tab-btn px-3.5 py-1.5 rounded-full text-sm font-semibold border border-gray-300 whitespace-nowrap transition bg-gray-50">Марказ 2</button>
-            <button onclick="selectGroup('sharq')" id="tab-sharq" class="tab-btn px-3.5 py-1.5 rounded-full text-sm font-semibold border border-gray-300 whitespace-nowrap transition bg-gray-50">Деҳ Шарқ</button>
-            <button onclick="selectGroup('gharb')" id="tab-gharb" class="tab-btn px-3.5 py-1.5 rounded-full text-sm font-semibold border border-gray-300 whitespace-nowrap transition bg-gray-50">Деҳ Ғарб</button>
-            <button onclick="selectGroup('shimol')" id="tab-shimol" class="tab-btn px-3.5 py-1.5 rounded-full text-sm font-semibold border border-gray-300 whitespace-nowrap transition bg-gray-50">Деҳ Шимол</button>
-            <button onclick="selectGroup('janub')" id="tab-janub" class="tab-btn px-3.5 py-1.5 rounded-full text-sm font-semibold border border-gray-300 whitespace-nowrap transition bg-gray-50">Деҳ Ҷануб</button>
-        </div>
+    <!-- Гурӯҳи Деҳ-Шарқ -->
+    <div class="group-card">
+        <div class="group-title">Деҳ-Шарқ</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Клуб</th>
+                    <th>Матч</th>
+                    <th style="text-align: right;">Рейтинг (XP)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="qualified">
+                    <td>1</td>
+                    <td>Дастаи Шарқ 1 🟢</td>
+                    <td>0</td>
+                    <td class="points">0 XP</td>
+                </tr>
+                <tr class="qualified">
+                    <td>2</td>
+                    <td>Дастаи Шарқ 2 🟢</td>
+                    <td>0</td>
+                    <td class="points">0 XP</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Дастаи Шарқ 3</td>
+                    <td>0</td>
+                    <td class="points">0 XP</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Дастаи Шарқ 4</td>
+                    <td>0</td>
+                    <td class="points">0 XP</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
-    <main class="max-w-3xl mx-auto px-3 mt-4 space-y-5">
-
-        <!-- Панели идоракунии Админ (Пинҳон то ворид кардани PIN) -->
-        <section id="adminPanel" class="hidden bg-white rounded-xl shadow-md p-4 border-l-4 border-green-600 space-y-4">
-            <div class="flex justify-between items-center border-b pb-2">
-                <h2 class="font-bold text-green-700 text-base">⚙️ Идоракунии гурӯҳ: <span id="adminCurrentGroupName" class="underline">Марказ 1</span></h2>
-                <button onclick="logoutAdmin()" class="text-xs text-red-600 font-semibold hover:underline">Баромад</button>
-            </div>
-
-            <!-- 1. Илова кардани командаи нав -->
-            <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                <label class="block text-xs font-bold text-gray-600 uppercase mb-1.5">➕ Иловаи командаи нав</label>
-                <div class="flex gap-2">
-                    <input type="text" id="newTeamName" placeholder="Масалан: ФК Фархор" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-600">
-                    <button onclick="addTeam()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Илова</button>
-                </div>
-            </div>
-
-            <!-- 2. Сабти натиҷаи бозӣ -->
-            <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                <label class="block text-xs font-bold text-gray-600 uppercase mb-2">⚽ Сабти натиҷаи бозӣ</label>
-                <div class="grid grid-cols-11 gap-1.5 items-center">
-                    <select id="teamASelect" class="col-span-4 px-2 py-2 border border-gray-300 rounded-lg text-xs bg-white"></select>
-                    <input type="number" id="scoreA" min="0" placeholder="0" class="col-span-1 px-1 py-2 border border-gray-300 rounded-lg text-center text-sm font-bold">
-                    <span class="col-span-1 text-center font-bold text-gray-500">:</span>
-                    <input type="number" id="scoreB" min="0" placeholder="0" class="col-span-1 px-1 py-2 border border-gray-300 rounded-lg text-center text-sm font-bold">
-                    <select id="teamBSelect" class="col-span-4 px-2 py-2 border border-gray-300 rounded-lg text-xs bg-white"></select>
-                </div>
-                <button onclick="recordMatch()" class="w-full mt-2.5 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-sm font-semibold transition">Сабти ҳисоб ва навсозии ҷадвал</button>
-            </div>
-        </section>
-
-        <!-- Ҷадвали мусобиқа (Standings Table) -->
-        <section class="bg-white rounded-xl shadow-md overflow-hidden">
-            <div class="bg-gray-800 text-white px-4 py-2.5 flex justify-between items-center">
-                <h2 class="font-bold text-sm tracking-wide" id="tableTitle">Ҷадвал: Марказ 1</h2>
-                <span class="text-xs text-gray-300" id="loadingStatus">Боргирӣ...</span>
-            </div>
-
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-gray-100 text-gray-600 text-xs uppercase border-b border-gray-200">
-                            <th class="py-2.5 px-2 text-center w-8">#</th>
-                            <th class="py-2.5 px-2">Команда</th>
-                            <th class="py-2.5 px-1.5 text-center" title="Бозӣ">Б</th>
-                            <th class="py-2.5 px-1.5 text-center" title="Ғалаба">Ғ</th>
-                            <th class="py-2.5 px-1.5 text-center" title="Мусовӣ">М</th>
-                            <th class="py-2.5 px-1.5 text-center" title="Бохт">Бх</th>
-                            <th class="py-2.5 px-2 text-center" title="Голҳо">ГЗ-ГХ</th>
-                            <th class="py-2.5 px-1.5 text-center" title="Фарқият">+/-</th>
-                            <th class="py-2.5 px-2.5 text-center font-bold text-gray-900" title="Хол">О</th>
-                            <th class="py-2.5 px-2 text-center admin-col hidden">Амал</th>
-                        </tr>
-                    </thead>
-                    <tbody id="standingsBody" class="divide-y divide-gray-100 text-sm">
-                        <!-- Сатрҳо ба таври худкор пур мешаванд -->
-                    </tbody>
-                </table>
-            </div>
-            <div id="emptyState" class="hidden py-8 text-center text-gray-400 text-sm">
-                Дар ин гурӯҳ ҳоло ягон команда илова нашудааст.
-            </div>
-        </section>
-
-        <!-- Шарҳи ихтисораҳо -->
-        <div class="text-xs text-gray-500 px-2 flex flex-wrap gap-x-4 gap-y-1 justify-center">
-            <span><b>Б</b> - Бозӣ</span>
-            <span><b>Ғ</b> - Ғалаба (3 хол)</span>
-            <span><b>М</b> - Мусовӣ (1 хол)</span>
-            <span><b>Бх</b> - Бохт (0 хол)</span>
-            <span><b>ГЗ-ГХ</b> - Голи зада ва хӯрда</span>
-            <span><b>О</b> - Холи умумӣ</span>
-        </div>
-
-    </main>
-
-    <!-- Модал барои ворид кардани PIN-код -->
-    <div id="pinModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-lg max-w-xs w-full p-5 space-y-4">
-            <h3 class="font-bold text-lg text-center text-gray-800">Воридшавии Админ</h3>
-            <p class="text-xs text-center text-gray-500">Барои тағйир додани ҷадвал PIN-кодро ворид кунед</p>
-            <input type="password" id="pinInput" inputmode="numeric" placeholder="****" class="w-full text-center text-2xl tracking-widest py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-600">
-            <div class="flex gap-2">
-                <button onclick="closePinModal()" class="flex-1 py-2 bg-gray-200 rounded-lg text-sm font-semibold text-gray-700">Бекор</button>
-                <button onclick="verifyPin()" class="flex-1 py-2 bg-green-600 text-white rounded-lg text-sm font-semibold">Тасдиқ</button>
-            </div>
-        </div>
+    <!-- Гурӯҳи Деҳ-Ҷануб -->
+    <div class="group-card">
+        <div class="group-title">Деҳ-Ҷануб</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Клуб</th>
+                    <th>Матч</th>
+                    <th style="text-align: right;">Рейтинг (XP)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="qualified">
+                    <td>1</td>
+                    <td>Дастаи Ҷануб 1 🟢</td>
+                    <td>0</td>
+                    <td class="points">0 XP</td>
+                </tr>
+                <tr class="qualified">
+                    <td>2</td>
+                    <td>Дастаи Ҷануб 2 🟢</td>
+                    <td>0</td>
+                    <td class="points">0 XP</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Дастаи Ҷануб 3</td>
+                    <td>0</td>
+                    <td class="points">0 XP</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Дастаи Ҷануб 4</td>
+                    <td>0</td>
+                    <td class="points">0 XP</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
-    <!-- Firebase SDK ва мантиқи барнома -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    <!-- Гурӯҳи Деҳ-Гарк -->
+    <div class="group-card">
+        <div class="group-title">Деҳ-Гарк</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Клуб</th>
+                    <th>Матч</th>
+                    <th style="text-align: right;">Рейтинг (XP)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="qualified">
+                    <td>1</td>
+                    <td>Дастаи Гарк 1 🟢</td>
+                    <td>0</td>
+                    <td class="points">0 XP</td>
+                </tr>
+                <tr class="qualified">
+                    <td>2</td>
+                    <td>Дастаи Гарк 2 🟢</td>
+                    <td>0</td>
+                    <td class="points">0 XP</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Дастаи Гарк 3</td>
+                    <td>0</td>
+                    <td class="points">0 XP</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Дастаи Гарк 4</td>
+                    <td>0</td>
+                    <td class="points">0 XP</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-        // Танзимоти Firebase-и шумо (varzidtj)
-        const firebaseConfig = {
-            apiKey: "AIzaSyBop42YiupbFdNEUqDr4jG",
-            authDomain: "varzidtj.firebaseapp.com",
-            projectId: "varzidtj",
-            storageBucket: "varzidtj.firebasestorage.app",
-            messagingSenderId: "473938527121",
-            appId: "1:473938527121:web:bc0c9a803",
-            measurementId: "G-2WY4656MT8"
-        };
+    <!-- Гурӯҳи Деҳ-Шимол -->
+    <div class="group-card">
+        <div class="group-title">Деҳ-Шимол</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Клуб</th>
+                    <th>Матч</th>
+                    <th style="text-align: right;">Рейтинг (XP)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="qualified">
+                    <td>1</td>
+                    <td>Дастаи Шимол 1 🟢</td>
+                    <td>0</td>
+                    <td class="points">0 XP</td>
+                </tr>
+                <tr class="qualified">
+                    <td>2</td>
+                    <td>Дастаи Шимол 2 🟢</td>
+                    <td>0</td>
+                    <td class="points">0 XP</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Дастаи Шимол 3</td>
+                    <td>0</td>
+                    <td class="points">0 XP</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Дастаи Шимол 4</td>
+                    <td>0</td>
+                    <td class="points">0 XP</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+    <div class="footer">
+        Системаи рейтинги FIFA • 2 дастаи беҳтарини ҳар гурӯҳ ба Дивизиони 1 мегузаранд
+    </div>
+</div>
 
-        // PIN-коди админ (Шумо метавонед ин рақамро иваз кунед)
-        const ADMIN_PIN = "1234";
-
-        const groupNames = {
-            markaz1: "Марказ 1",
-            markaz2: "Марказ 2",
-            sharq: "Деҳ Шарқ",
-            gharb: "Деҳ Ғарб",
-            shimol: "Деҳ Шимол",
-            janub: "Деҳ Ҷануб"
-        };
-
-        let currentGroup = "markaz1";
-        let isAdmin = false;
-        let currentTeams = [];
-        let unsubscribe = null;
-
-        // Интихоби гурӯҳ
-        window.selectGroup = (groupId) => {
-            currentGroup = groupId;
-            
-            // Навсозии тугмаҳо
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('tab-active');
-                btn.classList.add('bg-gray-50');
-            });
-            const activeTab = document.getElementById(`tab-${groupId}`);
-            activeTab.classList.add('tab-active');
-            activeTab.classList.remove('bg-gray-50');
-
-            // Навсозии сарлавҳаҳо
-            document.getElementById('tableTitle').innerText = `Ҷадвал: ${groupNames[groupId]}`;
-            document.getElementById('adminCurrentGroupName').innerText = groupNames[groupId];
-
-            listenToGroupData(groupId);
-        };
-
-        // Гӯш кардани тағйироти база дар вақти воқеӣ
-        function listenToGroupData(groupId) {
-            if (unsubscribe) unsubscribe();
-            document.getElementById('loadingStatus').innerText = "Боргирӣ...";
-
-            const teamsCol = collection(db, "groups", groupId, "teams");
-            unsubscribe = onSnapshot(teamsCol, (snapshot) => {
-                currentTeams = [];
-                snapshot.forEach(docSnap => {
-                    currentTeams.push({ id: docSnap.id, ...docSnap.data() });
-                });
-
-                // Мураттабсозӣ: аввал аз рӯи хол, баъд фарқияти голҳо, баъд голҳои задашуда
-                currentTeams.sort((a, b) => {
-                    if (b.points !== a.points) return b.points - a.points;
-                    const gdA = a.gf - a.ga;
-                    const gdB = b.gf - b.ga;
-                    if (gdB !== gdA) return gdB - gdA;
-                    return b.gf - a.gf;
-                });
-
-                renderTable();
-                updateTeamSelects();
-                document.getElementById('loadingStatus').innerText = "Навсозӣ шуд ✓";
-            }, (error) => {
-                console.error("Хатогии Firebase:", error);
-                document.getElementById('loadingStatus').innerText = "Хатогии пайваст!";
-            });
-        }
-
-        // Кашидани ҷадвал
-        function renderTable() {
-            const tbody = document.getElementById('standingsBody');
-            const emptyState = document.getElementById('emptyState');
-            tbody.innerHTML = "";
-
-            if (currentTeams.length === 0) {
-                emptyState.classList.remove('hidden');
-                return;
-            }
-            emptyState.classList.add('hidden');
-
-            currentTeams.forEach((team, index) => {
-                const gd = team.gf - team.ga;
-                const gdText = gd > 0 ? `+${gd}` : gd;
-                const rowClass = index === 0 ? "bg-green-50/70" : index === 1 ? "bg-blue-50/40" : "";
-
-                const tr = document.createElement('tr');
-                tr.className = `hover:bg-gray-50 transition ${rowClass}`;
-                tr.innerHTML = `
-                    <td class="py-2.5 px-2 text-center font-semibold text-gray-500">${index + 1}</td>
-                    <td class="py-2.5 px-2 font-semibold text-gray-900">${team.name}</td>
-                    <td class="py-2.5 px-1.5 text-center text-gray-600">${team.played}</td>
-                    <td class="py-2.5 px-1.5 text-center text-green-600 font-medium">${team.won}</td>
-                    <td class="py-2.5 px-1.5 text-center text-gray-500">${team.drawn}</td>
-                    <td class="py-2.5 px-1.5 text-center text-red-500">${team.lost}</td>
-                    <td class="py-2.5 px-2 text-center text-gray-600 text-xs">${team.gf}-${team.ga}</td>
-                    <td class="py-2.5 px-1.5 text-center font-medium ${gd >= 0 ? 'text-gray-700' : 'text-red-500'}">${gdText}</td>
-                    <td class="py-2.5 px-2.5 text-center font-extrabold text-gray-900 bg-gray-50/80">${team.points}</td>
-                    <td class="py-2.5 px-2 text-center admin-col ${isAdmin ? '' : 'hidden'}">
-                        <button onclick="deleteTeam('${team.id}', '${team.name}')" class="text-red-500 hover:text-red-700 text-xs font-bold px-1.5 py-0.5 rounded border border-red-200">✕</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        // Пур кардани рӯйхати командаҳо барои сабти бозӣ
-        function updateTeamSelects() {
-            const selA = document.getElementById('teamASelect');
-            const selB = document.getElementById('teamBSelect');
-            selA.innerHTML = '<option value="">Командаи 1</option>';
-            selB.innerHTML = '<option value="">Командаи 2</option>';
-
-            currentTeams.forEach(team => {
-                selA.innerHTML += `<option value="${team.id}">${team.name}</option>`;
-                selB.innerHTML += `<option value="${team.id}">${team.name}</option>`;
-            });
-        }
-
-        // Иловаи командаи нав
-        window.addTeam = async () => {
-            const nameInput = document.getElementById('newTeamName');
-            const name = nameInput.value.trim();
-            if (!name) return alert("Номи командаро нависед!");
-
-            const teamId = "team_" + Date.now();
-            await setDoc(doc(db, "groups", currentGroup, "teams", teamId), {
-                name: name,
-                played: 0,
-                won: 0,
-                drawn: 0,
-                lost: 0,
-                gf: 0,
-                ga: 0,
-                points: 0
-            });
-            nameInput.value = "";
-        };
-
-        // Сабти натиҷаи бозӣ ва ҳисоби худкор
-        window.recordMatch = async () => {
-            const idA = document.getElementById('teamASelect').value;
-            const idB = document.getElementById('teamBSelect').value;
-            const sA = parseInt(document.getElementById('scoreA').value);
-            const sB = parseInt(document.getElementById('scoreB').value);
-
-            if (!idA || !idB) return alert("Ҳарду командаро интихоб кунед!");
-            if (idA === idB) return alert("Як команда бо худаш бозӣ намекунад!");
-            if (isNaN(sA) || isNaN(sB) || sA < 0 || sB < 0) return alert("Ҳисоби голҳоро дуруст нависед!");
-
-            const refA = doc(db, "groups", currentGroup, "teams", idA);
-            const refB = doc(db, "groups", currentGroup, "teams", idB);
-
-            let winA = 0, drawA = 0, lossA = 0, ptsA = 0;
-            let winB = 0, drawB = 0, lossB = 0, ptsB = 0;
-
-            if (sA > sB) {
-                winA = 1; ptsA = 3;
-                lossB = 1; ptsB = 0;
-            } else if (sB > sA) {
-                winB = 1; ptsB = 3;
-                lossA = 1; ptsA = 0;
-            } else {
-                drawA = 1; ptsA = 1;
-                drawB = 1; ptsB = 1;
-            }
-
-            await updateDoc(refA, {
-                played: increment(1),
-                won: increment(winA),
-                drawn: increment(drawA),
-                lost: increment(lossA),
-                gf: increment(sA),
-                ga: increment(sB),
-                points: increment(ptsA)
-            });
-
-            await updateDoc(refB, {
-                played: increment(1),
-                won: increment(winB),
-                drawn: increment(drawB),
-                lost: increment(lossB),
-                gf: increment(sB),
-                ga: increment(sA),
-                points: increment(ptsB)
-            });
-
-            document.getElementById('scoreA').value = "";
-            document.getElementById('scoreB').value = "";
-            alert("Натиҷа сабт шуд ва ҷадвал нав шуд!");
-        };
-
-        // Нест кардани команда
-        window.deleteTeam = async (teamId, teamName) => {
-            if (confirm(`Оё мутмаин ҳастед, ки "${teamName}"-ро нест мекунед?`)) {
-                await deleteDoc(doc(db, "groups", currentGroup, "teams", teamId));
-            }
-        };
-
-        // Идоракунии Админ (PIN)
-        window.toggleAdminAuth = () => {
-            if (isAdmin) {
-                document.getElementById('adminPanel').classList.toggle('hidden');
-            } else {
-                document.getElementById('pinModal').classList.remove('hidden');
-                document.getElementById('pinInput').focus();
-            }
-        };
-
-        window.closePinModal = () => {
-            document.getElementById('pinModal').classList.add('hidden');
-            document.getElementById('pinInput').value = "";
-        };
-
-        window.verifyPin = () => {
-            const entered = document.getElementById('pinInput').value;
-            if (entered === ADMIN_PIN) {
-                isAdmin = true;
-                closePinModal();
-                document.getElementById('adminPanel').classList.remove('hidden');
-                document.getElementById('lockIcon').innerText = "🔓";
-                document.getElementById('adminBtnText').innerText = "Панел";
-                document.querySelectorAll('.admin-col').forEach(el => el.classList.remove('hidden'));
-            } else {
-                alert("PIN-код нодуруст аст!");
-            }
-        };
-
-        window.logoutAdmin = () => {
-            isAdmin = false;
-            document.getElementById('adminPanel').classList.add('hidden');
-            document.getElementById('lockIcon').innerText = "🔒";
-            document.getElementById('adminBtnText').innerText = "Админ";
-            document.querySelectorAll('.admin-col').forEach(el => el.classList.add('hidden'));
-        };
-
-        // Оғози кор бо гурӯҳи аввал
-        listenToGroupData("markaz1");
-    </script>
 </body>
 </html>
