@@ -2,287 +2,854 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ВАРЗИД — Марҳилаи Гурӯҳӣ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ВАРЗИД — Официальная платформа</title>
     <style>
         :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --text-color: #ffffff;
-            --text-secondary: #a0a0a0;
-            --accent-color: #1db954;
-            --border-color: #2c2c2c;
-            --green-badge-bg: rgba(29, 185, 84, 0.2);
+            --bg-main: #0b161c;
+            --bg-header: #070e12;
+            --bg-card: #111f26;
+            --bg-hover: #182b34;
+            --text-main: #ffffff;
+            --text-muted: #7f949e;
+            --accent-red: #ff0046;
+            --accent-green: #00d26a;
+            --green-row: rgba(0, 210, 106, 0.14);
+            --border-color: #1c2e38;
+            --gold-label: #f5b041;
+        }
+
+        body.light-theme {
+            --bg-main: #eef1f4;
+            --bg-header: #001e28;
+            --bg-card: #ffffff;
+            --bg-hover: #f5f7f9;
+            --text-main: #111111;
+            --text-muted: #666666;
+            --border-color: #e0e4e8;
+            --green-row: rgba(0, 210, 106, 0.18);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 10px;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            padding-bottom: 70px;
+            transition: background 0.2s, color 0.2s;
         }
 
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 20px;
-            margin: 15px 0;
-            color: var(--accent-color);
-        }
-
-        .group-card {
-            background-color: var(--card-bg);
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.4);
-        }
-
-        .group-title {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 10px;
+        /* Верхняя панель как в MyScore */
+        .top-header {
+            background-color: var(--bg-header);
             color: #ffffff;
-            border-left: 4px solid var(--accent-color);
-            padding-left: 8px;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #16262f;
+        }
+
+        .sport-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 19px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .brand-badge {
+            background: var(--accent-red);
+            color: #fff;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Полоса дат */
+        .date-bar {
+            background-color: var(--bg-header);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 5px;
+            border-bottom: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+
+        .date-item {
+            text-align: center;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #8fa3ad;
+            font-size: 11px;
+            line-height: 1.3;
+        }
+
+        .date-item.active {
+            color: var(--accent-red);
+            font-weight: 700;
+            background: rgba(255, 0, 70, 0.1);
+        }
+
+        /* Навигационные вкладки (Все игры / Таблица FIFA / Лиги) */
+        .sub-tabs {
+            display: flex;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sub-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px 5px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+
+        .sub-tab.active {
+            color: var(--accent-red);
+            border-bottom-color: var(--accent-red);
+        }
+
+        /* Контейнер секций */
+        .section-label {
+            padding: 12px 15px 6px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--gold-label);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .list-card {
+            background-color: var(--bg-card);
+            margin-bottom: 8px;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Элементы списка соревнований */
+        .league-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+
+        .league-row:last-child {
+            border-bottom: none;
+        }
+
+        .league-row:active {
+            background-color: var(--bg-hover);
+        }
+
+        .league-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .flag-icon {
+            width: 24px;
+            height: 18px;
+            border-radius: 3px;
+            background: linear-gradient(180deg, #cc0000 33%, #ffffff 33%, #ffffff 66%, #006600 66%);
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .league-info small {
+            display: block;
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .league-info span {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .badge-count {
+            background: var(--bg-hover);
+            color: var(--text-muted);
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* Таблица рейтинга FIFA */
+        .group-block {
+            background: var(--bg-card);
+            margin: 10px 10px 16px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .group-header {
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .group-header h3 {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .promo-tag {
+            font-size: 10px;
+            color: var(--accent-green);
+            background: rgba(0, 210, 106, 0.15);
+            padding: 3px 7px;
+            border-radius: 4px;
+            font-weight: 600;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px;
-        }
-
-        th, td {
-            padding: 8px 6px;
-            text-align: left;
         }
 
         th {
-            color: var(--text-secondary);
             font-size: 11px;
+            color: var(--text-muted);
+            text-align: left;
+            padding: 8px 10px;
             border-bottom: 1px solid var(--border-color);
-            text-transform: uppercase;
         }
 
         td {
+            padding: 10px;
+            font-size: 13px;
             border-bottom: 1px solid var(--border-color);
         }
 
-        /* 2 дастаи пешқадам бо нишонаи сабзи тоза */
-        tr.qualified td {
-            background-color: var(--green-badge-bg);
+        tr:last-child td {
+            border-bottom: none;
         }
 
-        tr.qualified td:first-child {
-            border-left: 3px solid var(--accent-color);
-            border-top-left-radius: 4px;
-            border-bottom-left-radius: 4px;
+        /* Специальный зеленый цвет для 2 команд, выходящих в Дивизион 1 */
+        tr.promo-zone {
+            background-color: var(--green-row);
         }
 
-        tr.qualified td:last-child {
-            border-top-right-radius: 4px;
-            border-bottom-right-radius: 4px;
+        tr.promo-zone td:first-child {
+            border-left: 4px solid var(--accent-green);
+            font-weight: 700;
+            color: var(--accent-green);
         }
 
-        .team-name {
+        .xp-pill {
+            background: rgba(255, 255, 255, 0.07);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        tr.promo-zone .xp-pill {
+            background: var(--accent-green);
+            color: #000000;
+        }
+
+        /* Модальное окно Настроек и Меню */
+        .modal-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-main);
+            z-index: 200;
+            overflow-y: auto;
+        }
+
+        .modal-screen.open {
+            display: block;
+        }
+
+        .modal-header {
+            background: var(--bg-header);
+            color: #fff;
+            padding: 14px 15px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 15px;
+            font-size: 17px;
+            font-weight: 700;
         }
 
-        .points {
-            font-weight: bold;
-            text-align: right;
-            color: var(--accent-color);
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
         }
 
-        .footer {
-            text-align: center;
-            font-size: 11px;
-            color: var(--text-secondary);
-            margin: 20px 0;
+        .setting-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+        .toggle-switch {
+            width: 44px;
+            height: 24px;
+            background: #3a4b53;
+            border-radius: 12px;
+            position: relative;
+            transition: 0.2s;
+        }
+
+        .toggle-switch.on {
+            background: var(--accent-green);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: #fff;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: 0.2s;
+        }
+
+        .toggle-switch.on::after {
+            left: 23px;
+        }
+
+        .btn-login {
+            background: #1c2e38;
+            color: #fff;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* Выпадающее меню выбора лиги */
+        .bottom-sheet {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 300;
+            align-items: flex-end;
+        }
+
+        .bottom-sheet.open {
+            display: flex;
+        }
+
+        .sheet-content {
+            background: var(--bg-card);
+            width: 100%;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            padding: 15px 0 25px;
+        }
+
+        .sheet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 16px 12px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>ВАРЗИД — Марҳилаи Гурӯҳӣ</h1>
-
-    <!-- Гурӯҳи Деҳ-Шарқ -->
-    <div class="group-card">
-        <div class="group-title">Деҳ-Шарқ</div>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 30px;">№</th>
-                    <th>Клуб</th>
-                    <th style="width: 40px; text-align: center;">Матч</th>
-                    <th style="text-align: right;">Рейтинг</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="qualified">
-                    <td>1</td>
-                    <td><div class="team-name">Дастаи Шарқ 1 🟢</div></td>
-                    <td style="text-align: center;">0</td>
-                    <td class="points">0 XP</td>
-                </tr>
-                <tr class="qualified">
-                    <td>2</td>
-                    <td><div class="team-name">Дастаи Шарқ 2 🟢</div></td>
-                    <td style="text-align: center;">0</td>
-                    <td class="points">0 XP</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Дастаи Шарқ 3</td>
-                    <td style="text-align: center;">0</td>
-                    <td style="text-align: right; color: var(--text-secondary);">0 XP</td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>Дастаи Шарқ 4</td>
-                    <td style="text-align: center;">0</td>
-                    <td style="text-align: right; color: var(--text-secondary);">0 XP</td>
-                </tr>
-            </tbody>
-        </table>
+    <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
+    <div class="top-header">
+        <div class="sport-selector" onclick="openLeagueMenu()">
+            <span>⚽ Футбол</span>
+            <span style="font-size: 12px;">▼</span>
+            <span class="brand-badge">ВАРЗИД</span>
+        </div>
+        <div class="header-icons">
+            <button class="icon-btn" onclick="alert('Поиск по клубам и дехот скоро будет доступен!')">🔍</button>
+            <button class="icon-btn" onclick="openSettings()">⚙️</button>
+        </div>
     </div>
 
-    <!-- Гурӯҳи Деҳ-Ҷануб -->
-    <div class="group-card">
-        <div class="group-title">Деҳ-Ҷануб</div>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 30px;">№</th>
-                    <th>Клуб</th>
-                    <th style="width: 40px; text-align: center;">Матч</th>
-                    <th style="text-align: right;">Рейтинг</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="qualified">
-                    <td>1</td>
-                    <td><div class="team-name">Дастаи Ҷануб 1 🟢</div></td>
-                    <td style="text-align: center;">0</td>
-                    <td class="points">0 XP</td>
-                </tr>
-                <tr class="qualified">
-                    <td>2</td>
-                    <td><div class="team-name">Дастаи Ҷануб 2 🟢</div></td>
-                    <td style="text-align: center;">0</td>
-                    <td class="points">0 XP</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Дастаи Ҷануб 3</td>
-                    <td style="text-align: center;">0</td>
-                    <td style="text-align: right; color: var(--text-secondary);">0 XP</td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>Дастаи Ҷануб 4</td>
-                    <td style="text-align: center;">0</td>
-                    <td style="text-align: right; color: var(--text-secondary);">0 XP</td>
-                </tr>
-            </tbody>
-        </table>
+    <!-- ПОЛОСА ДАТ -->
+    <div class="date-bar">
+        <div class="date-item" onclick="selectDate(this)">ВС<br>15.11</div>
+        <div class="date-item active" onclick="selectDate(this)">ПН<br>16.11</div>
+        <div class="date-item" onclick="selectDate(this)">ВТ<br>17.11</div>
+        <div class="date-item" onclick="selectDate(this)">СР<br>18.11</div>
+        <div class="date-item" onclick="selectDate(this)">ЧТ<br>19.11</div>
+        <div class="date-item" onclick="selectDate(this)">ПТ<br>20.11</div>
     </div>
 
-    <!-- Гурӯҳи Деҳ-Гарк -->
-    <div class="group-card">
-        <div class="group-title">Деҳ-Гарк</div>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 30px;">№</th>
-                    <th>Клуб</th>
-                    <th style="width: 40px; text-align: center;">Матч</th>
-                    <th style="text-align: right;">Рейтинг</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="qualified">
-                    <td>1</td>
-                    <td><div class="team-name">Дастаи Гарк 1 🟢</div></td>
-                    <td style="text-align: center;">0</td>
-                    <td class="points">0 XP</td>
-                </tr>
-                <tr class="qualified">
-                    <td>2</td>
-                    <td><div class="team-name">Дастаи Гарк 2 🟢</div></td>
-                    <td style="text-align: center;">0</td>
-                    <td class="points">0 XP</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Дастаи Гарк 3</td>
-                    <td style="text-align: center;">0</td>
-                    <td style="text-align: right; color: var(--text-secondary);">0 XP</td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>Дастаи Гарк 4</td>
-                    <td style="text-align: center;">0</td>
-                    <td style="text-align: right; color: var(--text-secondary);">0 XP</td>
-                </tr>
-            </tbody>
-        </table>
+    <!-- ВКЛАДКИ НАВИГАЦИИ -->
+    <div class="sub-tabs">
+        <div class="sub-tab active" onclick="switchTab('leagues', this)">СОРЕВНОВАНИЯ</div>
+        <div class="sub-tab" onclick="switchTab('fifa', this)">РЕЙТИНГ FIFA</div>
+        <div class="sub-tab" onclick="switchTab('div1', this)">ДИВИЗИОН 1</div>
     </div>
 
-    <!-- Гурӯҳи Деҳ-Шимол -->
-    <div class="group-card">
-        <div class="group-title">Деҳ-Шимол</div>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 30px;">№</th>
-                    <th>Клуб</th>
-                    <th style="width: 40px; text-align: center;">Матч</th>
-                    <th style="text-align: right;">Рейтинг</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="qualified">
-                    <td>1</td>
-                    <td><div class="team-name">Дастаи Шимол 1 🟢</div></td>
-                    <td style="text-align: center;">0</td>
-                    <td class="points">0 XP</td>
-                </tr>
-                <tr class="qualified">
-                    <td>2</td>
-                    <td><div class="team-name">Дастаи Шимол 2 🟢</div></td>
-                    <td style="text-align: center;">0</td>
-                    <td class="points">0 XP</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Дастаи Шимол 3</td>
-                    <td style="text-align: center;">0</td>
-                    <td style="text-align: right; color: var(--text-secondary);">0 XP</td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>Дастаи Шимол 4</td>
-                    <td style="text-align: center;">0</td>
-                    <td style="text-align: right; color: var(--text-secondary);">0 XP</td>
-                </tr>
-            </tbody>
-        </table>
+    <!-- ВКЛАДКА 1: СОРЕВНОВАНИЯ (КАК В MYSCORE) -->
+    <div id="tab-leagues">
+        <div class="list-card">
+            <div class="league-row" onclick="switchTab('fifa', document.querySelectorAll('.sub-tab')[1])">
+                <div class="league-left">
+                    <span style="font-size: 18px;">📋</span>
+                    <div class="league-info">
+                        <span>Все группы и клубы</span>
+                    </div>
+                </div>
+                <span class="badge-count">16</span>
+            </div>
+        </div>
+
+        <div class="section-label">ИЗБРАННЫЕ СОРЕВНОВАНИЯ</div>
+        <div class="list-card">
+            <div class="league-row" onclick="switchTab('div1', document.querySelectorAll('.sub-tab')[2])">
+                <div class="league-left">
+                    <span class="flag-icon"></span>
+                    <div class="league-info">
+                        <small>ФАРХОР • ВЫСШАЯ ЛИГА</small>
+                        <span>Дивизион 1</span>
+                    </div>
+                </div>
+                <span class="badge-count">🏆</span>
+            </div>
+        </div>
+
+        <div class="section-label">ГРУППОВОЙ ЭТАП (ДЕҲОТ)</div>
+        <div class="list-card">
+            <div class="league-row" onclick="goToGroup('group-sharq')">
+                <div class="league-left">
+                    <span class="flag-icon"></span>
+                    <div class="league-info">
+                        <small>ЗОНА ВОСТОК</small>
+                        <span>Деҳ-Шарқ</span>
+                    </div>
+                </div>
+                <span class="badge-count">4</span>
+            </div>
+            <div class="league-row" onclick="goToGroup('group-janub')">
+                <div class="league-left">
+                    <span class="flag-icon"></span>
+                    <div class="league-info">
+                        <small>ЗОНА ЮГ</small>
+                        <span>Деҳ-Ҷануб</span>
+                    </div>
+                </div>
+                <span class="badge-count">4</span>
+            </div>
+            <div class="league-row" onclick="goToGroup('group-garq')">
+                <div class="league-left">
+                    <span class="flag-icon"></span>
+                    <div class="league-info">
+                        <small>ЗОНА ГАРК</small>
+                        <span>Деҳ-Гарк</span>
+                    </div>
+                </div>
+                <span class="badge-count">4</span>
+            </div>
+            <div class="league-row" onclick="goToGroup('group-shimol')">
+                <div class="league-left">
+                    <span class="flag-icon"></span>
+                    <div class="league-info">
+                        <small>ЗОНА СЕВЕР</small>
+                        <span>Деҳ-Шимол</span>
+                    </div>
+                </div>
+                <span class="badge-count">4</span>
+            </div>
+        </div>
     </div>
 
-    <div class="footer">
-        ВАРЗИД • Системаи рейтинги FIFA
-    </div>
-</div>
+    <!-- ВКЛАДКА 2: РЕЙТИНГ FIFA И ГРУППЫ -->
+    <div id="tab-fifa" class="hidden">
+        <div class="section-label">СИСТЕМА РЕЙТИНГА FIFA (СТАРТ С 0 ОЧКОВ)</div>
 
+        <!-- Деҳ-Шарқ -->
+        <div class="group-block" id="group-sharq">
+            <div class="group-header">
+                <h3>Деҳ-Шарқ</h3>
+                <span class="promo-tag">▲ Топ-2 в Дивизион 1</span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 32px;">#</th>
+                        <th>Клуб</th>
+                        <th style="text-align: center;">И</th>
+                        <th style="text-align: right;">Рейтинг</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="promo-zone">
+                        <td>1</td>
+                        <td>Клуб Шарқ 1</td>
+                        <td style="text-align: center;">0</td>
+                        <td style="text-align: right;"><span class="xp-pill">0 XP</span></td>
+                    </tr>
+                    <tr class="promo-zone">
+                        <td>2</td>
+                        <td>Клуб Шарқ 2</td>
+                        <td style="text-align: center;">0</td>
+                        <td style="text-align: right;"><span class="xp-pill">0 XP</span></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Клуб Шарқ 3</td>
+                        <td style="text-align: center;">0</td>
+                        <td style="text-align: right;"><span class="xp-pill">0 XP</span></td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Клуб Шарқ 4</td>
+                        <td style="text-align: center;">0</td>
+                        <td style="text-align: right;"><span class="xp-pill">0 XP</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Деҳ-Ҷануб -->
+        <div class="group-block" id="group-janub">
+            <div class="group-header">
+                <h3>Деҳ-Ҷануб</h3>
+                <span class="promo-tag">▲ Топ-2 в Дивизион 1</span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 32px;">#</th>
+                        <th>Клуб</th>
+                        <th style="text-align: center;">И</th>
+                        <th style="text-align: right;">Рейтинг</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="promo-zone">
+                        <td>1</td>
+                        <td>Клуб Ҷануб 1</td>
+                        <td style="text-align: center;">0</td>
+                        <td style="text-align: right;"><span class="xp-pill">0 XP</span></td>
+                    </tr>
+                    <tr class="promo-zone">
+                        <td>2</td>
+                        <td>Клуб Ҷануб 2</td>
+                        <td style="text-align: center;">0</td>
+                        <td style="text-align: right;"><span class="xp-pill">0 XP</span></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Клуб Ҷануб 3</td>
+                        <td style="text-align: center;">0</td>
+                        <td style="text-align: right;"><span class="xp-pill">0 XP</span></td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Клуб Ҷануб 4</td>
+                        <td style="text-align: center;">0</td>
+                        <td style="text-align: right;"><span class="xp-pill">0 XP</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Деҳ-Гарк -->
+        <div class="group-block" id="group-garq">
+            <div class="group-header">
+                <h3>Деҳ-Гарк</h3>
+                <span class="promo-tag">▲ Топ-2 в Дивизион 1</span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 32px;">#</th>
+                        <th>Клуб</th>
+                        <th style="text-align: center;">И</th>
+                        <th style="text-align: right;">Рейтинг</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="promo-zone">
+                        <td>1</td>
+                        <td>Клуб Гарк 1</td>
+                        <td style="text-align: center;">0</td>
+                        <td style="text-align: right;"><span class="xp-pill">0 XP</span></td>
+                    </tr>
+                    <tr class="promo-zone">
+                        <td>2</td>
+                        <td>Клуб Гарк 2</td>
+                        <td style="text-align: center;">0</td>
+                        <td style="text-align: right;"><span class="xp-pill">0 XP</span></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Клуб Гарк 3</td>
+                        <td style="text-align: center;">0</td>
+                        <td style="text-align: right;"><span class="xp-pill">0 XP</span></td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Клуб Гарк 4</td>
+                        <td style="text-align: center;">0</td>
+                        <td style="text-align: right;"><span class="xp-pill">0 XP</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Деҳ-Шимол -->
+        <div class="group-block" id="group-shimol">
+            <div class="group-header">
+                <h3>Деҳ-Шимол</h3>
+                <span class="promo-tag">▲ Топ-2 в Дивизион 1</span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 32px;">#</th>
+                        <th>Клуб</th>
+                        <th style="text-align: center;">И</th>
+                        <th style="text-align: right;">Рейтинг</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="promo-zone">
+                        <td>1</td>
+                        <td>Клуб Шимол 1</td>
+                        <td style="text-align: center;">0</td>
+                        <td style="text-align: right;"><span class="xp-pill">0 XP</span></td>
+                    </tr>
+                    <tr class="promo-zone">
+                        <td>2</td>
+                        <td>Клуб Шимол 2</td>
+                        <td style="text-align: center;">0</td>
+                        <td style="text-align: right;"><span class="xp-pill">0 XP</span></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Клуб Шимол 3</td>
+                        <td style="text-align: center;">0</td>
+                        <td style="text-align: right;"><span class="xp-pill">0 XP</span></td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Клуб Шимол 4</td>
+                        <td style="text-align: center;">0</td>
+                        <td style="text-align: right;"><span class="xp-pill">0 XP</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ВКЛАДКА 3: ДИВИЗИОН 1 -->
+    <div id="tab-div1" class="hidden">
+        <div class="section-label">ВЫСШАЯ ЛИГА ПЛАТФОРМЫ ВАРЗИД</div>
+        <div class="group-block">
+            <div class="group-header">
+                <h3>🏆 Дивизион 1 (8 лучших клубов)</h3>
+            </div>
+            <div style="padding: 25px 15px; text-align: center; color: var(--text-muted); font-size: 13px;">
+                Сюда автоматически попадут по <strong>2 сильнейшие команды</strong> (выделены зеленым) из групп:<br><br>
+                <strong>Деҳ-Шарқ • Деҳ-Ҷануб • Деҳ-Гарк • Деҳ-Шимол</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- ЭКРАН НАСТРОЕК (КАК В СКРИНШОТЕ, НО СВОЙ) -->
+    <div id="settings-modal" class="modal-screen">
+        <div class="modal-header">
+            <span style="cursor: pointer; font-size: 22px;" onclick="closeSettings()">←</span>
+            <span>Настройки ВАРЗИД</span>
+        </div>
+
+        <div class="section-label">ПРОФИЛЬ</div>
+        <div class="setting-item">
+            <div class="setting-left">
+                <span>👤</span>
+                <span>Гость платформы</span>
+            </div>
+            <button class="btn-login" onclick="alert('Авторизация капитанов команд откроется перед стартом тура')">ВОЙТИ</button>
+        </div>
+
+        <div class="section-label">ОФОРМЛЕНИЕ</div>
+        <div class="setting-item" onclick="toggleTheme()">
+            <div class="setting-left">
+                <span>🌓</span>
+                <div>
+                    <div>Ночной режим (Темная тема)</div>
+                    <small style="color: var(--text-muted); font-size: 11px;">Переключение светлого и темного экрана</small>
+                </div>
+            </div>
+            <div id="theme-switch" class="toggle-switch on"></div>
+        </div>
+
+        <div class="section-label">СИСТЕМА РЕЙТИНГА FIFA</div>
+        <div class="setting-item" onclick="this.querySelector('.toggle-switch').classList.toggle('on')">
+            <div class="setting-left">
+                <span>📊</span>
+                <div>
+                    <div>Авто-пересчет очков силы</div>
+                    <small style="color: var(--text-muted); font-size: 11px;">Постоянный рейтинг без ставок и кэфов</small>
+                </div>
+            </div>
+            <div class="toggle-switch on"></div>
+        </div>
+
+        <div class="setting-item" onclick="this.querySelector('.toggle-switch').classList.toggle('on')">
+            <div class="setting-left">
+                <span>🔔</span>
+                <span>Уведомления о матчах</span>
+            </div>
+            <div class="toggle-switch on"></div>
+        </div>
+
+        <div class="section-label">СВЯЗЬ И ПОДДЕРЖКА</div>
+        <div class="setting-item" onclick="alert('Связаться с администрацией платформы ВАРЗИД: @varzid_admin')">
+            <div class="setting-left">
+                <span>💬</span>
+                <div>
+                    <div>Связаться с платформой</div>
+                    <small style="color: var(--text-muted); font-size: 11px;">Заявка команды или вопрос организаторам</small>
+                </div>
+            </div>
+            <span style="color: var(--text-muted);">›</span>
+        </div>
+    </div>
+
+    <!-- НИЖНЕЕ МЕНЮ ВЫБОРА РАЗДЕЛА (КАК НА ПЕРВОМ СКРИНШОТЕ) -->
+    <div id="league-sheet" class="bottom-sheet" onclick="closeLeagueMenu(event)">
+        <div class="sheet-content">
+            <div class="sheet-header">
+                <span>Выберите турнир</span>
+                <span style="cursor: pointer;" onclick="document.getElementById('league-sheet').classList.remove('open')">✕</span>
+            </div>
+            <div class="league-row" onclick="selectFromSheet('leagues')">
+                <div class="league-left"><span>⚽</span><span>Все соревнования</span></div>
+                <span class="badge-count" style="background: var(--accent-red); color: #fff;">16</span>
+            </div>
+            <div class="league-row" onclick="selectFromSheet('div1')">
+                <div class="league-left"><span>🏆</span><span>Дивизион 1</span></div>
+                <span class="badge-count">8</span>
+            </div>
+            <div class="league-row" onclick="selectFromSheet('fifa')">
+                <div class="league-left"><span>📈</span><span>Рейтинг FIFA (Деҳ-Шарқ / Ҷануб / Гарк / Шимол)</span></div>
+                <span class="badge-count">16</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName, el) {
+            document.getElementById('tab-leagues').classList.add('hidden');
+            document.getElementById('tab-fifa').classList.add('hidden');
+            document.getElementById('tab-div1').classList.add('hidden');
+            document.getElementById('tab-' + tabName).classList.remove('hidden');
+
+            document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+            if (el) el.classList.add('active');
+        }
+
+        function goToGroup(groupId) {
+            switchTab('fifa', document.querySelectorAll('.sub-tab')[1]);
+            setTimeout(() => {
+                document.getElementById(groupId).scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+
+        function selectDate(el) {
+            document.querySelectorAll('.date-item').forEach(d => d.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function openSettings() {
+            document.getElementById('settings-modal').classList.add('open');
+        }
+
+        function closeSettings() {
+            document.getElementById('settings-modal').classList.remove('open');
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            document.getElementById('theme-switch').classList.toggle('on');
+        }
+
+        function openLeagueMenu() {
+            document.getElementById('league-sheet').classList.add('open');
+        }
+
+        function closeLeagueMenu(e) {
+            if (e.target.id === 'league-sheet') {
+                document.getElementById('league-sheet').classList.remove('open');
+            }
+        }
+
+        function selectFromSheet(tab) {
+            document.getElementById('league-sheet').classList.remove('open');
+            const tabIndex = tab === 'leagues' ? 0 : (tab === 'fifa' ? 1 : 2);
+            switchTab(tab, document.querySelectorAll('.sub-tab')[tabIndex]);
+        }
+    </script>
 </body>
 </html>
