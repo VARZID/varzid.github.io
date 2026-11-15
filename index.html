@@ -1,220 +1,188 @@
 <!DOCTYPE html>
-<html lang="ru" class="dark">
+<html lang="tg">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VARZID - Магазин</title>
-    <script>
-        tailwind = { darkMode: 'class' }
-    </script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
+    <title>ВАРЗИД - Чемпионати Футболи Фархор</title>
+    <style>
+        :root {
+            --bg-color: #121824;
+            --card-bg: #1e2530;
+            --accent-color: #00e676;
+            --text-color: #ffffff;
+            --text-muted: #94a3b8;
+            --border-color: #2a3441;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 70px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); }
+        .logo { font-size: 20px; font-weight: bold; color: var(--accent-color); letter-spacing: 1px; }
+        .location { font-size: 12px; color: var(--text-muted); }
+        .container { padding: 15px; }
+        .divisions-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; scrollbar-width: none; }
+        .divisions-scroll::-webkit-scrollbar { display: none; }
+        .div-btn { background-color: var(--card-bg); color: var(--text-muted); border: 1px solid var(--border-color); padding: 8px 14px; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer; }
+        .div-btn.active { background-color: var(--accent-color); color: #000; font-weight: bold; border-color: var(--accent-color); }
+        .table-card { background-color: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: center; }
+        th, td { padding: 10px 6px; }
+        th { background-color: #252e3e; color: var(--text-muted); font-weight: 600; }
+        tr:not(:last-child) td { border-bottom: 1px solid var(--border-color); }
+        td.team-name { text-align: left; padding-left: 10px; font-weight: 500; }
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background-color: var(--card-bg); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; padding: 10px 0; z-index: 1000; }
+        .nav-item { background: none; border: none; color: var(--text-muted); font-size: 11px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .nav-item.active { color: var(--accent-color); }
+        .nav-item span.icon { font-size: 18px; margin-bottom: 2px; }
+        .section { display: none; }
+        .section.active { display: block; }
+        .admin-box { background-color: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); }
+        .admin-box h3 { font-size: 15px; margin-bottom: 10px; color: var(--accent-color); }
+        .form-group { margin-bottom: 10px; }
+        .form-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; }
+        .form-group select, .form-group input { width: 100%; padding: 8px; background: var(--bg-color); border: 1px solid var(--border-color); color: #fff; border-radius: 6px; }
+        .submit-btn { background-color: var(--accent-color); color: #000; border: none; width: 100%; padding: 10px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 5px; }
+    </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 pb-24 transition-colors duration-300">
-
-    <!-- Header (Шапка) -->
-    <header class="sticky top-0 z-40 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 px-4 py-3 shadow-sm flex items-center justify-between h-14">
-        <!-- Навигатор ва Суроға -->
-        <div class="flex items-center space-x-2 cursor-pointer min-w-[100px]">
-            <i class="fa-solid fa-location-dot text-emerald-600 text-base flex-shrink-0"></i>
-            <div class="flex flex-col justify-center">
-                <span class="text-[9px] text-gray-400 block leading-tight">Адрес доставки</span>
-                <span class="text-[11px] font-bold text-gray-700 dark:text-gray-200 leading-tight" id="txt-addr">Фархор, Центр</span>
-            </div>
+<body>
+    <header>
+        <div>
+            <div class="logo">VARZID</div>
+            <div class="location">Фархор, Чемпионати Ноҳиявӣ</div>
         </div>
-
-        <!-- VARZID Бренд -->
-        <div class="flex items-center justify-center flex-1 text-center">
-            <span class="text-lg font-black tracking-widest text-emerald-600 dark:text-emerald-400">VARZID</span>
-        </div>
-
-        <!-- Зангула -->
-        <div class="flex items-center justify-end min-w-[100px]">
-            <button onclick="toggleNotifications()" class="relative cursor-pointer w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 transition">
-                <i class="fa-regular fa-bell text-gray-700 dark:text-gray-300 text-sm"></i>
-                <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-            </button>
-        </div>
+        <div style="font-size: 18px;">⚽</div>
     </header>
-
-    <!-- Modal Notifications -->
-    <div id="modal-notif" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex justify-center items-start pt-16 px-4">
-        <div class="bg-white dark:bg-gray-800 w-full max-w-sm rounded-2xl p-4 shadow-xl border border-gray-100 dark:border-gray-700">
-            <div class="flex justify-between items-center mb-3">
-                <h3 class="text-sm font-bold text-gray-800 dark:text-white" id="title-notif">Уведомления</h3>
-                <button onclick="toggleNotifications()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1"><i class="fa-solid fa-xmark text-base"></i></button>
+    <div class="container">
+        <div id="table-section" class="section active">
+            <div class="divisions-scroll">
+                <button class="div-btn active" onclick="switchDiv('div1')">Лигаи Олӣ (Див 1)</button>
+                <button class="div-btn" onclick="switchDiv('div2')">Лигаи Якум (Див 2)</button>
+                <button class="div-btn" onclick="switchDiv('north')">Минтақаи Шимол</button>
+                <button class="div-btn" onclick="switchDiv('south')">Минтақаи Ҷануб</button>
+                <button class="div-btn" onclick="switchDiv('east')">Минтақаи Шарқ</button>
+                <button class="div-btn" onclick="switchDiv('west')">Минтақаи Ғарб</button>
             </div>
-            <div class="space-y-2 text-xs">
-                <div class="p-3 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl text-emerald-800 dark:text-emerald-300 border border-emerald-100 dark:border-emerald-900/30">
-                    🔔 Добро пожаловать в VARZID!
+            <div class="table-card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th style="text-align: left; padding-left: 10px;">Даста</th>
+                            <th>Б</th>
+                            <th>ГХ</th>
+                            <th>Х</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standings-body"></tbody>
+                </table>
+            </div>
+        </div>
+        <div id="matches-section" class="section">
+            <h3 style="margin-bottom: 10px; font-size: 16px;">Бозиҳои навбатӣ</h3>
+            <div class="table-card" style="padding: 15px; font-size: 13px; color: var(--text-muted);">
+                Тақвими бозиҳо дар ин ҷо намоиш дода мешавад.
+            </div>
+        </div>
+        <div id="admin-section" class="section">
+            <div class="admin-box">
+                <h3>Ворид кардани натиҷаи бозӣ</h3>
+                <div class="form-group">
+                    <label>Дивизион:</label>
+                    <select id="admin-div">
+                        <option value="div1">Лигаи Олӣ</option>
+                        <option value="div2">Лигаи Якум</option>
+                        <option value="north">Минтақаи Шимол</option>
+                        <option value="south">Минтақаи Ҷануб</option>
+                        <option value="east">Минтақаи Шарқ</option>
+                        <option value="west">Минтақаи Ғарб</option>
+                    </select>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Search Bar -->
-    <div class="px-4 py-2 bg-white dark:bg-gray-900">
-        <div class="relative flex items-center">
-            <i class="fa-solid fa-magnifying-glass absolute left-4 text-gray-400 text-sm"></i>
-            <input type="text" id="search-input" onkeyup="filterProducts()" placeholder="Поиск товаров..." class="w-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white text-xs py-2.5 pl-11 pr-10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
-            <button class="absolute right-3 text-emerald-600">
-                <i class="fa-solid fa-qrcode text-sm"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- 1. TAB: HOME (Главная) -->
-    <div id="view-home" class="tab-view">
-        <div class="px-4 mt-2 grid grid-cols-3 gap-2">
-            <div class="bg-white dark:bg-gray-800 p-2 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 text-center cursor-pointer hover:border-emerald-500 transition">
-                <div class="bg-gray-100 dark:bg-gray-700 h-14 rounded-xl flex items-center justify-center text-xl mb-1">🌾</div>
-                <span class="text-[11px] font-medium text-gray-700 dark:text-gray-300" id="cat1">Зерно</span>
-            </div>
-            <div class="bg-white dark:bg-gray-800 p-2 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 text-center cursor-pointer hover:border-emerald-500 transition">
-                <div class="bg-gray-100 dark:bg-gray-700 h-14 rounded-xl flex items-center justify-center text-xl mb-1">🌱</div>
-                <span class="text-[11px] font-medium text-gray-700 dark:text-gray-300" id="cat2">Удобрения</span>
-            </div>
-            <div class="bg-white dark:bg-gray-800 p-2 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 text-center cursor-pointer hover:border-emerald-500 transition">
-                <div class="bg-gray-100 dark:bg-gray-700 h-14 rounded-xl flex items-center justify-center text-xl mb-1">🐓</div>
-                <span class="text-[11px] font-medium text-gray-700 dark:text-gray-300" id="cat3">Корма</span>
-            </div>
-        </div>
-
-        <main class="px-4 mt-3">
-            <!-- Баннер -->
-            <div class="bg-gray-900 rounded-2xl p-4 text-white shadow-md relative overflow-hidden">
-                <span class="bg-emerald-500 text-white text-[9px] px-2 py-0.5 rounded-full font-medium" id="banner-badge">Скидка 0%</span>
-                <h2 class="text-xs font-bold mt-1.5" id="banner-title">Спецпредложение недели</h2>
-                <p class="text-[10px] text-gray-400 mt-0.5" id="banner-desc">Лучшие цены с доставкой.</p>
-            </div>
-
-            <!-- Tabs -->
-            <div class="flex space-x-2 mt-3">
-                <button class="bg-gray-900 dark:bg-emerald-600 text-white text-xs px-3.5 py-1.5 rounded-full font-medium" id="tab1">Для вас</button>
-                <button class="bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 text-xs px-3.5 py-1.5 rounded-full font-medium" id="tab2">Цены дня</button>
-            </div>
-
-            <!-- Products -->
-            <div class="grid grid-cols-2 gap-3 mt-3" id="products-list">
-                <div class="bg-white dark:bg-gray-800 p-3 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col justify-between relative product-card" data-id="1" data-title="Пшеница отборная" data-price="3.20" data-img="🌾">
-                    <button onclick="toggleFav('1', this)" class="btn-fav absolute top-3 right-3 text-gray-300 dark:text-gray-600 hover:text-red-500 transition"><i class="fa-solid fa-heart text-sm"></i></button>
-                    <div>
-                        <div class="bg-gray-100 dark:bg-gray-700 h-24 rounded-xl flex items-center justify-center text-3xl mb-2">🌾</div>
-                        <h3 class="text-xs font-medium text-gray-800 dark:text-white" id="p1-title">Пшеница отборная</h3>
-                        <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-1">3.20 TJS <span class="text-[9px] text-gray-400 font-normal">/ кг</span></p>
+                <div class="form-group">
+                    <label>Дастаи мизбон:</label>
+                    <input type="text" id="team-a" placeholder="Масалан: Ҳулбук">
+                </div>
+                <div class="form-group">
+                    <label>Дастаи меҳмон:</label>
+                    <input type="text" id="team-b" placeholder="Масалан: Фархор">
+                </div>
+                <div class="form-group">
+                    <label>Шот (Ҳисоб):</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" id="score-a" placeholder="0">
+                        <span style="align-self: center;">:</span>
+                        <input type="number" id="score-b" placeholder="0">
                     </div>
-                    <button onclick="addToCart('1', 'Пшеница отборная', 3.20, '🌾')" class="btn-cart mt-3 w-full bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-semibold py-2 rounded-xl transition">В корзину</button>
                 </div>
-
-                <div class="bg-white dark:bg-gray-800 p-3 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col justify-between relative product-card" data-id="2" data-title="Кукуруза сухая" data-price="2.80" data-img="🌽">
-                    <button onclick="toggleFav('2', this)" class="btn-fav absolute top-3 right-3 text-gray-300 dark:text-gray-600 hover:text-red-500 transition"><i class="fa-solid fa-heart text-sm"></i></button>
-                    <div>
-                        <div class="bg-gray-100 dark:bg-gray-700 h-24 rounded-xl flex items-center justify-center text-3xl mb-2">🌽</div>
-                        <h3 class="text-xs font-medium text-gray-800 dark:text-white" id="p2-title">Кукуруза сухая</h3>
-                        <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-1">2.80 TJS <span class="text-[9px] text-gray-400 font-normal">/ кг</span></p>
-                    </div>
-                    <button onclick="addToCart('2', 'Кукуруза сухая', 2.80, '🌽')" class="btn-cart mt-3 w-full bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-semibold py-2 rounded-xl transition">В корзину</button>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- 2. TAB: WALLET -->
-    <div id="view-wallet" class="tab-view hidden px-4 mt-4">
-        <h2 class="text-base font-bold text-gray-800 dark:text-white mb-3" id="page-wallet">Кошелек</h2>
-        <div class="bg-emerald-600 text-white p-5 rounded-2xl shadow-lg relative overflow-hidden">
-            <div class="flex justify-between items-start mb-4">
-                <div>
-                    <span class="text-xs text-emerald-100 block">Текущий баланс</span>
-                    <span class="text-2xl font-black mt-1 block" id="wallet-balance">0.00 TJS</span>
-                </div>
-                <i class="fa-solid fa-wallet text-3xl text-emerald-400/50"></i>
-            </div>
-            <button onclick="topUpWallet()" class="w-full bg-white text-emerald-700 text-xs font-bold py-2.5 rounded-xl shadow-sm hover:bg-emerald-50 transition flex items-center justify-center space-x-2">
-                <i class="fa-solid fa-plus"></i>
-                <span>Пополнить баланс</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- 3. TAB: CART -->
-    <div id="view-cart" class="tab-view hidden px-4 mt-4">
-        <h2 class="text-base font-bold text-gray-800 dark:text-white mb-3" id="page-cart">Корзина</h2>
-        <div id="cart-container">
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl text-center shadow-sm border border-gray-100 dark:border-gray-700">
-                <i class="fa-solid fa-cart-flatbed text-3xl text-gray-300 dark:text-gray-600 mb-2"></i>
-                <p class="text-xs text-gray-500 dark:text-gray-400" id="empty-cart">Ваша корзина пуста</p>
+                <button class="submit-btn" onclick="saveMatch()">Сабт кардани Шот</button>
             </div>
         </div>
     </div>
-
-    <!-- 4. TAB: FAVORITES -->
-    <div id="view-fav" class="tab-view hidden px-4 mt-4">
-        <h2 class="text-base font-bold text-gray-800 dark:text-white mb-3" id="page-fav">Избранное</h2>
-        <div id="fav-container">
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl text-center shadow-sm border border-gray-100 dark:border-gray-700">
-                <i class="fa-regular fa-heart text-3xl text-gray-300 dark:text-gray-600 mb-2"></i>
-                <p class="text-xs text-gray-500 dark:text-gray-400" id="empty-fav">Нет избранных товаров</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- 5. TAB: SETTINGS -->
-    <div id="view-settings" class="tab-view hidden px-4 mt-4">
-        <div class="flex items-center space-x-3 mb-4">
-            <button onclick="showTab('home')" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 transition">
-                <i class="fa-solid fa-arrow-left text-xs"></i>
-            </button>
-            <h2 class="text-base font-bold text-gray-800 dark:text-white" id="set-title">Настройки</h2>
-        </div>
-        
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm space-y-4 border border-gray-100 dark:border-gray-700">
-            <div class="flex items-center justify-between">
-                <span class="text-xs font-medium text-gray-700 dark:text-gray-200" id="lbl-lang">Язык приложения</span>
-                <select id="lang-select" onchange="switchLanguage(this.value)" class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white text-xs font-semibold py-1.5 px-3 rounded-xl border-none outline-none cursor-pointer">
-                    <option value="ru" selected>Русский</option>
-                    <option value="tj">Тоҷикӣ</option>
-                    <option value="uz">O'zbekcha</option>
-                </select>
-            </div>
-            <hr class="border-gray-100 dark:border-gray-700">
-            <!-- Тугмаи дуруст пайвастшудаи Тёмная тема -->
-            <div class="flex items-center justify-between">
-                <span class="text-xs font-medium text-gray-700 dark:text-gray-200" id="lbl-theme">Темная тема</span>
-                <button type="button" onclick="toggleDarkMode()" id="theme-toggle-btn" class="w-11 h-6 bg-gray-200 dark:bg-emerald-600 rounded-full p-1 transition-colors duration-200 flex items-center relative focus:outline-none cursor-pointer">
-                    <div id="theme-toggle-dot" class="w-4 h-4 bg-white rounded-full shadow-md transform dark:translate-x-5 transition-transform duration-200"></div>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bottom Navigation (Навигацияи поёнӣ) -->
-    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-2.5 px-3 flex justify-around items-center shadow-lg">
-        <button onclick="showTab('home')" id="nav-btn-home" class="nav-btn flex flex-col items-center text-emerald-600">
-            <i class="fa-solid fa-house text-lg"></i>
-            <span class="text-[10px] mt-1 font-medium" id="nav-home">Главная</span>
-        </button>
-        <button onclick="showTab('wallet')" id="nav-btn-wallet" class="nav-btn flex flex-col items-center text-gray-400 hover:text-emerald-600">
-            <i class="fa-solid fa-wallet text-lg"></i>
-            <span class="text-[10px] mt-1 font-medium" id="nav-wallet">Кошелек</span>
-        </button>
-        <button onclick="showTab('cart')" id="nav-btn-cart" class="nav-btn flex flex-col items-center text-gray-400 hover:text-emerald-600 relative">
-            <i class="fa-solid fa-cart-shopping text-lg"></i>
-            <span id="cart-badge" class="absolute -top-1 -right-2 bg-emerald-500 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold hidden">0</span>
-            <span class="text-[10px] mt-1 font-medium" id="nav-cart">Корзина</span>
-        </button>
-        <button onclick="showTab('fav')" id="nav-btn-fav" class="nav-btn flex flex-col items-center text-gray-400 hover:text-emerald-600">
-            <i class="fa-regular fa-heart text-lg"></i>
-            <span class="text-[10px] mt-1 font-medium" id="nav-fav">Избранное</span>
-        </button>
-        <button onclick="showTab('settings')" id="nav-btn-settings" class="nav-btn flex flex-col items-center text-gray-400 hover:text-emerald-600">
-            <i class="fa-solid fa-gear text-lg"></i>
-            <span class="text-[10px] mt-1 font-medium" id="nav-set">Настройки</span>
-        </button>
+    <nav class="nav-bar">
+        <button class="nav-item active" onclick="switchTab('table-section', this)"><span class="icon">📊</span><span>Ҷадвал</span></button>
+        <button class="nav-item" onclick="switchTab('matches-section', this)"><span class="icon">📅</span><span>Бозиҳо</span></button>
+        <button class="nav-item" onclick="switchTab('admin-section', this)"><span class="icon">⚙️</span><span>Админ</span></button>
     </nav>
-
-    <script src="script.js"></script>
+    <script>
+        let leaguesData = {
+            div1: [
+                { name: "Ҳулбук", p: 0, gf: 0, ga: 0, pts: 0 },
+                { name: "Фархори Марказ", p: 0, gf: 0, ga: 0, pts: 0 },
+                { name: "Панҷ", p: 0, gf: 0, ga: 0, pts: 0 },
+                { name: "Ваҳдат", p: 0, gf: 0, ga: 0, pts: 0 }
+            ],
+            div2: [{ name: "Гулшан", p: 0, gf: 0, ga: 0, pts: 0 }, { name: "Баҳор", p: 0, gf: 0, ga: 0, pts: 0 }],
+            north: [{ name: "Шимол-1", p: 0, gf: 0, ga: 0, pts: 0 }],
+            south: [{ name: "Ҷануб-1", p: 0, gf: 0, ga: 0, pts: 0 }],
+            east: [{ name: "Шарқ-1", p: 0, gf: 0, ga: 0, pts: 0 }],
+            west: [{ name: "Ғарб-1", p: 0, gf: 0, ga: 0, pts: 0 }]
+        };
+        let currentActiveDiv = 'div1';
+        function renderTable(divKey) {
+            currentActiveDiv = divKey;
+            const tbody = document.getElementById('standings-body');
+            tbody.innerHTML = '';
+            let teams = leaguesData[divKey];
+            teams.sort((a, b) => b.pts - a.pts || (b.gf - b.ga) - (a.gf - a.ga));
+            teams.forEach((t, index) => {
+                tbody.innerHTML += `<tr><td>${index + 1}</td><td class="team-name">${t.name}</td><td>${t.p}</td><td>${t.gf}:${t.ga}</td><td style="font-weight: bold; color: var(--accent-color);">${t.pts}</td></tr>`;
+            });
+        }
+        function switchDiv(divKey) {
+            document.querySelectorAll('.div-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderTable(divKey);
+        }
+        function switchTab(sectionId, btn) {
+            document.querySelectorAll('.section').choices = document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            btn.classList.add('active');
+        }
+        function saveMatch() {
+            let div = document.getElementById('admin-div').value;
+            let nameA = document.getElementById('team-a').value.trim();
+            let nameB = document.getElementById('team-b').value.trim();
+            let scoreA = parseInt(document.getElementById('score-a').value) || 0;
+            let scoreB = parseInt(document.getElementById('score-b').value) || 0;
+            if(!nameA || !nameB) { alert("Лутфан номи дастаҳоро нависед!"); return; }
+            let teamAObj = leaguesData[div].find(t => t.name.toLowerCase() === nameA.toLowerCase());
+            if(!teamAObj) { teamAObj = { name: nameA, p: 0, gf: 0, ga: 0, pts: 0 }; leaguesData[div].push(teamAObj); }
+            let teamBObj = leaguesData[div].find(t => t.name.toLowerCase() === nameB.toLowerCase());
+            if(!teamBObj) { teamBObj = { name: nameB, p: 0, gf: 0, ga: 0, pts: 0 }; leaguesData[div].push(teamBObj); }
+            teamAObj.p += 1; teamBObj.p += 1;
+            teamAObj.gf += scoreA; teamAObj.ga += scoreB;
+            teamBObj.gf += scoreB; teamBObj.ga += scoreA;
+            if(scoreA > scoreB) { teamAObj.pts += 3; }
+            else if(scoreA < scoreB) { teamBObj.pts += 3; }
+            else { teamAObj.pts += 1; teamBObj.pts += 1; }
+            alert("Натиҷа сабт шуд ва ҷадвал нав гардид!");
+            renderTable(currentActiveDiv);
+            document.getElementById('team-a').value = '';
+            document.getElementById('team-b').value = '';
+            document.getElementById('score-a').value = '';
+            document.getElementById('score-b').value = '';
+        }
+        renderTable('div1');
+    </script>
 </body>
 </html>
