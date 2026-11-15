@@ -1,84 +1,74 @@
+
 <!DOCTYPE html>
-<html lang="tg">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VARZID - Мусобиқаҳои минтақавӣ</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071b16">
+  <title>VARZID SCORE — Футбол Фархора</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <header class="topbar">
+    <a class="brand" href="#"><span class="brand-mark">V</span><span>VARZID <b>SCORE</b></span></a>
+    <button id="themeBtn" class="icon-btn" aria-label="Тема">☼</button>
+  </header>
 
-    <header>
-        <h1>VARZID</h1>
-        <p>Мусобиқаҳои футбол миёни гурӯҳҳо</p>
-    </header>
+  <main>
+    <section class="intro">
+      <div class="eyebrow">ФУТБОЛ ФАРХОРА</div>
+      <h1>Все матчи.<br><span>Все результаты.</span></h1>
+      <p>Единая платформа местных футбольных лиг.</p>
+    </section>
 
-    <main class="container">
-        <!-- Интихоби гурӯҳҳо -->
-        <section class="leagues-section">
-            <h2>Гурӯҳҳои мусобиқа</h2>
-            <div id="leagueButtons" class="league-grid">
-                <!-- Тугмаҳои гурӯҳҳо тавассути JS бор мешаванд -->
-            </div>
-        </section>
+    <nav class="date-nav">
+      <button id="prevDay">‹</button>
+      <strong id="dateLabel">Сегодня</strong>
+      <button id="nextDay">›</button>
+    </nav>
 
-        <!-- Қисми ҷадвал ва бозиҳо -->
-        <section id="leagueDetails" class="league-details hidden">
-            <h2 id="currentLeagueTitle">Номи Гурӯҳ</h2>
-            
-            <div class="admin-login-box">
-                <input type="password" id="adminCodeInput" placeholder="Коди админро ворид кунед (масалан: 123sharq)">
-                <button id="adminLoginBtn">Даромадани Админ</button>
-            </div>
+    <section class="filters">
+      <button class="filter active" data-filter="all">Все</button>
+      <button class="filter" data-filter="live">LIVE</button>
+      <button class="filter" data-filter="upcoming">Предстоящие</button>
+      <button class="filter" data-filter="finished">Завершённые</button>
+    </section>
 
-            <!-- Панели Админ (дар аввал пинҳон аст) -->
-            <div id="adminPanel" class="admin-panel hidden">
-                <h3>Панели Идоракунии Админ</h3>
-                
-                <div class="admin-card">
-                    <h4>Илова кардани команда</h4>
-                    <input type="text" id="newTeamName" placeholder="Номи команда">
-                    <button id="addTeamBtn">Илова кардани команда</button>
-                </div>
+    <section id="matches" class="matches"></section>
 
-                <div class="admin-card">
-                    <h4>Илова кардани натиҷаи бозӣ (Шот)</h4>
-                    <select id="homeTeamSelect"></select>
-                    <span>ба</span>
-                    <select id="awayTeamSelect"></select>
-                    <input type="number" id="homeScore" placeholder="Гӯли мизбон" min="0">
-                    <input type="number" id="awayScore" placeholder="Гӯли меҳмон" min="0">
-                    <button id="addMatchBtn">Сабти Шот</button>
-                </div>
-            </div>
+    <section class="panel">
+      <div class="section-heading">
+        <div><small>РЕЙТИНГ КОМАНД</small><h2>Лучшие команды</h2></div>
+      </div>
+      <div id="ranking"></div>
+    </section>
 
-            <!-- Ҷадвали мусобиқа -->
-            <div class="table-container">
-                <h3>Ҷадвали мусобиқа</h3>
-                <table id="standingsTable">
-                    <thead>
-                        <tr>
-                            <th>Ҷой</th>
-                            <th>Команда</th>
-                            <th>Б</th>
-                            <th>БР</th>
-                            <th>М</th>
-                            <th>Ш</th>
-                            <th>Т/Ф</th>
-                            <th>Хол</th>
-                        </tr>
-                    </thead>
-                    <tbody id="standingsBody">
-                        <!-- Маълумоти командаҳо -->
-                    </tbody>
-                </table>
-            </div>
+    <section class="panel">
+      <div class="section-heading">
+        <div><small>СОРЕВНОВАНИЯ</small><h2>Лиги Фархора</h2></div>
+      </div>
+      <div id="leagues" class="league-list"></div>
+    </section>
 
-            <button id="backBtn" class="back-btn">← Бозгашт ба рӯйхати гурӯҳҳо</button>
-        </section>
-    </main>
+    <section class="panel admin-panel">
+      <small>УПРАВЛЕНИЕ ПЛАТФОРМОЙ</small>
+      <h2>Панель администратора</h2>
+      <p>Вход для главного администратора и администраторов лиг.</p>
+      <button id="adminBtn" class="primary-btn">Войти в панель</button>
+      <div id="adminArea" hidden>
+        <label>Логин<input id="adminLogin" autocomplete="username" placeholder="Логин"></label>
+        <label>Пароль<input id="adminPassword" type="password" autocomplete="current-password" placeholder="Пароль"></label>
+        <button id="loginBtn" class="primary-btn">Войти</button>
+        <p id="loginMessage" class="message"></p>
+      </div>
+    </section>
+  </main>
 
-    <script src="data.js"></script>
-    <script src="app.js"></script>
+  <footer>
+    <div class="brand"><span class="brand-mark">V</span> VARZID SCORE</div>
+    <p>Футбол Фархора · Местные лиги</p>
+  </footer>
+
+  <script src="app.js"></script>
 </body>
 </html>
