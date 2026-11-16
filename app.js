@@ -1,14 +1,15 @@
+
 "use strict";
 
 const GROUPS = [
   {id:"higher", name:"Высшая лига Фархора", sub:"Высшая лига"},
   {id:"district", name:"Лига района Фархора", sub:"Районная лига"},
-  {id:"east", name:"Деҳот фархор регион Шарқ", sub:"Восточный регион"},
-  {id:"west", name:"Регион Ғарб", sub:"Западный регион"},
-  {id:"north", name:"Регион Шимол", sub:"Северный регион"},
-  {id:"south", name:"Регион Ҷануб", sub:"Южный регион"},
-  {id:"cup", name:"Кубоки Фархор", sub:"Кубок Фархора"},
-  {id:"friendly", name:"Бозиҳои дӯстона", sub:"Товарищеские матчи"}
+  {id:"east", name:"Лига Регион Шарқ", sub:"Восточный регион"},
+  {id:"west", name:"Лига Регион Ғарб", sub:"Западный регион"},
+  {id:"north", name:"Лига Регион Шимол", sub:"Северный регион"},
+  {id:"south", name:"Лига Регион Ҷануб", sub:"Южный регион"},
+  {id:"cup", name:"Кубок Фархора", sub:"Кубок"},
+  {id:"friendly", name:"Товарищеские матчи", sub:"Товарищеские матчи"}
 ];
 
 const ADMIN_CODES = {
@@ -92,9 +93,11 @@ function showPage(pageId) {
 
 function renderLeagues() {
   const container = $("leaguesContainer");
+  if (!container) return;
+
   container.innerHTML = "";
 
-  GROUPS.forEach((group, index) => {
+  function addLeagueCard(group, index) {
     const count = teams.filter(t => t.league === group.id).length;
 
     const card = document.createElement("button");
@@ -114,13 +117,29 @@ function renderLeagues() {
 
     const number = document.createElement("span");
     number.className = "league-num";
-    number.textContent = String(index + 1).padStart(2, "0");
+    number.textContent = String(index).padStart(2, "0");
 
     card.append(info, number);
     card.addEventListener("click", () => openLeague(group.id));
 
     container.appendChild(card);
-  });
+  }
+
+  addLeagueCard(GROUPS[0], 1);
+  addLeagueCard(GROUPS[1], 2);
+
+  const heading = document.createElement("h3");
+  heading.className = "league-section-title";
+  heading.textContent = "Лига Деҳот Фархор";
+  container.appendChild(heading);
+
+  addLeagueCard(GROUPS[2], 3);
+  addLeagueCard(GROUPS[3], 4);
+  addLeagueCard(GROUPS[4], 5);
+  addLeagueCard(GROUPS[5], 6);
+
+  addLeagueCard(GROUPS[6], 7);
+  addLeagueCard(GROUPS[7], 8);
 }
 
 function openLeague(id) {
@@ -182,6 +201,8 @@ function createMatchCard(match) {
 
 function renderMatches() {
   const container = $("matchesList");
+  if (!container) return;
+
   container.innerHTML = "";
 
   let list = matches.filter(match => {
@@ -210,6 +231,8 @@ function renderMatches() {
 
 function renderRating() {
   const tbody = $("ratingTable");
+  if (!tbody) return;
+
   tbody.innerHTML = "";
 
   const sorted = [...teams].sort((a, b) =>
@@ -218,7 +241,8 @@ function renderRating() {
     ((a.goalsFor || 0) - (a.goalsAgainst || 0))
   );
 
-  $("ratingEmpty").style.display = sorted.length ? "none" : "block";
+  const empty = $("ratingEmpty");
+  if (empty) empty.style.display = sorted.length ? "none" : "block";
 
   sorted.forEach((team, index) => {
     const tr = document.createElement("tr");
@@ -242,6 +266,8 @@ function updateAdminUI() {
   const label = $("adminRole");
   const panel = $("adminPanel");
 
+  if (!label || !panel) return;
+
   if (activeAdminRole === "guest") {
     label.textContent = "Гость — войдите для управления";
     panel.classList.add("hidden");
@@ -255,6 +281,8 @@ function updateAdminUI() {
   panel.classList.remove("hidden");
 
   const select = $("adminLeague");
+  if (!select) return;
+
   select.innerHTML = "";
 
   GROUPS.forEach(group => {
@@ -347,6 +375,8 @@ function addTeam() {
 
 function renderAdminTeams() {
   const container = $("adminTeams");
+  if (!container) return;
+
   container.innerHTML = "";
 
   teams.forEach(team => {
@@ -480,6 +510,8 @@ function setupNavigation() {
 }
 
 function init() {
+  document.documentElement.lang = "ru";
+
   loadData();
 
   renderLeagues();
