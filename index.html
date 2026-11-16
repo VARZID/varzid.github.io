@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -48,7 +49,15 @@
     <div class="hero-ball">⚽</div>
   </section>
 
-  <section id="matchesPage" class="page active">
+  <section id="leaguesPage" class="page active">
+    <div class="section-header">
+      <h3>Лиги и турниры</h3>
+      <span>8 разделов</span>
+    </div>
+    <div id="leaguesContainer" class="league-list"></div>
+  </section>
+
+  <section id="matchesPage" class="page">
     <div class="filter-tabs">
       <button class="tab active" data-filter="all">Все</button>
       <button class="tab" data-filter="live">● LIVE</button>
@@ -58,14 +67,6 @@
     <div id="matchesList" class="content-list">
       <div class="empty-state">Пока нет матчей</div>
     </div>
-  </section>
-
-  <section id="leaguesPage" class="page">
-    <div class="section-header">
-      <h3>Лиги и турниры</h3>
-      <span>8 разделов</span>
-    </div>
-    <div id="leaguesContainer" class="league-list"></div>
   </section>
 
   <section id="ratingPage" class="page">
@@ -89,7 +90,10 @@
   </section>
 
   <section id="profilePage" class="page">
-    <div class="section-header"><h3>Профиль и управление</h3></div>
+    <div class="section-header">
+      <h3>Профиль и управление</h3>
+    </div>
+
     <div class="panel">
       <h3>Административный вход</h3>
       <p id="adminRole">Гость</p>
@@ -109,7 +113,9 @@
 
   <section id="leagueDetailsPage" class="page">
     <button class="back-btn" id="backToLeagues">← Назад к лигам</button>
-    <div class="section-header"><h3 id="leagueTitle">Лига</h3></div>
+    <div class="section-header">
+      <h3 id="leagueTitle">Лига</h3>
+    </div>
     <div id="leagueTeams" class="content-list"></div>
     <div id="leagueMatches" class="content-list"></div>
   </section>
@@ -117,17 +123,24 @@
 </main>
 
 <nav class="bottom-nav">
-  <button class="nav-item active" data-page="matchesPage">
-    <span class="nav-icon">⚽</span><span>Матчи</span>
+  <button class="nav-item active" data-page="leaguesPage">
+    <span class="nav-icon">🏆</span>
+    <span>Лиги</span>
   </button>
-  <button class="nav-item" data-page="leaguesPage">
-    <span class="nav-icon">🏆</span><span>Лиги</span>
+
+  <button class="nav-item" data-page="matchesPage">
+    <span class="nav-icon">⚽</span>
+    <span>Матчи</span>
   </button>
+
   <button class="nav-item" data-page="ratingPage">
-    <span class="nav-icon">▤</span><span>Рейтинг</span>
+    <span class="nav-icon">▤</span>
+    <span>Рейтинг</span>
   </button>
+
   <button class="nav-item" data-page="profilePage">
-    <span class="nav-icon">👤</span><span>Профиль</span>
+    <span class="nav-icon">👤</span>
+    <span>Профиль</span>
   </button>
 </nav>
 
@@ -137,11 +150,13 @@
       <h3>Настройки</h3>
       <button id="closeSettings">✕</button>
     </div>
+
     <label>Язык</label>
     <select id="languageSelect">
-      <option value="ru">Русский</option>
+      <option value="ru" selected>Русский</option>
       <option value="tg">Тоҷикӣ</option>
     </select>
+
     <label>Тема</label>
     <select id="themeSelect">
       <option value="light">Светлая</option>
@@ -151,5 +166,23 @@
 </div>
 
 <script src="app.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".page").forEach(function(page) {
+    page.classList.remove("active");
+  });
+
+  document.getElementById("leaguesPage").classList.add("active");
+
+  document.querySelectorAll(".nav-item").forEach(function(button) {
+    button.classList.toggle(
+      "active",
+      button.dataset.page === "leaguesPage"
+    );
+  });
+});
+</script>
+
 </body>
 </html>
