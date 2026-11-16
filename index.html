@@ -1,163 +1,155 @@
 <!DOCTYPE html>
-<html lang="tg">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VARZID SCORE · Фархор</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#168447">
+  <title>VARZID SCORE — Фархор</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <header class="app-header">
-        <div class="logo-area">
-            <div class="logo-badge">V</div>
-            <div class="logo-text">
-                <h1>VARZID</h1>
-                <p>SCORE · ФАРХОР</p>
-            </div>
-        </div>
-        <div class="header-icons">
-            <button class="icon-btn" id="searchBtn" title="Ҷустуҷӯ">🔍</button>
-            <button class="icon-btn" id="settingsBtn" title="Танзимот">⚙️</button>
-        </div>
-    </header>
+<header class="app-header">
+  <div class="logo-area">
+    <div class="logo-badge">V</div>
+    <div>
+      <h1>VARZID</h1>
+      <p>SCORE · ФАРХОР</p>
+    </div>
+  </div>
+  <div class="header-icons">
+    <button class="icon-btn" id="searchBtn" aria-label="Поиск">🔍</button>
+    <button class="icon-btn" id="settingsBtn" aria-label="Настройки">⚙️</button>
+  </div>
+</header>
 
-    <div class="date-nav">
-        <button class="date-arrow" id="prevDate">&lt;</button>
-        <div class="date-display">
-            <span class="date-label">ИМРӮЗ</span>
-            <strong id="currentDate">16 ноябри 2026 с.</strong>
-        </div>
-        <button class="date-arrow" id="nextDate">&gt;</button>
+<div id="searchPanel" class="search-panel hidden">
+  <input id="searchInput" type="search" placeholder="Поиск команды или лиги...">
+  <button id="closeSearch">✕</button>
+</div>
+
+<div class="date-nav">
+  <button class="date-arrow" id="prevDate">‹</button>
+  <div class="date-display">
+    <span class="date-label" id="dateLabel">СЕГОДНЯ</span>
+    <strong id="currentDate"></strong>
+  </div>
+  <button class="date-arrow" id="nextDate">›</button>
+</div>
+
+<main id="mainContent">
+
+  <section class="hero-card">
+    <div>
+      <span class="hero-tag">ФУТБОЛ ФАРХОРА</span>
+      <h2>VARZID SCORE</h2>
+      <p>Матчи, результаты и рейтинг футбольных команд</p>
+    </div>
+    <div class="hero-ball">⚽</div>
+  </section>
+
+  <section id="matchesPage" class="page active">
+    <div class="filter-tabs">
+      <button class="tab active" data-filter="all">Все</button>
+      <button class="tab" data-filter="live">● LIVE</button>
+      <button class="tab" data-filter="upcoming">Предстоящие</button>
+      <button class="tab" data-filter="finished">Завершённые</button>
+    </div>
+    <div id="matchesList" class="content-list">
+      <div class="empty-state">Пока нет матчей</div>
+    </div>
+  </section>
+
+  <section id="leaguesPage" class="page">
+    <div class="section-header">
+      <h3>Лиги и турниры</h3>
+      <span>8 разделов</span>
+    </div>
+    <div id="leaguesContainer" class="league-list"></div>
+  </section>
+
+  <section id="ratingPage" class="page">
+    <div class="section-header">
+      <h3>Общий рейтинг команд</h3>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>№</th>
+            <th>Команда</th>
+            <th>И</th>
+            <th>О</th>
+          </tr>
+        </thead>
+        <tbody id="ratingTable"></tbody>
+      </table>
+    </div>
+    <div id="ratingEmpty" class="empty-state">Команды пока не добавлены</div>
+  </section>
+
+  <section id="profilePage" class="page">
+    <div class="section-header"><h3>Профиль и управление</h3></div>
+    <div class="panel">
+      <h3>Административный вход</h3>
+      <p id="adminRole">Гость</p>
+      <input id="adminCodeInput" type="password" placeholder="Введите код администратора">
+      <button class="primary-btn" id="applyAdminCodeBtn">Войти</button>
+      <button class="secondary-btn" id="logoutBtn">Выйти</button>
     </div>
 
-    <main id="mainContent">
-        <div class="hero-card">
-            <div class="hero-content">
-                <span class="hero-tag">ФУТБОЛИ МАҲАЛЛӢ</span>
-                <h2>Ҳамаи бозиҳо</h2>
-                <p>Натиҷаҳо, ҷадвалҳо ва рейтинги дастаҳои Фархор</p>
-            </div>
-            <div class="hero-ball">⚽</div>
-        </div>
+    <div id="adminPanel" class="panel hidden">
+      <h3>Управление командами</h3>
+      <input id="teamName" type="text" placeholder="Название команды">
+      <select id="adminLeague"></select>
+      <button class="primary-btn" id="addTeamBtn">+ Добавить команду</button>
+      <div id="adminTeams"></div>
+    </div>
+  </section>
 
-        <div class="filter-tabs">
-            <button class="tab active" data-filter="all">Ҳама</button>
-            <button class="tab" data-filter="live">• LIVE</button>
-            <button class="tab" data-filter="upcoming">Дар пешбуда</button>
-            <button class="tab" data-filter="finished">Анҷомёфта</button>
-        </div>
+  <section id="leagueDetailsPage" class="page">
+    <button class="back-btn" id="backToLeagues">← Назад к лигам</button>
+    <div class="section-header"><h3 id="leagueTitle">Лига</h3></div>
+    <div id="leagueTeams" class="content-list"></div>
+    <div id="leagueMatches" class="content-list"></div>
+  </section>
 
-        <div id="leaguesSection">
-            <div class="section-header">
-                <h3>Лигаҳо ва Мусобиқаҳо</h3>
-                <span>8 бахш</span>
-            </div>
+</main>
 
-            <!-- Лигаҳои асосии тамоми ноҳия -->
-            <div class="league-list">
-                <div class="league-card" data-league="higher">
-                    <div class="league-info">
-                        <h4>Высшая лига Фархора</h4>
-                        <p>Гурӯҳи олии Фархор</p>
-                    </div>
-                    <div class="league-num">01</div>
-                </div>
+<nav class="bottom-nav">
+  <button class="nav-item active" data-page="matchesPage">
+    <span class="nav-icon">⚽</span><span>Матчи</span>
+  </button>
+  <button class="nav-item" data-page="leaguesPage">
+    <span class="nav-icon">🏆</span><span>Лиги</span>
+  </button>
+  <button class="nav-item" data-page="ratingPage">
+    <span class="nav-icon">▤</span><span>Рейтинг</span>
+  </button>
+  <button class="nav-item" data-page="profilePage">
+    <span class="nav-icon">👤</span><span>Профиль</span>
+  </button>
+</nav>
 
-                <div class="league-card" data-league="district">
-                    <div class="league-info">
-                        <h4>Лига района Фархора</h4>
-                        <p>Лигаи ноҳияи Фархор</p>
-                    </div>
-                    <div class="league-num">02</div>
-                </div>
-            </div>
+<div id="settingsModal" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Настройки</h3>
+      <button id="closeSettings">✕</button>
+    </div>
+    <label>Язык</label>
+    <select id="languageSelect">
+      <option value="ru">Русский</option>
+      <option value="tg">Тоҷикӣ</option>
+    </select>
+    <label>Тема</label>
+    <select id="themeSelect">
+      <option value="light">Светлая</option>
+      <option value="dark">Тёмная</option>
+    </select>
+  </div>
+</div>
 
-            <!-- Сельский регион Фархора ва 4 дивизион -->
-            <div class="section-subheader" style="margin-top: 15px;">
-                СЕЛЬСКИЙ РЕГИОН ФАРХОРА
-            </div>
-
-            <div class="league-list">
-                <div class="league-card" data-league="east">
-                    <div class="league-info">
-                        <h4>Деҳ регион Шарқ</h4>
-                        <p>Восточный регион</p>
-                    </div>
-                    <div class="league-num">03</div>
-                </div>
-
-                <div class="league-card" data-league="west">
-                    <div class="league-info">
-                        <h4>Деҳ регион Ғарб</h4>
-                        <p>Западный регион</p>
-                    </div>
-                    <div class="league-num">04</div>
-                </div>
-
-                <div class="league-card" data-league="north">
-                    <div class="league-info">
-                        <h4>Деҳ регион Шимол</h4>
-                        <p>Северный регион</p>
-                    </div>
-                    <div class="league-num">05</div>
-                </div>
-
-                <div class="league-card" data-league="south">
-                    <div class="league-info">
-                        <h4>Деҳ регион Ҷануб</h4>
-                        <p>Южный регион</p>
-                    </div>
-                    <div class="league-num">06</div>
-                </div>
-            </div>
-
-            <!-- Кубок ва Бозиҳои дӯстона дар охир -->
-            <div class="section-subheader" style="margin-top: 15px;">
-                МАХСУС ВА ДӮСТОНА
-            </div>
-
-            <div class="league-list">
-                <div class="league-card" data-league="cup">
-                    <div class="league-info">
-                        <h4>Кубоки Фархор 🏆</h4>
-                        <p>Кубок Фархора (Барои ҳамаи дастаҳо)</p>
-                    </div>
-                    <div class="league-num">07</div>
-                </div>
-
-                <div class="league-card" data-league="friendly">
-                    <div class="league-info">
-                        <h4>Бозиҳои дӯстона 🤝</h4>
-                        <p>Товарищеские матчи (Таъсир ба рейтинг)</p>
-                    </div>
-                    <div class="league-num">08</div>
-                </div>
-            </div>
-        </div>
-
-        <div id="dynamicContainer"></div>
-    </main>
-
-    <nav class="bottom-nav">
-        <button class="nav-item active" data-page="matches">
-            <span class="nav-icon">⊞</span>
-            <span>Бозиҳо</span>
-        </button>
-        <button class="nav-item" data-page="leagues">
-            <span class="nav-icon">🏆</span>
-            <span>Лигаҳо</span>
-        </button>
-        <button class="nav-item" data-page="rating">
-            <span class="nav-icon">▤</span>
-            <span>Рейтинг</span>
-        </button>
-        <button class="nav-item" data-page="profile">
-            <span class="nav-icon">👤</span>
-            <span>Профил</span>
-        </button>
-    </nav>
-
-    <script src="app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
