@@ -29,9 +29,10 @@ let currentProfile = null;
 let matches = [];
 let teams = [];
 let language = "tj";
-let activeAdminRole = "master"; // По умолчанию админи асосӣ (бе код)
+let activeAdminRole = "master"; // Админи асосӣ (пешфарз)
 
 const $ = (selector) => document.querySelector(selector);
+const $$ = (selector) => document.querySelectorAll(selector);
 
 function groupName(id) {
   const group = GROUPS.find(item => item.id === id);
@@ -55,7 +56,7 @@ function showMessage(message) {
 function loginWithCode(code) {
   if (!code) {
     activeAdminRole = "master";
-    showMessage("Шумо ҳамчун Админи Асосӣ ворид шудед (Ҳама ҳуқуқҳо фаъolанд).");
+    showMessage("Шумо ҳамчун Админи Асосӣ ворид шудед (Ҳама ҳуқуқҳо фаъоланд).");
     updateAuthUI();
     return true;
   }
@@ -115,7 +116,6 @@ function updateAuthUI() {
 }
 
 async function loadData() {
-  // Агар Supabase бошад аз онҷо мекашад, агар не аз LocalStorage ё хотираи пешфарз
   if (supabaseClient) {
     const [teamResult, matchResult] = await Promise.all([
       supabaseClient.from("teams").select("*").order("name"),
@@ -128,12 +128,49 @@ async function loadData() {
     teams = localState.teams;
     matches = localState.matches;
   }
+  
+  updateRatingTable();
   renderTeams();
   renderMatches();
+  renderLeaguesList();
 }
 
 function saveLocalState() {
   localStorage.setItem('varzid_state', JSON.stringify({ teams, matches }));
+}
+
+// Намоиши лигҳо дар қисми "Лигаҳо" мувофиқи акси тарҳ
+function renderLeaguesList() {
+  const container = $("#leaguesContainer"); // Барои ин контейнер дар HTML бояд ҷой бошад
+  if (!container) return;
+  container.innerHTML = "";
+
+  GROUPS.forEach((group, index) => {
+    const numStr = String(index + 1).padStart(2, '0');
+    const card = document.createElement("div");
+    card.className = "league-card";
+    card.style.cssText = "background: #fff; padding: 15px; margin: 10px 0; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor: pointer;";
+    
+    card.innerHTML = `
+      <div>
+        <div style="font-weight: bold; font-size: 16px; color: #111;">${group.tj}</div>
+        <div style="font-size: 13px; color: #666;">${group.ru}</div>
+      </div>
+      <div style="background: #e8f5e9; color: #2e7d32; padding: 6px 12px; border-radius: 8px; font-weight: bold; font-size: 14px;">${numStr}</div>
+    `;
+    
+    card.onclick = () => {
+      // Функсияи кушодани мушаххаси ҳамон лига ё гурӯҳ
+      openLeagueDetails(group.id);
+    };
+
+    container.appendChild(card);
+  });
+}
+
+function openLeagueDetails(leagueId) {
+  // Ин ҷо метавонед намоиши командаҳои ҳамон лигаро вобаста ба дизайн фаъол кунед
+  console.log("Лигаи интихобшуда:", leagueId);
 }
 
 // Илова кардани даста (то 70 даста)
@@ -216,7 +253,6 @@ async function recordMatchResult(homeId, awayId, homeGoals, awayGoals, leagueTyp
   awayTeam.goalsFor += awayGoals;
   awayTeam.goalsAgainst += homeGoals;
 
-  // Ҳисоби очкоҳо барои рейтинг
   if (homeGoals > awayGoals) {
     homeTeam.won++;
     homeTeam.points += 3;
@@ -245,11 +281,9 @@ async function recordMatchResult(homeId, awayId, homeGoals, awayGoals, leagueTyp
 
   saveLocalState();
   loadData();
-  updateRatingTable();
 }
 
 function updateRatingTable() {
-  // Мураттабсозӣ аз рӯи очко ва фарқи голҳо
   teams.sort((a, b) => b.points - a.points || (b.goalsFor - b.goalsAgainst) - (a.goalsFor - a.goalsAgainst));
 }
 
@@ -263,10 +297,7 @@ function renderTeams() {
 
     const item = document.createElement("div");
     item.className = "admin-team-item";
-    item.style.display = "flex";
-    item.style.justifyContent = "space-between";
-    item.style.padding = "8px";
-    item.style.borderBottom = "1px solid #eee";
+    item.style.cssText = "display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; background: #fff;";
 
     const name = document.createElement("span");
     name.textContent = `${team.name} (${groupName(team.league)}) - Очко: ${team.points}`;
@@ -274,12 +305,7 @@ function renderTeams() {
 
     const remove = document.createElement("button");
     remove.textContent = "🗑 Нест кардан";
-    remove.style.background = "#ff4d4d";
-    remove.style.color = "#fff";
-    remove.style.border = "none";
-    remove.style.padding = "4px 8px";
-    remove.style.borderRadius = "4px";
-    remove.style.cursor = "pointer";
+    remove.style.cssText = "background: #ff4d4d; color: #fff; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer;";
     remove.onclick = () => deleteTeam(team.id);
     item.appendChild(remove);
 
@@ -295,18 +321,13 @@ function renderMatches() {
   matches.forEach(match => {
     const item = document.createElement("div");
     item.className = "match-card";
-    item.style.background = "#fff";
-    item.style.padding = "12px";
-    item.style.margin = "8px 0";
-    item.style.borderRadius = "8px";
-    item.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
+    item.style.cssText = "background: #fff; padding: 12px; margin: 8px 0; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);";
 
     const title = document.createElement("strong");
     title.textContent = `${match.home} ${match.home_score} : ${match.away_score} ${match.away}`;
     
     const info = document.createElement("div");
-    info.style.fontSize = "12px";
-    info.style.color = "#666";
+    info.style.cssText = "font-size: 12px; color: #666; margin-top: 4px;";
     info.textContent = `${groupName(match.league)} · Сана: ${match.match_date}`;
 
     item.append(title, info);
@@ -314,13 +335,25 @@ function renderMatches() {
   });
 }
 
+// Идоракунии тугмаҳои менюи поёнӣ (Бозиҳо, Лигаҳо, Рейтинг, Профил)
+function setupNavigationTabs() {
+  const tabs = $$(".nav-tab"); // Мувофиқи синфи тугмаҳои поёнии сомонаи шумо
+  tabs.forEach(tab => {
+    tab.addEventListener("click", (e) => {
+      tabs.forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+      // Ин ҷо логикаи иваз кардани саҳифаҳоро вобаста ба тарҳи худ мепайвастед
+    });
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initializeSupabase();
   loadData();
+  setupNavigationTabs();
 
   $("#addTeamBtn")?.addEventListener("click", addTeam);
   
-  // Тугмаи санҷиши коди админ агар дар дизайн бошад
   const codeInputBtn = $("#applyAdminCodeBtn");
   codeInputBtn?.addEventListener("click", () => {
     const code = $("#adminCodeInput")?.value.trim();
