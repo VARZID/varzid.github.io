@@ -1,74 +1,286 @@
 <!DOCTYPE html>
 <html lang="tg">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#16843a">
-  <title>VARZID SCORE</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VARZID SCORE - Фархор</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f4f8f5;
+            color: #333;
+            padding-bottom: 70px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-badge {
+            background-color: #1b8a4a;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .logo-text h1 {
+            font-size: 18px;
+            letter-spacing: 0.5px;
+            color: #111;
+        }
+        .logo-text p {
+            font-size: 11px;
+            color: #777;
+            text-transform: uppercase;
+        }
+        .header-icons {
+            display: flex;
+            gap: 10px;
+        }
+        .icon-btn {
+            background: #eef2ef;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .date-section {
+            text-align: center;
+            padding: 15px;
+            font-size: 14px;
+            color: #2e7d32;
+            font-weight: 600;
+        }
+        .hero-card {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            margin: 0 15px 15px 15px;
+            padding: 20px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .hero-content h2 {
+            font-size: 20px;
+            color: #0b3d1e;
+            margin-bottom: 5px;
+        }
+        .hero-content p {
+            font-size: 12px;
+            color: #4f6f59;
+            max-width: 200px;
+        }
+        .hero-img {
+            font-size: 45px;
+        }
+        .tabs {
+            display: flex;
+            gap: 8px;
+            padding: 0 15px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+        .tab {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: none;
+            background: #e4ede6;
+            color: #333;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .tab.active {
+            background: #1b8a4a;
+            color: white;
+            font-weight: 500;
+        }
+        .section-title {
+            padding: 0 15px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #111;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .section-title span {
+            font-size: 12px;
+            color: #777;
+            font-weight: normal;
+        }
+        .league-card {
+            background: white;
+            margin: 0 15px 10px 15px;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+        .league-info h3 {
+            font-size: 14px;
+            color: #111;
+            margin-bottom: 3px;
+        }
+        .league-info p {
+            font-size: 12px;
+            color: #777;
+        }
+        .league-badge {
+            background: #e2f0e6;
+            color: #1b8a4a;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-item {
+            text-align: center;
+            text-decoration: none;
+            color: #777;
+            font-size: 11px;
+        }
+        .nav-item.active {
+            color: #1b8a4a;
+            font-weight: bold;
+        }
+        .nav-item div {
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+    </style>
 </head>
 <body>
 
-<header class="header">
-  <h1>VARZID SCORE</h1>
-  <div id="adminRole"></div>
-  <button id="logoutBtn">Баромадан</button>
-</header>
+    <header>
+        <div class="logo-area">
+            <div class="logo-badge">V</div>
+            <div class="logo-text">
+                <h1>VARZID</h1>
+                <p>Score · Фархор</p>
+            </div>
+        </div>
+        <div class="header-icons">
+            <button class="icon-btn">🔍</button>
+            <button class="icon-btn">⚙️</button>
+        </div>
+    </header>
 
-<main>
-  <section class="navigation">
-    <button onclick="document.getElementById('matchesSection').scrollIntoView()">Бозиҳо</button>
-    <button onclick="document.getElementById('leaguesSection').scrollIntoView()">Лигаҳо</button>
-    <button onclick="document.getElementById('adminPanel').scrollIntoView()">Админ</button>
-  </section>
-
-  <section id="leaguesSection">
-    <h2>Лигаҳои Фархор</h2>
-    <div id="leagueList">
-      <p>Гурӯҳи олии Фархор</p>
-      <p>Гурӯҳи шаҳрак</p>
-      <h3>Гурӯҳи деҳот</h3>
-      <p>Шарқ</p>
-      <p>Ғарб</p>
-      <p>Шимол</p>
-      <p>Ҷануб</p>
+    <div class="date-section">
+        СЕГОДНЯ<br>16 ноябри 2026 г.
     </div>
-  </section>
 
-  <section id="matchesSection">
-    <h2>Бозиҳо</h2>
-    <div id="matchesList"></div>
-  </section>
+    <div class="hero-card">
+        <div class="hero-content">
+            <p style="font-size: 10px; text-transform: uppercase; color: #1b8a4a; font-weight: bold; margin-bottom: 4px;">Местный футбол</p>
+            <h2>Все матчи</h2>
+            <p>Результаты, таблицы и рейтинг команд Фархора</p>
+        </div>
+        <div class="hero-img">⚽</div>
+    </div>
 
-  <section id="adminPanel" hidden>
-    <h2>Панели админ</h2>
+    <div class="tabs">
+        <button class="tab active">Все</button>
+        <button class="tab">• LIVE</button>
+        <button class="tab">Предстоящие</button>
+        <button class="tab">Завершённые</button>
+    </div>
 
-    <label for="adminLeague">Интихоби гурӯҳ</label>
-    <select id="adminLeague"></select>
+    <div class="section-title">
+        Лиги <span>6 лиг</span>
+    </div>
 
-    <h3>Илова кардани даста</h3>
-    <input id="teamName" type="text" placeholder="Номи даста">
-    <button id="addTeamBtn">Илова кардани даста</button>
+    <div class="league-card">
+        <div class="league-info">
+            <h3>Высшая лига Фархора</h3>
+            <p>Ежегодный финальный этап</p>
+        </div>
+        <div class="league-badge">01</div>
+    </div>
 
-    <h3>Дастаҳо</h3>
-    <div id="adminTeams"></div>
+    <div class="league-card">
+        <div class="league-info">
+            <h3>Лига района Фархор</h3>
+            <p>Отборочный этап</p>
+        </div>
+        <div class="league-badge">02</div>
+    </div>
 
-    <h3>Илова кардани бозӣ</h3>
-    <input id="homeTeam" type="text" placeholder="Дастаи якум">
-    <input id="awayTeam" type="text" placeholder="Дастаи дуюм">
-    <label for="matchDate">Сана</label>
-    <input id="matchDate" type="date">
-    <label for="matchTime">Вақт</label>
-    <input id="matchTime" type="time">
-    <button id="addMatchBtn">Илова кардани бозӣ</button>
-  </section>
-</main>
+    <div class="section-title" style="margin-top: 20px; font-size: 13px; color: #1b8a4a;">
+        СЕЛЬСКИЙ РЕГИОН ФАРХОРА
+    </div>
 
-<footer>
-  <p>VARZID SCORE © 2026</p>
-</footer>
+    <div class="league-card">
+        <div class="league-info">
+            <h3>Восточный регион</h3>
+            <p>Отборочный этап</p>
+        </div>
+        <div class="league-badge">03</div>
+    </div>
+
+    <div class="league-card">
+        <div class="league-info">
+            <h3>Западный регион</h3>
+            <p>Отборочный этап</p>
+        </div>
+        <div class="league-badge">04</div>
+    </div>
+
+    <nav class="nav-bar">
+        <a href="#" class="nav-item active">
+            <div>⚽</div>Матчи
+        </a>
+        <a href="#" class="nav-item">
+            <div>🏆</div>Лиги
+        </a>
+        <a href="#" class="nav-item">
+            <div>📊</div>Рейтинг
+        </a>
+        <a href="#" class="nav-item">
+            <div>👤</div>Профиль
+        </a>
+    </nav>
 
 </body>
 </html>
