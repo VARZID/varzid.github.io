@@ -1,4 +1,3 @@
-
 "use strict";
 
 /* =========================
@@ -539,7 +538,7 @@ function updateAdminUI() {
 function loginWithCode() {
   const code = $("adminCodeInput").value.trim();
 
-  if (code === "123456") {
+  if (code === "123varzid") {
     activeAdminRole = "master";
   } else if (ADMIN_CODES[code]) {
     activeAdminRole = ADMIN_CODES[code];
