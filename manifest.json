@@ -3,8 +3,8 @@
   "short_name": "VARZID",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0d1117",
-  "theme_color": "#168447",
+  "background_color": "#0284c7",
+  "theme_color": "#0284c7",
   "icons": [
     {
       "src": "logo.png",
