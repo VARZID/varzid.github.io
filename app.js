@@ -623,10 +623,12 @@ function renderAdminTeams(){
   }
 
   container.innerHTML=list.map(t=>`
-    <div class="admin-team-item">
-      <span>${escapeHTML(t.name)}</span>
-      <button class="secondary-btn edit-team" data-id="${t.id}">✏️</button>
-      <button class="delete-btn" data-id="${t.id}">Удалить</button>
+    <div class="admin-team-item" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; padding: 6px; background: var(--bg-main); border-radius: 6px;">
+      <span style="font-size: 13px;">${escapeHTML(t.name)}</span>
+      <div>
+        <button class="secondary-btn edit-team" data-id="${t.id}" style="padding: 4px 8px; font-size: 11px; margin-right: 4px;">✏️</button>
+        <button class="delete-btn" data-id="${t.id}" style="padding: 4px 8px; font-size: 11px;">✕</button>
+      </div>
     </div>
   `).join("");
 
