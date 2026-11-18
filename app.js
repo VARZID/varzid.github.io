@@ -349,12 +349,56 @@ function renderAdmin(){
   if(isAdmin()){
     buildAdminControls();
     renderAdminTeams();
+    updateMatchTeamSelectors();
+    renderAdminMatches();
   }
 }
 
 function buildAdminControls(){
   const panel=el("adminPanel");
   if(!panel)return;
+
+  let matchControlBox = el("adminMatchManagerBox");
+  if(!matchControlBox){
+    matchControlBox = document.createElement("div");
+    matchControlBox.id = "adminMatchManagerBox";
+    matchControlBox.innerHTML = `
+      <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border-color);">
+      <h3>Управление матчами и счетом</h3>
+      
+      <label style="font-size:12px; color:var(--text-muted);">Лига матча</label>
+      <select id="matchLeagueSelect"></select>
+
+      <label style="font-size:12px; color:var(--text-muted); margin-top:8px; display:block;">Хозяева</label>
+      <select id="matchHomeTeam">
+        <option value="">Выберите команду</option>
+      </select>
+
+      <label style="font-size:12px; color:var(--text-muted); margin-top:8px; display:block;">Гости</label>
+      <select id="matchAwayTeam">
+        <option value="">Выберите команду</option>
+      </select>
+
+      <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <input id="homeScoreInput" type="number" placeholder="Гол Хозяева" style="margin-bottom: 0;">
+        <input id="awayScoreInput" type="number" placeholder="Гол Гости" style="margin-bottom: 0;">
+      </div>
+
+      <label style="font-size:12px; color:var(--text-muted); margin-top:8px; display:block;">Статус матча</label>
+      <select id="matchStatusSelect" style="margin-bottom: 10px;">
+        <option value="upcoming">Предстоящие</option>
+        <option value="live">● LIVE</option>
+        <option value="finished">Завершённые</option>
+      </select>
+
+      <button class="primary-btn" id="addMatchBtn">
+        + Добавить / Обновить матч
+      </button>
+
+      <div id="adminMatches" style="margin-top: 15px;"></div>
+    `;
+    panel.appendChild(matchControlBox);
+  }
 
   let codeBox=el("adminCodeManager");
   if(!codeBox){
@@ -367,13 +411,14 @@ function buildAdminControls(){
 
   if(isMaster()){
     codeBox.innerHTML=`
-      <div class="panel">
+      <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border-color);">
+      <div class="panel" style="background:var(--bg-main);">
         <h3>Коды администраторов</h3>
         ${GROUPS.map(g=>`
-          <label>${escapeHTML(groupName(g.id))}</label>
+          <label style="font-size:13px; display:block; margin-top:6px;">${escapeHTML(groupName(g.id))}</label>
           <input class="admin-code" data-code="${g.id}" value="${escapeHTML(codes[g.id]||"")}" type="text">
         `).join("")}
-        <button class="primary-btn" id="saveCodes">Сохранить коды</button>
+        <button class="primary-btn" id="saveCodes" style="margin-top:10px;">Сохранить коды</button>
       </div>`;
 
     el("saveCodes").onclick=()=>{
@@ -386,12 +431,126 @@ function buildAdminControls(){
   }
 
   const select=el("adminLeague");
-  if(select){
+  if(select && !select.dataset.initialized){
     select.innerHTML=GROUPS
       .filter(g=>isMaster()||g.id===currentAdmin)
       .map(g=>`<option value="${g.id}">${escapeHTML(groupName(g.id))}</option>`)
       .join("");
+    select.dataset.initialized = "true";
   }
+
+  const matchLeagueSelect = el("matchLeagueSelect");
+  if(matchLeagueSelect){
+    matchLeagueSelect.innerHTML=GROUPS
+      .filter(g=>isMaster()||g.id===currentAdmin)
+      .map(g=>`<option value="${g.id}">${escapeHTML(groupName(g.id))}</option>`)
+      .join("");
+    
+    matchLeagueSelect.onchange = updateMatchTeamSelectors;
+  }
+
+  if(el("addMatchBtn")) el("addMatchBtn").onclick = addMatch;
+  updateMatchTeamSelectors();
+}
+
+function updateMatchTeamSelectors(){
+  const leagueSelect = el("matchLeagueSelect");
+  const homeSelect = el("matchHomeTeam");
+  const awaySelect = el("matchAwayTeam");
+  if(!leagueSelect || !homeSelect || !awaySelect) return;
+
+  const selectedLeagueId = leagueSelect.value;
+  const leagueTeams = teams.filter(t => t.league === selectedLeagueId);
+
+  const optionsHTML = `<option value="">Выберите команду</option>` + leagueTeams.map(t => `<option value="${t.id}">${escapeHTML(t.name)}</option>`).join("");
+  
+  homeSelect.innerHTML = optionsHTML;
+  awaySelect.innerHTML = optionsHTML;
+}
+
+function addMatch(){
+  if(!isAdmin())return alert("Войдите как администратор");
+
+  const league = el("matchLeagueSelect").value;
+  const home = el("matchHomeTeam").value;
+  const away = el("matchAwayTeam").value;
+  const homeScore = el("homeScoreInput").value;
+  const awayScore = el("awayScoreInput").value;
+  const status = el("matchStatusSelect").value;
+
+  if(!league)return alert("Выберите лигу");
+  if(!home || !away)return alert("Выберите обе команды");
+  if(home === away)return alert("Команды не могут совпадать");
+  if(!allowedLeague(league))return alert("Нет доступа к этой лиге");
+
+  const isFinished = status === "finished";
+  const isLive = status === "live";
+
+  if((isFinished || isLive) && (homeScore === "" || awayScore === "")) {
+    return alert("Лутфан ҳисоби бозиро ворид кунед!");
+  }
+
+  let existingMatch = matches.find(m => m.league === league && ((m.home === home && m.away === away) || (m.home === away && m.away === home)));
+
+  const matchData = {
+    id: existingMatch ? existingMatch.id : String(Date.now()),
+    league,
+    home,
+    away,
+    homeScore: homeScore !== "" ? Number(homeScore) : 0,
+    awayScore: awayScore !== "" ? Number(awayScore) : 0,
+    finished: isFinished,
+    live: isLive,
+    date: selectedDate.toLocaleDateString(language==="tg"?"tg-TJ":"ru-RU",{day:"numeric",month:"long",year:"numeric"})
+  };
+
+  if(existingMatch){
+    const index = matches.findIndex(m => m.id === existingMatch.id);
+    matches[index] = matchData;
+  } else {
+    matches.push(matchData);
+  }
+
+  el("homeScoreInput").value = "";
+  el("awayScoreInput").value = "";
+  saveData();
+  renderAll();
+  alert("Матч ва ҳисоби он бомуваффақият илова/навсозӣ шуд!");
+}
+
+function renderAdminMatches(){
+  const container = el("adminMatches");
+  if(!container) return;
+
+  const list = matches.filter(m => isMaster() || m.league === currentAdmin);
+  if(!list.length){
+    container.innerHTML = '<div class="empty-state" style="padding:15px; font-size:13px;">Матчей пока нет</div>';
+    return;
+  }
+
+  container.innerHTML = list.map(m => `
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; background:var(--bg-main); padding:10px; border-radius:8px; border:1px solid var(--border-color);">
+      <div>
+        <strong style="font-size:13px;">${escapeHTML(teamName(m.home))} vs ${escapeHTML(teamName(m.away))}</strong>
+        <p style="margin:2px 0 0 0; font-size:12px; color:var(--text-muted);">Шот: ${m.homeScore} : ${m.awayScore} | Ҳолат: ${m.live ? 'LIVE' : (m.finished ? 'Ба охир расида' : 'Предстоящие')}</p>
+      </div>
+      <button class="delete-match-btn" data-id="${m.id}" style="padding:6px 10px; background:#ffe8e8; color:#d32f2f; border:none; border-radius:6px; cursor:pointer; font-size:12px;">Удалить</button>
+    </div>
+  `).join("");
+
+  container.querySelectorAll(".delete-match-btn").forEach(btn => {
+    btn.onclick = () => deleteMatch(btn.dataset.id);
+  });
+}
+
+function deleteMatch(id){
+  const m = matches.find(x => x.id === id);
+  if(!m || !allowedLeague(m.league)) return;
+  if(!confirm("Удалить матч?")) return;
+
+  matches = matches.filter(x => x.id !== id);
+  saveData();
+  renderAll();
 }
 
 function renderAdminTeams(){
