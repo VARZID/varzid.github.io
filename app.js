@@ -1,4 +1,4 @@
-const GROUPS = [
+Const GROUPS = [
   {id:"higher",ru:"Высшая лига Фархора",tg:"Лигаи олии Фархор"},
   {id:"district",ru:"Лига района Фархора",tg:"Лигаи ноҳияи Фархор"},
   {id:"east",ru:"Восток",tg:"Шарқ"},
@@ -428,22 +428,7 @@ function buildAdminControls(){
       <label style="font-size:12px; color:var(--text-muted);">Лига матча</label>
       <select id="matchLeagueSelect"></select>
 
-      <!-- Жеребьевка ва тақвими худкор -->
-      <div style="background: var(--bg-main); padding: 12px; border-radius: 8px; margin-top: 10px; border: 1px solid var(--border-color);">
-        <h4 style="margin-bottom: 8px; font-size: 13px;">🎲 Жеребьевка ва тақвими худкор</h4>
-        <label style="font-size:11px; color:var(--text-muted);">Муҳлати мусобиқа (моҳҳо)</label>
-        <select id="seasonDuration" style="margin-bottom: 8px;">
-          <option value="1">1 моҳ</option>
-          <option value="2">2 моҳ</option>
-          <option value="3" selected>3 моҳ</option>
-          <option value="5">5 моҳ</option>
-        </select>
-        <button class="secondary-btn" id="generateScheduleBtn" style="width: 100%; font-size: 12px; background: #0284c7; color: #fff;">
-          ⚡ Сохтани тақвими худкор (Жеребьевка)
-        </button>
-      </div>
-
-      <label style="font-size:12px; color:var(--text-muted); margin-top:12px; display:block;">Хозяева</label>
+      <label style="font-size:12px; color:var(--text-muted); margin-top:8px; display:block;">Хозяева</label>
       <select id="matchHomeTeam">
         <option value="">Выберите команду</option>
       </select>
@@ -524,52 +509,7 @@ function buildAdminControls(){
   }
 
   if(el("addMatchBtn")) el("addMatchBtn").onclick = addMatch;
-  if(el("generateScheduleBtn")) el("generateScheduleBtn").onclick = generateAutoSchedule;
   updateMatchTeamSelectors();
-}
-
-function generateAutoSchedule(){
-  if(!isAdmin()) return alert("Войдите как администратор");
-
-  const league = el("matchLeagueSelect").value;
-  if(!league) return alert("Лутфан лигаро интихоб кунед!");
-
-  const leagueTeams = teams.filter(t => t.league === league);
-  if(leagueTeams.length < 2) return alert("Барои жеребьевка камасташ 2 команда лозим аст!");
-
-  const durationMonths = parseInt(el("seasonDuration").value) || 3;
-  
-  if(!confirm(`Оё мехоҳед барои лигаи "${groupName(league)}" бо муҳлати ${durationMonths} моҳ жеребьевка гузаронида, тақвим созед?`)) return;
-
-  matches = matches.filter(m => m.league !== league);
-
-  let shuffled = [...leagueTeams].sort(() => Math.random() - 0.5);
-  let generatedCount = 0;
-  let baseDate = new Date();
-
-  for(let i = 0; i < shuffled.length; i++){
-    for(let j = i + 1; j < shuffled.length; j++){
-      let matchDate = new Date(baseDate);
-      matchDate.setDate(matchDate.getDate() + (generatedCount * Math.floor((durationMonths * 30) / (shuffled.length * (shuffled.length - 1) / 2))));
-
-      matches.push({
-        id: String(Date.now() + Math.random()),
-        league,
-        home: shuffled[i].id,
-        away: shuffled[j].id,
-        homeScore: 0,
-        awayScore: 0,
-        finished: false,
-        live: false,
-        date: matchDate.toLocaleDateString(language==="tg"?"tg-TJ":"ru-RU",{day:"numeric",month:"long",year:"numeric"})
-      });
-      generatedCount++;
-    }
-  }
-
-  saveData();
-  renderAll();
-  alert(`Жеребьевка бомуваффақият гузашт! ${generatedCount} бозӣ ба тақвим илова шуд.`);
 }
 
 function updateMatchTeamSelectors(){
@@ -887,4 +827,4 @@ function init(){
   setPage("leaguesPage");
 }
 
-document.addEventListener("DOMContentLoaded",init);
+document.addEventListener("DOMContentLoaded",init); бо ин якто кун то платформа вайрон нашавад бо ин коди кухна муофик нест лигахо нест шуд
