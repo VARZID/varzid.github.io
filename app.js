@@ -2,13 +2,18 @@
 const GROUPS = [
   {id:"higher",ru:"Высшая лига Фархора",tg:"Лигаи олии Фархор"},
   {id:"district",ru:"Лига района Фархора",tg:"Лигаи ноҳияи Фархор"},
-  {id:"east",ru:"Регион Шарқ",tg:"Минтақаи Шарқ"},
-  {id:"west",ru:"Регион Ғарб",tg:"Минтақаи Ғарб"},
-  {id:"north",ru:"Регион Шимол",tg:"Минтақаи Шимол"},
-  {id:"south",ru:"Регион Ҷануб",tg:"Минтақаи Ҷануб"},
+  {id:"east",ru:"Восток",tg:"Шарқ"},
+  {id:"west",ru:"Запад",tg:"Ғарб"},
+  {id:"north",ru:"Север",tg:"Шимол"},
+  {id:"south",ru:"Юг",tg:"Ҷануб"},
   {id:"cup",ru:"Кубок Фархора",tg:"Ҷоми Фархор"},
-  {id:"friendly",ru:"Бозиҳои дӯстона",tg:"Бозиҳои дӯстона"}
+  {id:"friendly",ru:"Товарищеские матчи",tg:"Бозиҳои дӯстона"}
 ];
+
+const REGIONAL_TITLE = {
+  ru:"Сельский регион Фархора",
+  tg:"Деҳот — Регион Фархора"
+};
 
 const MASTER_CODE = "admin5";
 
@@ -93,17 +98,39 @@ function renderLeagues(){
   const container=el("leaguesContainer");
   if(!container)return;
 
-  container.innerHTML=GROUPS.map((g,i)=>{
+  function card(g,i){
     const count=teams.filter(t=>t.league===g.id).length;
     return `
       <div class="league-card" data-league="${g.id}">
-        <div class="league-number">${String(i+1).padStart(2,"0")}</div>
+        <div class="league-number">${String(i).padStart(2,"0")}</div>
         <div>
           <h4>${escapeHTML(groupName(g.id))}</h4>
           <p>${count} команд</p>
         </div>
       </div>`;
-  }).join("");
+  }
+
+  const higher=GROUPS.find(g=>g.id==="higher");
+  const district=GROUPS.find(g=>g.id==="district");
+  const east=GROUPS.find(g=>g.id==="east");
+  const west=GROUPS.find(g=>g.id==="west");
+  const north=GROUPS.find(g=>g.id==="north");
+  const south=GROUPS.find(g=>g.id==="south");
+  const cup=GROUPS.find(g=>g.id==="cup");
+  const friendly=GROUPS.find(g=>g.id==="friendly");
+
+  container.innerHTML=
+    card(higher,1)+
+    card(district,2)+
+    `<div class="regional-heading">
+      <h3>${escapeHTML(REGIONAL_TITLE[language]||REGIONAL_TITLE.ru)}</h3>
+    </div>`+
+    card(east,3)+
+    card(west,4)+
+    card(north,5)+
+    card(south,6)+
+    card(cup,7)+
+    card(friendly,8);
 
   container.querySelectorAll(".league-card").forEach(card=>{
     card.onclick=()=>openLeague(card.dataset.league);
