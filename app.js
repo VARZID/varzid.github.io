@@ -1,4 +1,4 @@
-const GROUPS = [
+Const GROUPS = [
   {id:"higher",ru:"Высшая лига Фархора",tg:"Лигаи олии Фархор"},
   {id:"district",ru:"Лига района Фархора",tg:"Лигаи ноҳияи Фархор"},
   {id:"east",ru:"Восток",tg:"Шарқ"},
@@ -616,19 +616,39 @@ function renderAdminTeams(){
   const container=el("adminTeams");
   if(!container)return;
 
-  const list=teams.filter(t=>isMaster()||t.league===currentAdmin);
-  if(!list.length){
+  const allTeams = teams.filter(t=>isMaster()||t.league===currentAdmin);
+  if(!allTeams.length){
     container.innerHTML='<div class="empty-state">Команды пока не добавлены</div>';
     return;
   }
 
-  container.innerHTML=list.map(t=>`
-    <div class="admin-team-item">
-      <span>${escapeHTML(t.name)}</span>
-      <button class="secondary-btn edit-team" data-id="${t.id}">✏️</button>
-      <button class="delete-btn" data-id="${t.id}">Удалить</button>
-    </div>
-  `).join("");
+  let html = "";
+  GROUPS.forEach(g => {
+    const leagueTeams = allTeams.filter(t => t.league === g.id);
+    if(leagueTeams.length === 0) return;
+
+    html += `
+      <div style="margin-bottom: 12px; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
+        <button onclick="toggleAdminLeague('${g.id}')" style="width: 100%; padding: 10px; background: var(--bg-main); border: none; text-align: left; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: var(--text-main);">
+          <span>🏆 ${escapeHTML(groupName(g.id))} (${leagueTeams.length})</span>
+          <span>▾</span>
+        </button>
+        <div id="adminLeagueGroup_${g.id}" style="display: none; padding: 10px; background: var(--bg-card);">
+          ${leagueTeams.map(t=>`
+            <div class="admin-team-item" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; padding: 6px; background: var(--bg-main); border-radius: 6px;">
+              <span style="font-size: 13px;">${escapeHTML(t.name)}</span>
+              <div>
+                <button class="secondary-btn edit-team" data-id="${t.id}" style="padding: 4px 8px; font-size: 11px; margin-right: 4px;">✏️</button>
+                <button class="delete-btn" data-id="${t.id}" style="padding: 4px 8px; font-size: 11px;">✕</button>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
 
   container.querySelectorAll(".edit-team").forEach(btn=>{
     btn.onclick=()=>editTeam(btn.dataset.id);
@@ -637,6 +657,13 @@ function renderAdminTeams(){
   container.querySelectorAll(".delete-btn").forEach(btn=>{
     btn.onclick=()=>deleteTeam(btn.dataset.id);
   });
+}
+
+function toggleAdminLeague(leagueId) {
+  const box = el(`adminLeagueGroup_${leagueId}`);
+  if(box){
+    box.style.display = box.style.display === 'none' ? 'block' : 'none';
+  }
 }
 
 function addTeam(){
@@ -800,4 +827,4 @@ function init(){
   setPage("leaguesPage");
 }
 
-document.addEventListener("DOMContentLoaded",init);
+document.addEventListener("DOMContentLoaded",init); бо ин якто кун то платформа вайрон нашавад
