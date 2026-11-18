@@ -88,6 +88,7 @@ function setPage(pageId){
     b.classList.toggle("active",b.dataset.page===pageId);
   });
 
+  if(pageId==="leaguesPage")renderLeagues();
   if(pageId==="matchesPage")renderMatches();
   if(pageId==="ratingPage")renderRating();
   if(pageId==="profilePage")renderAdmin();
@@ -232,11 +233,16 @@ function renderLeagueMatches(){
 }
 
 function matchHTML(m){
+  let scoreText = m.finished ? `${m.homeScore} : ${m.awayScore}` : "— : —";
+  if(m.live){
+    scoreText = `<span style="color: #ff3b30; font-weight: bold;">● LIVE (${m.homeScore} : ${m.awayScore})</span>`;
+  }
+
   return `
-    <div class="match-card">
+    <div class="match-card" style="${m.live ? 'border: 1px solid #ff3b30;' : ''}">
       <p>${escapeHTML(groupName(m.league))}</p>
       <h4>${escapeHTML(teamName(m.home))} — ${escapeHTML(teamName(m.away))}</h4>
-      <h3>${m.finished?`${m.homeScore} : ${m.awayScore}`:"— : —"}</h3>
+      <h3 style="margin: 6px 0;">${scoreText}</h3>
       <p>${escapeHTML(m.date||"")}</p>
     </div>`;
 }
@@ -259,6 +265,7 @@ function renderMatches(){
   container.innerHTML=list.map(m=>matchHTML(m)).join("");
 }
 
+// Системаи рейтинги ФИФА (FIFA Rating System)
 function calculateRating(){
   const uniqueTeamsMap = new Map();
 
@@ -272,7 +279,7 @@ function calculateRating(){
         name: t.name.trim(),
         originalIds: [t.id],
         played: 0, wins: 0, draws: 0, losses: 0,
-        goals: 0, against: 0, gd: 0, points: 0
+        goals: 0, against: 0, gd: 0, fifaPoints: 1000
       });
     } else {
       uniqueTeamsMap.get(baseKey).originalIds.push(t.id);
@@ -280,8 +287,9 @@ function calculateRating(){
   });
 
   const ratingList = Array.from(uniqueTeamsMap.values()).map(t => {
-    const played = matches.filter(m => m.finished && (t.originalIds.includes(m.home) || t.originalIds.includes(m.away)));
-    let wins = 0, draws = 0, losses = 0, goals = 0, against = 0, points = 0;
+    const played = matches.filter(m => (m.finished || m.live) && (t.originalIds.includes(m.home) || t.originalIds.includes(m.away)));
+    let wins = 0, draws = 0, losses = 0, goals = 0, against = 0;
+    let fifaPoints = 1000;
 
     played.forEach(m => {
       const isHome = t.originalIds.includes(m.home);
@@ -291,9 +299,16 @@ function calculateRating(){
       goals += gf;
       against += ga;
 
-      if(gf > ga){ wins++; points += 3; }
-      else if(gf === ga){ draws++; points++; }
-      else losses++;
+      if(gf > ga){ 
+        wins++; 
+        fifaPoints += 25 + (gf - ga) * 3; 
+      } else if(gf === ga){ 
+        draws++; 
+        fifaPoints += 10; 
+      } else { 
+        losses++; 
+        fifaPoints -= 15; 
+      }
     });
 
     return {
@@ -305,7 +320,7 @@ function calculateRating(){
       goals,
       against,
       gd: goals - against,
-      points
+      points: Math.max(0, fifaPoints)
     };
   });
 
@@ -325,7 +340,7 @@ function renderRating(){
       <td>${i+1}</td>
       <td>${escapeHTML(t.name)}</td>
       <td>${t.played}</td>
-      <td><strong>${t.points}</strong></td>
+      <td><strong>${Math.round(t.points)}</strong></td>
     </tr>
   `).join("");
 
