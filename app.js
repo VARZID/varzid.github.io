@@ -1,4 +1,4 @@
-Const GROUPS = [
+const GROUPS = [
   {id:"higher",ru:"Высшая лига Фархора",tg:"Лигаи олии Фархор"},
   {id:"district",ru:"Лига района Фархора",tg:"Лигаи ноҳияи Фархор"},
   {id:"east",ru:"Восток",tg:"Шарқ"},
@@ -157,15 +157,74 @@ function renderLeagueTeams(){
     return;
   }
 
-  container.innerHTML=list.map(t=>`
-    <div class="match-card team-card" data-team="${t.id}" style="cursor:pointer">
-      <h4>${escapeHTML(t.name)}</h4>
-      <p>Открыть команду →</p>
-    </div>
-  `).join("");
+  if(currentLeague === "cup"){
+    container.innerHTML=`
+      <div class="panel" style="margin-bottom: 15px; background: var(--bg-card); border-radius: 8px; padding: 15px;">
+        <h3 style="margin-bottom: 10px; color: var(--text-main);">🏆 Марҳилаҳои Ҷоми Фархор (Кубок)</h3>
+        <p style="font-size: 13px; color: var(--text-muted);">Бозиҳои плей-офф ва баромадан ба марҳилаи навбатӣ.</p>
+      </div>
+      <div class="table-wrap" style="margin-top: 10px;">
+        <table style="width: 100%; border-collapse: collapse; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background: var(--bg-main); text-align: left; font-size: 12px; color: var(--text-muted);">
+              <th style="padding: 10px;">№</th>
+              <th style="padding: 10px;">Дастаи иштирокчии Кубок</th>
+              <th style="padding: 10px; text-align: center;">И</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${list.map((t, index) => `
+              <tr class="league-team-row" data-team="${t.id}" style="border-bottom: 1px solid var(--border-color); cursor: pointer;">
+                <td style="padding: 10px; font-weight: bold; font-size: 13px;">${index + 1}</td>
+                <td style="padding: 10px; font-weight: 500; font-size: 14px;">${escapeHTML(t.name)}</td>
+                <td style="padding: 10px; text-align: center; font-size: 13px;">${matches.filter(m => m.finished && m.league === "cup" && (m.home === t.id || m.away === t.id)).length}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    `;
+  } else {
+    container.innerHTML=`
+      <div class="table-wrap" style="margin-top: 10px;">
+        <table style="width: 100%; border-collapse: collapse; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background: var(--bg-main); text-align: left; font-size: 12px; color: var(--text-muted);">
+              <th style="padding: 10px;">№</th>
+              <th style="padding: 10px;">Команда</th>
+              <th style="padding: 10px; text-align: center;">И</th>
+              <th style="padding: 10px; text-align: center;">О</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${list.map((t, index) => {
+              const played = matches.filter(m => m.finished && (m.home === t.id || m.away === t.id));
+              let points = 0;
+              played.forEach(m => {
+                const isHome = m.home === t.id;
+                const gf = Number(isHome ? m.homeScore : m.awayScore);
+                const ga = Number(isHome ? m.awayScore : m.homeScore);
+                if(gf > ga) points += 3;
+                else if(gf === ga) points += 1;
+              });
 
-  container.querySelectorAll(".team-card").forEach(card=>{
-    card.onclick=()=>openTeam(card.dataset.team);
+              return `
+                <tr class="league-team-row" data-team="${t.id}" style="border-bottom: 1px solid var(--border-color); cursor: pointer;">
+                  <td style="padding: 10px; font-weight: bold; font-size: 13px;">${index + 1}</td>
+                  <td style="padding: 10px; font-weight: 500; font-size: 14px;">${escapeHTML(t.name)}</td>
+                  <td style="padding: 10px; text-align: center; font-size: 13px;">${played.length}</td>
+                  <td style="padding: 10px; text-align: center; font-weight: bold; font-size: 14px; color: #007aff;">${points}</td>
+                </tr>
+              `;
+            }).join("")}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  container.querySelectorAll(".league-team-row").forEach(row=>{
+    row.onclick=()=>openTeam(row.dataset.team);
   });
 }
 
@@ -428,7 +487,21 @@ function buildAdminControls(){
       <label style="font-size:12px; color:var(--text-muted);">Лига матча</label>
       <select id="matchLeagueSelect"></select>
 
-      <label style="font-size:12px; color:var(--text-muted); margin-top:8px; display:block;">Хозяева</label>
+      <div style="background: var(--bg-main); padding: 12px; border-radius: 8px; margin-top: 10px; border: 1px solid var(--border-color);">
+        <h4 style="margin-bottom: 8px; font-size: 13px;">🎲 Жеребьевка ва тақвими худкор</h4>
+        <label style="font-size:11px; color:var(--text-muted);">Муҳлати мусобиқа (моҳҳо)</label>
+        <select id="seasonDuration" style="margin-bottom: 8px;">
+          <option value="1">1 моҳ</option>
+          <option value="2">2 моҳ</option>
+          <option value="3" selected>3 моҳ</option>
+          <option value="5">5 моҳ</option>
+        </select>
+        <button class="secondary-btn" id="generateScheduleBtn" style="width: 100%; font-size: 12px; background: #0284c7; color: #fff;">
+          ⚡ Сохтани тақвими худкор (Жеребьевка)
+        </button>
+      </div>
+
+      <label style="font-size:12px; color:var(--text-muted); margin-top:12px; display:block;">Хозяева</label>
       <select id="matchHomeTeam">
         <option value="">Выберите команду</option>
       </select>
@@ -509,7 +582,52 @@ function buildAdminControls(){
   }
 
   if(el("addMatchBtn")) el("addMatchBtn").onclick = addMatch;
+  if(el("generateScheduleBtn")) el("generateScheduleBtn").onclick = generateAutoSchedule;
   updateMatchTeamSelectors();
+}
+
+function generateAutoSchedule(){
+  if(!isAdmin()) return alert("Войдите как администратор");
+
+  const league = el("matchLeagueSelect").value;
+  if(!league) return alert("Лутфан лигаро интихоб кунед!");
+
+  const leagueTeams = teams.filter(t => t.league === league);
+  if(leagueTeams.length < 2) return alert("Барои жеребьевка камасташ 2 команда лозим аст!");
+
+  const durationMonths = parseInt(el("seasonDuration").value) || 3;
+  
+  if(!confirm(`Оё мехоҳед барои лигаи "${groupName(league)}" бо муҳлати ${durationMonths} моҳ жеребьевка гузаронида, тақвим созед?`)) return;
+
+  matches = matches.filter(m => m.league !== league);
+
+  let shuffled = [...leagueTeams].sort(() => Math.random() - 0.5);
+  let generatedCount = 0;
+  let baseDate = new Date();
+
+  for(let i = 0; i < shuffled.length; i++){
+    for(let j = i + 1; j < shuffled.length; j++){
+      let matchDate = new Date(baseDate);
+      matchDate.setDate(matchDate.getDate() + (generatedCount * Math.floor((durationMonths * 30) / (shuffled.length * (shuffled.length - 1) / 2))));
+
+      matches.push({
+        id: String(Date.now() + Math.random()),
+        league,
+        home: shuffled[i].id,
+        away: shuffled[j].id,
+        homeScore: 0,
+        awayScore: 0,
+        finished: false,
+        live: false,
+        date: matchDate.toLocaleDateString(language==="tg"?"tg-TJ":"ru-RU",{day:"numeric",month:"long",year:"numeric"})
+      });
+      generatedCount++;
+    }
+  }
+
+  saveData();
+  renderAll();
+  alert(`Жеребьевка бомуваффақият гузашт! ${generatedCount} бозӣ ба тақвим илова шуд.`);
 }
 
 function updateMatchTeamSelectors(){
@@ -827,4 +945,4 @@ function init(){
   setPage("leaguesPage");
 }
 
-document.addEventListener("DOMContentLoaded",init); бо ин якто кун то платформа вайрон нашавад бо ин коди кухна муофик нест лигахо нест шуд
+document.addEventListener("DOMContentLoaded",init);
