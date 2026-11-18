@@ -205,8 +205,8 @@ function openTeam(id){
     <h3 style="margin-top:20px">Матчи</h3>
     ${played.length?played.map(m=>`
       <div class="match-card">
-        <p>${escapeHTML(teamName(m.home))} —${escapeHTML(teamName(m.away))}</p>
-        <h3>${m.homeScore} :${m.awayScore}</h3>
+        <p>${escapeHTML(teamName(m.home))} — ${escapeHTML(teamName(m.away))}</p>
+        <h3>${m.homeScore} : ${m.awayScore}</h3>
       </div>
     `).join(""):'<div class="empty-state">Матчей пока нет</div>'}
     </div>`;
@@ -265,7 +265,7 @@ function renderMatches(){
   container.innerHTML=list.map(m=>matchHTML(m)).join("");
 }
 
-// Системаи рейтинги оғозшаванда аз сифр (0) бо ҳисоби стандартии футболи маҳаллӣ
+// Системаи рейтинги аз сифр (0) бо стрелкаҳои кабуд/сабз ва сурх
 function calculateRating(){
   const uniqueTeamsMap = new Map();
 
@@ -307,6 +307,7 @@ function calculateRating(){
         points += 1; 
       } else { 
         losses++; 
+        points -= 1; // Барои бохт минус хол
       }
     });
 
@@ -319,7 +320,7 @@ function calculateRating(){
       goals,
       against,
       gd: goals - against,
-      points: Math.max(0, points)
+      points: points
     };
   });
 
@@ -335,15 +336,18 @@ function renderRating(){
 
   const rating=calculateRating();
   tbody.innerHTML=rating.map((t,i)=>{
-    let badgeColor = "#8e8e93"; 
-    let arrow = "•";
+    let badgeColor = "#007aff"; // Ранги кабуд барои холҳои муътадил/мусбат
+    let arrow = "▲";
     
     if(t.points > 0){
-      badgeColor = "#34c759"; // Сабз барои холҳои мусбат
+      badgeColor = "#007aff"; // Кабуд бо стрелкаи боло
       arrow = "▲";
     } else if(t.points < 0){
-      badgeColor = "#ff3b30"; // Сурх барои холҳои манфӣ
+      badgeColor = "#ff3b30"; // Сурх бо стрелкаи поён (минус)
       arrow = "▼";
+    } else {
+      badgeColor = "#8e8e93";
+      arrow = "•";
     }
 
     return `
@@ -353,7 +357,7 @@ function renderRating(){
         <td>${t.played}</td>
         <td>
           <strong style="color: ${badgeColor};">
-            ${arrow} ${Math.round(t.points)}
+            ${arrow} ${t.points}
           </strong>
         </td>
       </tr>
@@ -370,4 +374,406 @@ function renderAdmin(){
   const loginBtn=el("applyAdminCodeBtn");
   const logoutBtn=el("logoutBtn");
 
-  if(role)role.textContent=isMaster()?"Главный
+  if(role)role.textContent=isMaster()?"Главный администратор":currentAdmin?groupName(currentAdmin)+" — администратор":"Гость";
+  if(panel)panel.classList.toggle("hidden",!isAdmin());
+
+  if(codeInput)codeInput.style.display=isAdmin()?"none":"block";
+  if(loginBtn)loginBtn.style.display=isAdmin()?"none":"block";
+  if(logoutBtn)logoutBtn.style.display=isAdmin()?"block":"none";
+
+  if(isAdmin()){
+    buildAdminControls();
+    renderAdminTeams();
+    updateMatchTeamSelectors();
+    renderAdminMatches();
+  }
+}
+
+function buildAdminControls(){
+  const panel=el("adminPanel");
+  if(!panel)return;
+
+  let matchControlBox = el("adminMatchManagerBox");
+  if(!matchControlBox){
+    matchControlBox = document.createElement("div");
+    matchControlBox.id = "adminMatchManagerBox";
+    matchControlBox.innerHTML = `
+      <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border-color);">
+      <h3>Управление матчами и счетом</h3>
+      
+      <label style="font-size:12px; color:var(--text-muted);">Лига матча</label>
+      <select id="matchLeagueSelect"></select>
+
+      <label style="font-size:12px; color:var(--text-muted); margin-top:8px; display:block;">Хозяева</label>
+      <select id="matchHomeTeam">
+        <option value="">Выберите команду</option>
+      </select>
+
+      <label style="font-size:12px; color:var(--text-muted); margin-top:8px; display:block;">Гости</label>
+      <select id="matchAwayTeam">
+        <option value="">Выберите команду</option>
+      </select>
+
+      <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <input id="homeScoreInput" type="number" placeholder="Гол Хозяева" style="margin-bottom: 0;">
+        <input id="awayScoreInput" type="number" placeholder="Гол Гости" style="margin-bottom: 0;">
+      </div>
+
+      <label style="font-size:12px; color:var(--text-muted); margin-top:8px; display:block;">Статус матча</label>
+      <select id="matchStatusSelect" style="margin-bottom: 10px;">
+        <option value="upcoming">Предстоящие</option>
+        <option value="live">● LIVE</option>
+        <option value="finished">Завершённые</option>
+      </select>
+
+      <button class="primary-btn" id="addMatchBtn">
+        + Добавить / Обновить матч
+      </button>
+
+      <div id="adminMatches" style="margin-top: 15px;"></div>
+    `;
+    panel.appendChild(matchControlBox);
+  }
+
+  let codeBox=el("adminCodeManager");
+  if(!codeBox){
+    codeBox=document.createElement("div");
+    codeBox.id="adminCodeManager";
+    panel.appendChild(codeBox);
+  }
+
+  codeBox.innerHTML="";
+
+  if(isMaster()){
+    codeBox.innerHTML=`
+      <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border-color);">
+      <div class="panel" style="background:var(--bg-main);">
+        <h3>Коды администраторов</h3>
+        ${GROUPS.map(g=>`
+          <label style="font-size:13px; display:block; margin-top:6px;">${escapeHTML(groupName(g.id))}</label>
+          <input class="admin-code" data-code="${g.id}" value="${escapeHTML(codes[g.id]||"")}" type="text">
+        `).join("")}
+        <button class="primary-btn" id="saveCodes" style="margin-top:10px;">Сохранить коды</button>
+      </div>`;
+
+    el("saveCodes").onclick=()=>{
+      document.querySelectorAll(".admin-code").forEach(input=>{
+        codes[input.dataset.code]=input.value.trim();
+      });
+      saveData();
+      alert("Коды сохранены");
+    };
+  }
+
+  const select=el("adminLeague");
+  if(select && !select.dataset.initialized){
+    select.innerHTML=GROUPS
+      .filter(g=>isMaster()||g.id===currentAdmin)
+      .map(g=>`<option value="${g.id}">${escapeHTML(groupName(g.id))}</option>`)
+      .join("");
+    select.dataset.initialized = "true";
+  }
+
+  const matchLeagueSelect = el("matchLeagueSelect");
+  if(matchLeagueSelect){
+    matchLeagueSelect.innerHTML=GROUPS
+      .filter(g=>isMaster()||g.id===currentAdmin)
+      .map(g=>`<option value="${g.id}">${escapeHTML(groupName(g.id))}</option>`)
+      .join("");
+    
+    matchLeagueSelect.onchange = updateMatchTeamSelectors;
+  }
+
+  if(el("addMatchBtn")) el("addMatchBtn").onclick = addMatch;
+  updateMatchTeamSelectors();
+}
+
+function updateMatchTeamSelectors(){
+  const leagueSelect = el("matchLeagueSelect");
+  const homeSelect = el("matchHomeTeam");
+  const awaySelect = el("matchAwayTeam");
+  if(!leagueSelect || !homeSelect || !awaySelect) return;
+
+  const selectedLeagueId = leagueSelect.value;
+  const leagueTeams = teams.filter(t => t.league === selectedLeagueId);
+
+  const optionsHTML = `<option value="">Выберите команду</option>` + leagueTeams.map(t => `<option value="${t.id}">${escapeHTML(t.name)}</option>`).join("");
+  
+  homeSelect.innerHTML = optionsHTML;
+  awaySelect.innerHTML = optionsHTML;
+}
+
+function addMatch(){
+  if(!isAdmin())return alert("Войдите как администратор");
+
+  const league = el("matchLeagueSelect").value;
+  const home = el("matchHomeTeam").value;
+  const away = el("matchAwayTeam").value;
+  const homeScore = el("homeScoreInput").value;
+  const awayScore = el("awayScoreInput").value;
+  const status = el("matchStatusSelect").value;
+
+  if(!league)return alert("Выберите лигу");
+  if(!home || !away)return alert("Выберите обе команды");
+  if(home === away)return alert("Команды не могут совпадать");
+  if(!allowedLeague(league))return alert("Нет доступа к этой лиге");
+
+  const isFinished = status === "finished";
+  const isLive = status === "live";
+
+  if((isFinished || isLive) && (homeScore === "" || awayScore === "")) {
+    return alert("Лутфан ҳисоби бозиро ворид кунед!");
+  }
+
+  let existingMatch = matches.find(m => m.league === league && ((m.home === home && m.away === away) || (m.home === away && m.away === home)));
+
+  const matchData = {
+    id: existingMatch ? existingMatch.id : String(Date.now()),
+    league,
+    home,
+    away,
+    homeScore: homeScore !== "" ? Number(homeScore) : 0,
+    awayScore: awayScore !== "" ? Number(awayScore) : 0,
+    finished: isFinished,
+    live: isLive,
+    date: selectedDate.toLocaleDateString(language==="tg"?"tg-TJ":"ru-RU",{day:"numeric",month:"long",year:"numeric"})
+  };
+
+  if(existingMatch){
+    const index = matches.findIndex(m => m.id === existingMatch.id);
+    matches[index] = matchData;
+  } else {
+    matches.push(matchData);
+  }
+
+  el("homeScoreInput").value = "";
+  el("awayScoreInput").value = "";
+  saveData();
+  renderAll();
+  alert("Матч ва ҳисоби он бомуваффақият илова/навсозӣ шуд!");
+}
+
+function renderAdminMatches(){
+  const container = el("adminMatches");
+  if(!container) return;
+
+  const list = matches.filter(m => isMaster() || m.league === currentAdmin);
+  if(!list.length){
+    container.innerHTML = '<div class="empty-state" style="padding:15px; font-size:13px;">Матчей пока нет</div>';
+    return;
+  }
+
+  container.innerHTML = list.map(m => `
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; background:var(--bg-main); padding:10px; border-radius:8px; border:1px solid var(--border-color);">
+      <div>
+        <strong style="font-size:13px;">${escapeHTML(teamName(m.home))} vs ${escapeHTML(teamName(m.away))}</strong>
+        <p style="margin:2px 0 0 0; font-size:12px; color:var(--text-muted);">Шот: ${m.homeScore} : ${m.awayScore} | Ҳолат: ${m.live ? 'LIVE' : (m.finished ? 'Ба охир расида' : 'Предстоящие')}</p>
+      </div>
+      <button class="delete-match-btn" data-id="${m.id}" style="padding:6px 10px; background:#ffe8e8; color:#d32f2f; border:none; border-radius:6px; cursor:pointer; font-size:12px;">Удалить</button>
+    </div>
+  `).join("");
+
+  container.querySelectorAll(".delete-match-btn").forEach(btn => {
+    btn.onclick = () => deleteMatch(btn.dataset.id);
+  });
+}
+
+function deleteMatch(id){
+  const m = matches.find(x => x.id === id);
+  if(!m || !allowedLeague(m.league)) return;
+  if(!confirm("Удалить матч?")) return;
+
+  matches = matches.filter(x => x.id !== id);
+  saveData();
+  renderAll();
+}
+
+function renderAdminTeams(){
+  const container=el("adminTeams");
+  if(!container)return;
+
+  const list=teams.filter(t=>isMaster()||t.league===currentAdmin);
+  if(!list.length){
+    container.innerHTML='<div class="empty-state">Команды пока не добавлены</div>';
+    return;
+  }
+
+  container.innerHTML=list.map(t=>`
+    <div class="admin-team-item">
+      <span>${escapeHTML(t.name)}</span>
+      <button class="secondary-btn edit-team" data-id="${t.id}">✏️</button>
+      <button class="delete-btn" data-id="${t.id}">Удалить</button>
+    </div>
+  `).join("");
+
+  container.querySelectorAll(".edit-team").forEach(btn=>{
+    btn.onclick=()=>editTeam(btn.dataset.id);
+  });
+
+  container.querySelectorAll(".delete-btn").forEach(btn=>{
+    btn.onclick=()=>deleteTeam(btn.dataset.id);
+  });
+}
+
+function addTeam(){
+  if(!isAdmin())return alert("Войдите как администратор");
+
+  const name=el("teamName").value.trim();
+  const league=el("adminLeague").value;
+
+  if(!name)return alert("Введите название команды");
+  if(!allowedLeague(league))return alert("Нет доступа к этому разделу");
+  if(teams.some(t=>t.league===league&&t.name.toLowerCase()===name.toLowerCase()))
+    return alert("Такая команда уже существует");
+
+  teams.push({id:String(Date.now()),name,league});
+  el("teamName").value="";
+  saveData();
+  renderAll();
+}
+
+function editTeam(id){
+  const t=teams.find(x=>x.id===id);
+  if(!t||!allowedLeague(t.league))return;
+
+  const name=prompt("Новое название команды:",t.name);
+  if(name===null)return;
+  const clean=name.trim();
+  if(!clean)return alert("Название не может быть пустым");
+
+  t.name=clean;
+  saveData();
+  renderAll();
+}
+
+function deleteTeam(id){
+  const t=teams.find(x=>x.id===id);
+  if(!t||!allowedLeague(t.league))return;
+  if(!confirm(`Удалить команду "${t.name}"?`))return;
+
+  teams=teams.filter(x=>x.id!==id);
+  saveData();
+  renderAll();
+}
+
+function login(){
+  const value=el("adminCodeInput").value.trim();
+  if(value===MASTER_CODE){
+    currentAdmin="master";
+  }else{
+    const found=GROUPS.find(g=>codes[g.id]===value&&value!=="");
+    if(!found)return alert("Неверный код администратора");
+    currentAdmin=found.id;
+  }
+
+  localStorage.setItem(STORAGE.admin,currentAdmin);
+  el("adminCodeInput").value="";
+  renderAdmin();
+}
+
+function logout(){
+  currentAdmin="";
+  localStorage.removeItem(STORAGE.admin);
+  renderAdmin();
+}
+
+function renderAll(){
+  renderLeagues();
+  renderRating();
+  renderMatches();
+  renderLeagueTeams();
+  renderAdmin();
+}
+
+function setupNavigation(){
+  document.querySelectorAll(".nav-item").forEach(btn=>{
+    btn.onclick=()=>setPage(btn.dataset.page);
+  });
+
+  if(el("addTeamBtn"))el("addTeamBtn").onclick=addTeam;
+  if(el("applyAdminCodeBtn"))el("applyAdminCodeBtn").onclick=login;
+  if(el("logoutBtn"))el("logoutBtn").onclick=logout;
+
+  if(el("backToLeagues"))el("backToLeagues").onclick=()=>setPage("leaguesPage");
+
+  document.querySelectorAll(".tab").forEach(btn=>{
+    btn.onclick=()=>{
+      document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      matchFilter=btn.dataset.filter;
+      renderMatches();
+    };
+  });
+
+  if(el("searchBtn"))el("searchBtn").onclick=()=>{
+    el("searchPanel").classList.toggle("hidden");
+    el("searchInput").focus();
+  };
+
+  if(el("closeSearch"))el("closeSearch").onclick=()=>{
+    el("searchPanel").classList.add("hidden");
+  };
+
+  if(el("searchInput"))el("searchInput").oninput=()=>{
+    const q=el("searchInput").value.trim().toLowerCase();
+    document.querySelectorAll(".league-card").forEach(card=>{
+      card.style.display=card.textContent.toLowerCase().includes(q)?"flex":"none";
+    });
+    document.querySelectorAll(".match-card").forEach(card=>{
+      card.style.display=card.textContent.toLowerCase().includes(q)?"block":"none";
+    });
+  };
+
+  if(el("settingsBtn"))el("settingsBtn").onclick=()=>{
+    el("settingsModal").classList.remove("hidden");
+  };
+
+  if(el("closeSettings"))el("closeSettings").onclick=()=>{
+    el("settingsModal").classList.add("hidden");
+  };
+
+  if(el("languageSelect"))el("languageSelect").onchange=()=>{
+    language=el("languageSelect").value;
+    localStorage.setItem(STORAGE.language,language);
+    renderAll();
+  };
+
+  if(el("themeSelect"))el("themeSelect").onchange=()=>{
+    const theme=el("themeSelect").value;
+    document.body.classList.toggle("dark",theme==="dark");
+    localStorage.setItem(STORAGE.theme,theme);
+  };
+
+  if(el("prevDate"))el("prevDate").onclick=()=>{
+    selectedDate.setDate(selectedDate.getDate()-1);
+    updateDate();
+  };
+
+  if(el("nextDate"))el("nextDate").onclick=()=>{
+    selectedDate.setDate(selectedDate.getDate()+1);
+    updateDate();
+  };
+}
+
+function updateDate(){
+  if(el("currentDate")){
+    el("currentDate").textContent=selectedDate.toLocaleDateString(language==="tg"?"tg-TJ":"ru-RU",{
+      day:"numeric",month:"long",year:"numeric"
+    });
+  }
+}
+
+function init(){
+  setupNavigation();
+
+  const theme=localStorage.getItem(STORAGE.theme)||"light";
+  document.body.classList.toggle("dark",theme==="dark");
+  if(el("themeSelect"))el("themeSelect").value=theme;
+  if(el("languageSelect"))el("languageSelect").value=language;
+
+  updateDate();
+  renderAll();
+  setPage("leaguesPage");
+}
+
+document.addEventListener("DOMContentLoaded",init);
