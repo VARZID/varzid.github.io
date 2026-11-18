@@ -229,7 +229,34 @@ function renderLeagueMatches(){
     return;
   }
 
-  container.innerHTML=list.map(m=>matchHTML(m)).join("");
+  // Бозиҳои фаъол ва оянда
+  const activeOrUpcoming = list.filter(m => !m.finished);
+  // Бозиҳои анҷомёфта
+  const finishedMatches = list.filter(m => m.finished);
+
+  let html = activeOrUpcoming.map(m => matchHTML(m)).join("");
+
+  if(finishedMatches.length > 0) {
+    html += `
+      <div style="margin-top: 15px;">
+        <button onclick="toggleFinishedMatches()" style="width: 100%; padding: 10px; background: #e2e8f0; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #333;">
+          📜 Бозиҳои анҷомёфта (${finishedMatches.length}) ▾
+        </button>
+        <div id="leagueFinishedBox" style="display: none; margin-top: 8px;">
+          ${finishedMatches.map(m => matchHTML(m)).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  container.innerHTML = html;
+}
+
+function toggleFinishedMatches() {
+  const box = el('leagueFinishedBox');
+  if(box){
+    box.style.display = box.style.display === 'none' ? 'block' : 'none';
+  }
 }
 
 function matchHTML(m){
@@ -265,7 +292,6 @@ function renderMatches(){
   container.innerHTML=list.map(m=>matchHTML(m)).join("");
 }
 
-// Системаи рейтинги аз сифр (0) бо стрелкаҳои кабуд/сабз ва сурх
 function calculateRating(){
   const uniqueTeamsMap = new Map();
 
@@ -307,7 +333,7 @@ function calculateRating(){
         points += 1; 
       } else { 
         losses++; 
-        points -= 1; // Барои бохт минус хол
+        points -= 1; 
       }
     });
 
@@ -336,14 +362,14 @@ function renderRating(){
 
   const rating=calculateRating();
   tbody.innerHTML=rating.map((t,i)=>{
-    let badgeColor = "#007aff"; // Ранги кабуд барои холҳои муътадил/мусбат
+    let badgeColor = "#007aff";
     let arrow = "▲";
     
     if(t.points > 0){
-      badgeColor = "#007aff"; // Кабуд бо стрелкаи боло
+      badgeColor = "#007aff";
       arrow = "▲";
     } else if(t.points < 0){
-      badgeColor = "#ff3b30"; // Сурх бо стрелкаи поён (минус)
+      badgeColor = "#ff3b30";
       arrow = "▼";
     } else {
       badgeColor = "#8e8e93";
