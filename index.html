@@ -10,6 +10,34 @@
   <link rel="stylesheet" href="style.css">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="logo.png">
+  <style>
+    /* Услуби иловагӣ барои рангҳои таблиса ва легенда (мисли Серия В) */
+    .row-blue { background: rgba(29, 78, 216, 0.16); border-left: 4px solid #1d4ed8; }
+    .row-blue .pos-badge { background: #1d4ed8; color: #fff; }
+    .row-playoff { background: rgba(217, 119, 6, 0.16); border-left: 4px solid #d97706; }
+    .row-playoff .pos-badge { background: #d97706; color: #fff; }
+    .row-red { background: rgba(220, 38, 38, 0.16); border-left: 4px solid #dc2626; }
+    .row-red .pos-badge { background: #dc2626; color: #fff; }
+    
+    .table-custom { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+    .table-custom th, .table-custom td { padding: 8px 6px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .table-custom th { color: #94a3b8; font-weight: 600; }
+    
+    .legend-box {
+      padding: 12px;
+      margin-top: 12px;
+      background: #111827;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      font-size: 12px;
+      color: #cbd5e1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .legend-row { display: flex; align-items: center; gap: 8px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+  </style>
 </head>
 
 <body>
@@ -173,7 +201,13 @@
 
     <div id="leagueTeams" class="content-list"></div>
 
-    <!-- Ислоҳ шуд: Бозиҳои анҷомёфта ва дигар матҷҳо акнун дар дохили лига дуруст намоиш дода мешаванд -->
+    <!-- Легенда (Шарҳи рангҳо мисли Серия В / Высшая лига) -->
+    <div class="legend-box">
+      <div class="legend-row"><span class="dot" style="background:#1d4ed8"></span> Роҳхат ба Гурӯҳи олии фархор (Мустақим)</div>
+      <div class="legend-row"><span class="dot" style="background:#d97706"></span> Бозиҳои плей-офф / гузаришӣ</div>
+      <div class="legend-row"><span class="dot" style="background:#dc2626"></span> Зонаи поёнравӣ / вылет (6 даста дар Гурӯҳи олӣ)</div>
+    </div>
+
     <div id="leagueMatches" class="content-list"></div>
   </section>
 
